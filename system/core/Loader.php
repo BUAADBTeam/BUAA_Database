@@ -23,11 +23,11 @@ class Loader {
 			$name = $model;
 		}
 
-		if (in_array($name, $this->_models, TRUE)) {
+		if (isset($this->_models) && in_array($name, $this->_models, TRUE)) {
 			return $this;
 		}
 
-		$it =& get_instance();
+		$it = get_instance();
 		if (isset($this->$name)) {
 			throw new RuntimeException('The model name you are loading is the name of a resource that is already being used: '.$name);
 		}
