@@ -1,3 +1,0 @@
-RewriteEngine on  
-RewriteCond $1 !^(index\.php|static)
-RewriteRule ^(.*)$ /BUAA_Database/index.php/$1 [L]
