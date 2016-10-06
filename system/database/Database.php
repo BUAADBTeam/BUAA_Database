@@ -31,4 +31,8 @@ class Database
 		//TODO return ?
 		return mysqli_num_rows($query);
 	}
+
+	function select()
+
+
 }
