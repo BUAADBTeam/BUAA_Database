@@ -3,7 +3,6 @@
 $system_path = 'system';
 $application_folder = 'application';
 $view_folder = '';
-
 //system -> BASEPATH
 if (($tmp = realpath($system_path)) !== FALSE) {
 	$system_path = $tmp.'/';

@@ -9,16 +9,23 @@ class Acessm extends Model
   }
 
   function user_has_role($role) {
+    // session_start();
   	if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
   		$user = $_SESSION['user'];
 
   		$sql = "SELECT CONUT(*) FROM author 
   			INNER JOIN authorrole ON author.id = authorid
   			INNER JOIN role ON roleid = role.id
-  			WHERE user = $user AND role.id = $role";
+  			WHERE user = :user AND role.id = :role";
 
-  		$result = $this->db->query($sql);
-  		$row = $result->fetch_row();
+
+      $pdo = $this->db->connect();
+  		$result = $pdo->prepare();
+      $result->bindValue(':user', $user);
+      $result->bindValue(':role', $role);
+  		$result->execute();
+
+      $row = $result->fetch();
 
   		if($row[0] > 0) {
   			return TRUE;
@@ -84,14 +91,18 @@ class Acessm extends Model
       }
   }
 
-  function databaseContainsAuthor($user, $pass)
+  function databaseContainsUser($user, $pass)
   {
 
       $sql = "SELECT COUNT(*) FROM user
-           WHERE user = $user AND password = $pass";
-
-      $result = $this->db->query($sql);
-      $row = $result->fetch_row();
+           WHERE user = :user AND password = :pass";
+      $pdo = $this->db->connect();
+      $result = $pdo->prepare($sql);
+      $result->bindValue(':user', $user);
+      $result->bindValue(':pass', $pass);
+      $result->execute();
+      
+      $row = $result->fetch();
 
       if ($row[0] > 0)
       {
