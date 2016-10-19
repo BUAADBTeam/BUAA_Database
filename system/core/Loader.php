@@ -56,7 +56,7 @@ class Loader {
 		return $this;
 	}
 
-	public function view($view, $data = array())
+	public function view($view, $para = array())
 	{
 		include VIEWPATH.'header.php';
 		include VIEWPATH.$view.'.php';

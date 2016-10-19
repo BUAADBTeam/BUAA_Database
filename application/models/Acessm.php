@@ -57,6 +57,9 @@ class Acessm extends Model
         if (databaseContainsAuthor($_POST['user'], $password))
         {
           session_start();
+          session_register('loggedIn');
+          session_register('user');
+          session_register('pass');
           $_SESSION['loggedIn'] = TRUE;
           $_SESSION['user'] = $_POST['user'];
           $_SESSION['pass'] = $password;

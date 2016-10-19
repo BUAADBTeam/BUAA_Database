@@ -20,9 +20,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div class="menu">
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="">Home</a></li>
-			<li role="presentation"><a href="">Login</a></li>
+			<li role="presentation"><a href="login">Login</a></li>
 			<li role="presentation"><a href="">Registe</a></li>
 		</ul>
 	</div>
+
 	<div class="panel panel-default">
 		<div class="panel-body">
