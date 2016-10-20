@@ -13,14 +13,14 @@ class Acessm extends Model
   	if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
   		$user = $_SESSION['user'];
 
-  		$sql = "SELECT CONUT(*) FROM user 
+  		$sql = "SELECT CONUT(*) FROM users 
   			INNER JOIN userrole ON user.id = userid
   			INNER JOIN role ON roleid = role.id
   			WHERE user = :user AND role.id = :role";
 
 
       $pdo = $this->db->connect();
-  		$result = $pdo->prepare();
+  		$result = $pdo->prepare($sql);
       $result->bindValue(':user', $user);
       $result->bindValue(':role', $role);
   		$result->execute();
@@ -56,18 +56,25 @@ class Acessm extends Model
 
         if (databaseContainsAuthor($_POST['user'], $password))
         {
-          $sql = "SELECT CONUT(*) FROM author 
-                  
-                  INNER JOIN role ON roleid = role.id
-                  WHERE user = :user AND role.id = :role";
+          $sql = "SELECT userid FROM users 
+                  WHERE user = :user;
+
+          $pdo = $this->db->connect();
+          $result = $pdo->prepare($sql);
+          $result->bindValue(':user', $_POST['user']);
+          $result->execute();
+          $row = $result->fetch($fetchstyle = PDO::FETCH_ASSOC);        
+          $userid = $row['userid'];
 
           isser($_SESSION) OR session_start();
           session_register('loggedIn');
           session_register('user');
           session_register('pass');
+          session_register('userid');
           $_SESSION['loggedIn'] = TRUE;
           $_SESSION['user'] = $_POST['user'];
           $_SESSION['pass'] = $password;
+          $_SESSION['userid'] = $userid;
           return TRUE;
         }
         else
