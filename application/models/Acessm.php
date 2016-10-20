@@ -9,12 +9,12 @@ class Acessm extends Model
   }
 
   function user_has_role($role) {
-    // session_start();
+    isser($_SESSION) OR session_start();
   	if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
   		$user = $_SESSION['user'];
 
-  		$sql = "SELECT CONUT(*) FROM author 
-  			INNER JOIN authorrole ON author.id = authorid
+  		$sql = "SELECT CONUT(*) FROM user 
+  			INNER JOIN userrole ON user.id = userid
   			INNER JOIN role ON roleid = role.id
   			WHERE user = :user AND role.id = :role";
 
@@ -56,7 +56,12 @@ class Acessm extends Model
 
         if (databaseContainsAuthor($_POST['user'], $password))
         {
-          session_start();
+          $sql = "SELECT CONUT(*) FROM author 
+                  
+                  INNER JOIN role ON roleid = role.id
+                  WHERE user = :user AND role.id = :role";
+
+          isser($_SESSION) OR session_start();
           session_register('loggedIn');
           session_register('user');
           session_register('pass');
@@ -67,7 +72,7 @@ class Acessm extends Model
         }
         else
         {
-          session_start();
+          isser($_SESSION) OR session_start();
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
           unset($_SESSION['pass']);
@@ -79,7 +84,7 @@ class Acessm extends Model
 
       if (isset($_POST['action']) and $_POST['action'] == 'logout')
       {
-        session_start();
+        isser($_SESSION) OR session_start();
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
@@ -87,7 +92,7 @@ class Acessm extends Model
         exit();
       }
 
-      session_start();
+      isser($_SESSION) OR session_start();
       if (isset($_SESSION['loggedIn']))
       {
         return databaseContainsAuthor($_SESSION['user'], $_SESSION['pass']);
