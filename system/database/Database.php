@@ -21,7 +21,7 @@ class Database {
  
  }
  
- public connect($port = "3306") {
+ public function connect($port = "3306") {
  	try {
       $this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
     } catch(PDOException $e) {
@@ -47,12 +47,12 @@ class Database {
    }
  }
  
- public function execute($mode = NULL) {
+ public function execute($mode = '') {
    try {
      if ($this->statement && $this->statement->execute()) {
        $data = array();
  
-       while (isset($mode) && $row = $this->statement->fetch()) {
+       while (!empty($mode) && $row = $this->statement->fetch()) {
          $data[] = $row;
        }
  
@@ -64,10 +64,20 @@ class Database {
    } catch(PDOException $e) {
      trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
    }
+
+   if ($result) {
+     return $result;
+     } else {
+       $result = new stdClass();
+       $result->row = array();
+       $result->rows = array();
+       $result->num_rows = 0;
+       return $result;
+    }
  }
  
  public function query($sql, $params = array(), $type = 'SELECT') {
- 	print_r($params);
+ 	// print_r($sql);
    $this->statement = $this->pdo->prepare($sql);
    $result = false;
    $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -148,9 +158,9 @@ class Database {
    }
    $field_arr = array();
    foreach ($data as $key=>$val) {
-     $field_arr[] = " `$key`";
+     $field_arr[] = "$val";
    }
-   $sql = "SELECT " .implode(',', $field_arr) .'FROM' .$table ." WHERE " . $where;
+   $sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
    return $this->query($sql, $params);
  }
 

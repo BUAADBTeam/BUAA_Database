@@ -14,8 +14,8 @@ class Acessm extends Model
   		$user = $_SESSION['user'];
 
   		// $sql = "SELECT CONUT(*) FROM users 
-  			INNER JOIN userrole ON user.id = userid
-  			INNER JOIN role ON roleid = role.id
+  			// INNER JOIN userrole ON user.id = userid
+  			// INNER JOIN role ON roleid = role.id
   		// 	WHERE user = :user AND role.id = :role";
 
 
@@ -48,16 +48,16 @@ class Acessm extends Model
   {
       if (isset($_POST['action']) and $_POST['action'] == 'login')
       {
-        if (!isset($_POST['user']) or $_POST['user'] == '' or
-          !isset($_POST['pass']) or $_POST['pass'] == '')
+        if (!isset($_POST['username']) or $_POST['username'] == '' or
+          !isset($_POST['password']) or $_POST['password'] == '')
         {
           $GLOBALS['loginError'] = 'Please fill in both fields';
           return FALSE;
         }
 
-        $password = md5($_POST['pass'] . 'buaadb');
+        $password = md5($_POST['password'] . 'buaadb');
 
-        if (databaseContainsAuthor($_POST['user'], $password))
+        if (databaseContainsAuthor($_POST['username'], $password))
         {
           // $sql = "SELECT userid FROM users 
                   // WHERE user = :user;
@@ -80,6 +80,7 @@ class Acessm extends Model
           $_SESSION['user'] = $_POST['user'];
           $_SESSION['pass'] = $password;
           $_SESSION['userid'] = $userid;
+          $this->db->close();
           return TRUE;
         }
         else
@@ -123,7 +124,7 @@ class Acessm extends Model
       // $result->execute();
       $row = $this->db->select(array('COUNT(*)'), 'user', "user = :user AND password = :pass",array(':user' => $user, ':pass' => $pass))->row;
       // $row = $result->fetch();
-
+      $this->db->close();
       if ($row[0] > 0)
       {
         return TRUE;

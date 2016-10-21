@@ -19,7 +19,7 @@ class Cartm extends Model {
 					  
 			// $pdo = $this->db->connect();
 	        // $sth = $pdo->prepare($sql);
-	        // $sth->bindValue(':userid', $userid);
+	        // $sth->bindParam(':userid', $userid);
 	        // $sth->execute();
 	        $result = $this->db->select(array('*'), 'orderitems', 
 	        	"orderid in (SELECT orderid FROM orders 
@@ -47,8 +47,8 @@ class Cartm extends Model {
 	  //       		WHERE id = $itemid";
 	  //       $sth = $pdo->prepare($sql);
 	  //       $sth->execute();
-			$result = $this->db->select(array('price'), 'products', "id = $itemid");
-			if(count($result->row) != 0)
+			$result = $this->db->select(array('price'), 'products', "id = $itemid")->row;
+			if(!empty($result))
             	$price = $result['price'];	        
             else {
             	$this->db->close();
@@ -60,9 +60,9 @@ class Cartm extends Model {
 			// $sql = "SELECT orderid FROM orders 
    //                WHERE userid = :userid AND status < 2"; 
             // // $sth = $pdo->prepare($sql);
-            // $sth->bindValue(':userid', $userid);
+            // $sth->bindParam(':userid', $userid);
             // $sth->execute();
-            $result = select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid))->row;
+            $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid))->row;
             if(count($result) > 0)
             	$orderid = $result['orderid'];
             else {
@@ -73,13 +73,13 @@ class Cartm extends Model {
             // -- 		FROM orderitems
             // -- 		WHERE userid = :userid  AND orderid = :orderid AND itemid = :itemid"; 
          //    $sth = $pdo->prepare($sql);
-	        // $sth->bindValue(':userid', $userid);
-	        // $sth->bindValue(':orderid', $orderid);
-	        // $sth->bindValue(':itemid', $itemid);
+	        // $sth->bindParam(':userid', $userid);
+	        // $sth->bindParam(':orderid', $orderid);
+	        // $sth->bindParam(':itemid', $itemid);
 	        // $sth->execute();
 	        // $result = $sth->fetch();
 	        // var_dump($result);
-	        $result = select(array('COUNT(*)'), 'orderitems', 
+	        $result = $this->db->select(array('COUNT(*)'), 'orderitems', 
 	        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
 	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid))->row;
 	        if($result[0] > 0) {
@@ -88,9 +88,9 @@ class Cartm extends Model {
             // 			WHERE userid = :userid  AND orderid = :orderid AND itemid = :itemid";
 
 	         //    $sth = $pdo->prepare($sql);
-		        // $sth->bindValue(':userid', $userid);
-		        // $sth->bindValue(':orderid', $orderid);
-		        // $sth->bindValue(':itemid', $itemid);
+		        // $sth->bindParam(':userid', $userid);
+		        // $sth->bindParam(':orderid', $orderid);
+		        // $sth->bindParam(':itemid', $itemid);
 		        // $sth->execute();
 		        $this->db->update('orderitems', array('amount' => "amount + $amount"), 
 		        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
@@ -100,13 +100,16 @@ class Cartm extends Model {
 				// $sql = "INSERT INTO orderitems(userid, orderid, itemid, amount) 
 						  // -- VALUES(:userid, :orderid, :itemid, :amount)"; 	
 		        // $sth = $pdo->prepare($sql);
-		        // $sth->bindValue(':userid', $userid);
-		        // $sth->bindValue(':orderid', $orderid);
-		        // $sth->bindValue(':itemid', $itemid);
-		        // $sth->bindValue(':amount', $amount);
+		        // $sth->bindParam(':userid', $userid);
+		        // $sth->bindParam(':orderid', $orderid);
+		        // $sth->bindParam(':itemid', $itemid);
+		        // $sth->bindParam(':amount', $amount);
 		        // $sth->execute();
 		        $this->db->insert('orderitems', 
-		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount));
+		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount), 
+		        		array(':userid' => $userid,
+		        			':orderid' => $orderid,
+		        			':itemid' => $itemid));
 		    }
 		    
 	        
@@ -139,8 +142,9 @@ class Cartm extends Model {
 	        		FROM products
 	        		WHERE id = $itemid";
 	        $this->db->prepare($sql);
-	        $result = $this->db->execute()->row;
-
+	        $result = $this->db->execute($mode = 'SELECT')->row;
+	        // var_dump($result);
+	        // // die();
 			if(!empty($result))
             	$price = $result['price'];	        
             else {
@@ -152,7 +156,7 @@ class Cartm extends Model {
 			// $sql = "SELECT orderid FROM orders 
    //                WHERE userid = :userid AND status < 2"; 
             // $sth = $pdo->prepare($sql);
-            // $sth->bindValue(':userid', $userid);
+            // $sth->bindParam(':userid', $userid);
             // $sth->execute();
             $result = $this->db->select(array('orderid'), 'orders', 
             	"userid = :userid AND status < 2",
@@ -168,18 +172,18 @@ class Cartm extends Model {
 	    //     		FROM orderitems
 					// WHERE orderid = $orderid AND itemid = :itemid"; 
 	    //     $sth = $pdo->prepare($sql);
-	    //     $sth->bindValue(':itemid', $itemid);
+	    //     $sth->bindParam(':itemid', $itemid);
 	    //     $sth->execute();
 	    //     $result = $sth->fetch();
 			$result = $this->db->select(array('amount'), 'orderitems',
-				"orderid = $orderid AND itemid = :itemid"
+				"orderid = $orderid AND itemid = :itemid",
 				array(':itemid' => $itemid))->row;	        
 	        if($result[0] > $amount) {
 	        	$sql = "UPDATE orderitems
 	        			SET amount = amount - $amount
 						WHERE orderid = $orderid AND itemid = :itemid"; 
 				$this->db->prepare($sql);
-	        	$this->db->bindValue(':itemid', $itemid);
+	        	$this->db->bindParam(':itemid', $itemid);
 	        	$this->db->execute();
 	        	// $this->db->update('orderitems', a)
 	        }
@@ -188,7 +192,7 @@ class Cartm extends Model {
 	        	$sql = "DELETE FROM orderitems
 						WHERE orderid = $orderid AND itemid = :itemid"; 
 				$this->db->prepare($sql);
-	        	$this->db->bindValue(':itemid', $itemid);
+	        	$this->db->bindParam(':itemid', $itemid);
 	        	$this->db->execute();
 	        }
 	        else {
