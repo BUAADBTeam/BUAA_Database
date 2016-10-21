@@ -8,7 +8,7 @@ class Database {
  private $pdo = null; // pdo连接
  private $statement = null;
  
- public function __construct($port = "3306") {
+ public function __construct() {
  	if (!file_exists(APPPATH.'config/database.php')) {
 			throw new RuntimeException('Unable to locate the database config');
 		}
@@ -16,7 +16,13 @@ class Database {
 	foreach ($dbconfig as $key => $value) {
 		$this->$key = $value;
 	}
-    try {
+    
+    // $this->pdo->exec("SET SQL_MODE = ''");
+ 
+ }
+ 
+ public connect($port = "3306") {
+ 	try {
       $this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
     } catch(PDOException $e) {
         trigger_error('Error: Could not make a database link ( ' . $e->getMessage() . '). Error Code : ' . $e->getCode() . ' <br />');
@@ -26,10 +32,8 @@ class Database {
     $this->pdo->exec('SET NAMES "utf8"');
     $this->pdo->exec('SET CHARACTER SET "utf8"');
     $this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
-    // $this->pdo->exec("SET SQL_MODE = ''");
- 
  }
- 
+
  public function prepare($sql) {
     $this->statement = $this->pdo->prepare($sql);
     $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -43,12 +47,12 @@ class Database {
    }
  }
  
- public function execute() {
+ public function execute($mode = NULL) {
    try {
      if ($this->statement && $this->statement->execute()) {
        $data = array();
  
-       while ($row = $this->statement->fetch(PDO::FETCH_ASSOC)) {
+       while (isset($mode) && $row = $this->statement->fetch()) {
          $data[] = $row;
        }
  
@@ -71,7 +75,7 @@ class Database {
    try {
      if ($this->statement && $this->statement->execute($params)) {
 	   $data = array();
-	   while ($type == 'SELECT' && $row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
+	   while ($type == 'SELECT' && $row = $this->statement->fetch()) {
 	     $data[] = $row;
 	   }
 	   $result = new \stdClass();
@@ -95,7 +99,7 @@ class Database {
     }
  }
  
- public function executeUpdate($sql) {
+ public function exec($sql) {
    return $this->pdo->exec($sql);
  }
  
@@ -135,6 +139,21 @@ class Database {
    return $this->query($sql, $params)->num_rows;
  }
  
+ public function select($data, $table, $where = '', $params = array()) {
+   if(empty($where)) {
+     return 0;
+   }
+   if (!is_array($data) || count($data) == 0) {
+     return 0;
+   }
+   $field_arr = array();
+   foreach ($data as $key=>$val) {
+     $field_arr[] = " `$key`";
+   }
+   $sql = "SELECT " .implode(',', $field_arr) .'FROM' .$table ." WHERE " . $where;
+   return $this->query($sql, $params);
+ }
+
  /**
  * 插入数据
  * @param string $table 表名
@@ -228,7 +247,11 @@ class Database {
  public function errorCode() {
    return $this->statement->errorCode();
  }
- 
+
+ public function close() {
+   $this->pdo = null;
+ }
+
  public function __destruct() {
    $this->pdo = null;
  }

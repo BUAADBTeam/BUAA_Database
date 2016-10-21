@@ -11,6 +11,6 @@ class Cart extends Controller {
 
 	public function index()
 	{
-		print_r($this->cartm->db->update('orders', array('status' => ':status'), "userid = :userid", array(':status' => '1', ':userid' => '1')));
+		print_r($this->cartm->delFood("1", "2", "2") ? 0 : 1);
 	}
 }
