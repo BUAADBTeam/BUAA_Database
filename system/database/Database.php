@@ -8,23 +8,31 @@ class Database {
  private $pdo = null; // pdo连接
  private $statement = null;
  
- public function __construct($hostname, $username, $password, $database, $charset, $port = "3306") {
-   try {
-     $this->pdo = new \PDO("mysql:host=" . $hostname . ";port=" . $port . ";dbname=" . $database, $username, $pa     ssword, array(\PDO::ATTR_PERSISTENT => true));
-   } catch(\PDOException $e) {
-       trigger_error('Error: Could not make a database link ( ' . $e->getMessage() . '). Error Code : ' . $e->ge      tCode() . ' <br />');
-   }
- 
-   $this->pdo->exec("SET NAMES '" . $charset . "'");
-   $this->pdo->exec("SET CHARACTER SET " . $charset);
-   $this->pdo->exec("SET CHARACTER_SET_CONNECTION=" . $charset);
-   $this->pdo->exec("SET SQL_MODE = ''");
+ public function __construct($port = "3306") {
+ 	if (!file_exists(APPPATH.'config/database.php')) {
+			throw new RuntimeException('Unable to locate the database config');
+		}
+	include APPPATH.'config/database.php';
+	foreach ($dbconfig as $key => $value) {
+		$this->$key = $value;
+	}
+    try {
+      $this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
+    } catch(PDOException $e) {
+        trigger_error('Error: Could not make a database link ( ' . $e->getMessage() . '). Error Code : ' . $e->getCode() . ' <br />');
+    }
+
+    $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    $this->pdo->exec('SET NAMES "utf8"');
+    $this->pdo->exec('SET CHARACTER SET "utf8"');
+    $this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
+    // $this->pdo->exec("SET SQL_MODE = ''");
  
  }
  
  public function prepare($sql) {
-   $this->statement = $this->pdo->prepare($sql);
-   $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
+    $this->statement = $this->pdo->prepare($sql);
+    $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
  }
  
  public function bindParam($parameter, $variable, $data_type = PDO::PARAM_STR, $length = 0) {
@@ -54,21 +62,23 @@ class Database {
    }
  }
  
- public function query($sql, $params = array()) {
+ public function query($sql, $params = array(), $type = 'SELECT') {
+ 	print_r($params);
    $this->statement = $this->pdo->prepare($sql);
    $result = false;
    $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
+
    try {
      if ($this->statement && $this->statement->execute($params)) {
-     $data = array();
-     while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
-       $data[] = $row;
+	   $data = array();
+	   while ($type == 'SELECT' && $row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
+	     $data[] = $row;
+	   }
+	   $result = new \stdClass();
+	   $result->row = (isset($data[0]) ? $data[0] : array());
+	   $result->rows = $data;
+	   $result->num_rows = $this->statement->rowCount();
      }
-   $result = new \stdClass();
-   $result->row = (isset($data[0]) ? $data[0] : array());
-   $result->rows = $data;
-   $result->num_rows = $this->statement->rowCount();
-  }
  } catch (PDOException $e) {
    trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
    exit();
@@ -131,17 +141,20 @@ class Database {
  * @param Array $data 数据
  * @return int InsertId 新增ID
  */
- public function _insert($table, $data) {
+ public function insert($table, $data, $params = array()) {
  
    if (!is_array($data) || count($data) == 0) {
      return 0;
    }
    $field_arr = array();
+   $value_arr = array();
    foreach ($data as $key=>$val) {
-     $field_arr[] = " `$key` = '$val' ";
+     $field_arr[] = "$key ";
+     $value_arr[] = "$val ";
    }
-   $sql = "INSERT INTO " . $table . " SET " . implode(',', $field_arr);
-   $this -> query($sql);
+   $sql = "INSERT INTO " . $table . "(" . implode(',', $field_arr);
+   $sql .= (") ". "VALUES(". implode(',', $value_arr). ")");
+   $this -> query($sql, $params, $type = 1);
    return $this->getLastId();
  }
  
@@ -152,7 +165,7 @@ class Database {
  * @param string $where 更新条件
  * @return int 影响数
  */
- public function _update($table, $data, $where = '') {
+ public function update($table, $data, $where = '', $params = array()) {
    if(empty($where)) {
      return 0;
    }
@@ -161,21 +174,21 @@ class Database {
    }
    $field_arr = array();
    foreach ($data as $key=>$val) {
-     $field_arr[] = " `$key` = '$val' ";
+     $field_arr[] = " `$key` = $val ";
    }
    $sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
-   return $this->pdo->exec($sql);
+   return $this->query($sql, $params, $type = 1)->num_rows;
  }
  
  /**
  * 获得影响集合中
  */
- public function _delete($table, $where = "") {
+ public function delete($table, $where = "", $params = array()) {
    if(empty($where)) {
      return 0;
    }
    $sql = "DELETE FROM " . $table . " WHERE " . $where;
-   return $this->pdo->exec($sql);
+   return $this->query($sql, $params, $type = 1)->num_rows;
  }
  
  /**
