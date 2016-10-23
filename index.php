@@ -50,12 +50,6 @@ else {
 
 require APPPATH.'config/config.php';
 
-$url = $_SERVER[$config['uri_protocol']];
-if (!empty($config['url_prefix'])) {
-	$prefix = substr($url, 0, strlen($config['url_prefix']));
-	if (strcmp($prefix, $config['url_prefix']) == 0) {
-		$url = substr($url, strlen($config['url_prefix']));
-	}
-}
+$url = array_keys($_GET)[0];
 
 require_once BASEPATH.'core/core.php';

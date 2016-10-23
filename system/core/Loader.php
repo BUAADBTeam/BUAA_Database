@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Loader {
 
+	private $_models = array();
 	public function model($model, $name = '')
 	{
 		if (empty($model)) {

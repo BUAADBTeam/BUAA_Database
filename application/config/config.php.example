@@ -1,0 +1,9 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+$config['baseurl'] = 'http://localhost/db/';
+
+$config['uri_protocol']	= 'REQUEST_URI';
+
+$config['charset'] = 'UTF-8';
