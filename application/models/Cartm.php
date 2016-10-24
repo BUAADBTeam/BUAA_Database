@@ -35,7 +35,7 @@ class Cartm extends Model {
 
 	function addFood($userid, $itemid, $amount)
 	{
-		if(! is_numeric($amount) || !($amount + 0 > 0)) {
+		if (! is_numeric($amount) || !($amount + 0 > 0)) {
 			$this->db->close();
 			return False;
 		}
@@ -48,7 +48,7 @@ class Cartm extends Model {
 	  //       $sth = $pdo->prepare($sql);
 	  //       $sth->execute();
 			$result = $this->db->select(array('price'), 'products', "id = $itemid")->row;
-			if(!empty($result))
+			if (!empty($result))
             	$price = $result['price'];	        
             else {
             	$this->db->close();
@@ -63,7 +63,7 @@ class Cartm extends Model {
             // $sth->bindParam(':userid', $userid);
             // $sth->execute();
             $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid))->row;
-            if(count($result) > 0)
+            if (count($result) > 0)
             	$orderid = $result['orderid'];
             else {
             	$this->db->close();
@@ -82,7 +82,7 @@ class Cartm extends Model {
 	        $result = $this->db->select(array('COUNT(*)'), 'orderitems', 
 	        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
 	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid))->row;
-	        if($result[0] > 0) {
+	        if ($result[0] > 0) {
 	        	// $sql = "UPDATE orderitems
 	        			// SET amount = amount + $amount
             // 			WHERE userid = :userid  AND orderid = :orderid AND itemid = :itemid";
@@ -129,7 +129,7 @@ class Cartm extends Model {
 
 	function delFood($userid, $itemid, $amount)
 	{
-		if(!is_numeric($amount) || !($amount + 0 > 0)) {
+		if (!is_numeric($amount) || !($amount + 0 > 0)) {
 			$this->db->close();
 			return False;
 		}
@@ -161,7 +161,7 @@ class Cartm extends Model {
             $result = $this->db->select(array('orderid'), 'orders', 
             	"userid = :userid AND status < 2",
             	array(':userid' => $userid))->row;
-            if(!empty($result))
+            if (!empty($result))
             	$orderid = $result['orderid'];
             else {
             	$this->db->close();
@@ -187,7 +187,7 @@ class Cartm extends Model {
 	        	$this->db->execute();
 	        	// $this->db->update('orderitems', a)
 	        }
-	        else if($result[0] == $amount){
+	        else if ($result[0] == $amount) {
 
 	        	$sql = "DELETE FROM orderitems
 						WHERE orderid = $orderid AND itemid = :itemid"; 

@@ -4,112 +4,115 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Database {
  
- public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
- private $pdo = null; // pdo连接
- private $statement = null;
+  public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
+  private $pdo = null; // pdo连接
+  private $statement = null;
  
- public function __construct() {
- 	if (!file_exists(APPPATH.'config/database.php')) {
-			throw new RuntimeException('Unable to locate the database config');
-		}
-	include APPPATH.'config/database.php';
-	foreach ($dbconfig as $key => $value) {
-		$this->$key = $value;
-	}
-    
-    // $this->pdo->exec("SET SQL_MODE = ''");
+  public function __construct() {
+   	if (!file_exists(APPPATH.'config/database.php')) {
+  			throw new RuntimeException('Unable to locate the database config');
+  		}
+  	include APPPATH.'config/database.php';
+  	foreach ($dbconfig as $key => $value) {
+  		$this->$key = $value;
+  	}
+      
+      // $this->pdo->exec("SET SQL_MODE = ''");
+   
+  }
  
- }
- 
- public function connect($port = "3306") {
- 	try {
+  public function connect($port = "3306") {
+    try {
       $this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
     } catch(PDOException $e) {
-        trigger_error('Error: Could not make a database link ( ' . $e->getMessage() . '). Error Code : ' . $e->getCode() . ' <br />');
+      trigger_error('Error: Could not make a database link ( ' . $e->getMessage() . '). Error Code : ' . $e->getCode() . ' <br />');
     }
 
     $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     $this->pdo->exec('SET NAMES "utf8"');
     $this->pdo->exec('SET CHARACTER SET "utf8"');
     $this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
- }
+  }
 
- public function prepare($sql) {
+  public function prepare($sql) {
     $this->statement = $this->pdo->prepare($sql);
     $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
- }
+  }
  
- public function bindParam($parameter, $variable, $data_type = PDO::PARAM_STR, $length = 0) {
-   if ($length) {
-     $this->statement->bindParam($parameter, $variable, $data_type, $length);
-   } else {
-     $this->statement->bindParam($parameter, $variable, $data_type);
-   }
- }
+  public function bindParam($parameter, $variable, $data_type = PDO::PARAM_STR, $length = 0) {
+    if ($length) {
+      $this->statement->bindParam($parameter, $variable, $data_type, $length);
+    } 
+    else {
+       $this->statement->bindParam($parameter, $variable, $data_type);
+    }
+  }
  
- public function execute($mode = '') {
-   try {
-     if ($this->statement && $this->statement->execute()) {
-       $data = array();
- 
-       while (!empty($mode) && $row = $this->statement->fetch()) {
-         $data[] = $row;
-       }
- 
-     $result = new stdClass();
-     $result->row = (isset($data[0])) ? $data[0] : array();
-     $result->rows = $data;
-     $result->num_rows = $this->statement->rowCount();
-     }
-   } catch(PDOException $e) {
+  public function execute($mode = '') {
+    try {
+      if ($this->statement && $this->statement->execute()) {
+      $data = array();
+
+      while (!empty($mode) && $row = $this->statement->fetch()) {
+        $data[] = $row;
+      }
+      $result = new stdClass();
+      $result->row = (isset($data[0])) ? $data[0] : array();
+      $result->rows = $data;
+      $result->num_rows = $this->statement->rowCount();
+    }
+  } 
+  catch(PDOException $e) {
      trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
    }
 
    if ($result) {
-     return $result;
-     } else {
-       $result = new stdClass();
-       $result->row = array();
-       $result->rows = array();
-       $result->num_rows = 0;
-       return $result;
-    }
- }
+    return $result;
+  }
+  else {
+    $result = new stdClass();
+    $result->row = array();
+    $result->rows = array();
+    $result->num_rows = 0;
+    return $result;
+  }
+}
  
- public function query($sql, $params = array(), $type = 'SELECT') {
+  public function query($sql, $params = array(), $type = 'SELECT') {
  	// print_r($sql);
-   $this->statement = $this->pdo->prepare($sql);
-   $result = false;
-   $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
+    $this->statement = $this->pdo->prepare($sql);
+    $result = false;
+    $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
 
-   try {
-     if ($this->statement && $this->statement->execute($params)) {
-	   $data = array();
-	   while ($type == 'SELECT' && $row = $this->statement->fetch()) {
-	     $data[] = $row;
-	   }
-	   $result = new \stdClass();
-	   $result->row = (isset($data[0]) ? $data[0] : array());
-	   $result->rows = $data;
-	   $result->num_rows = $this->statement->rowCount();
+    try {
+      if ($this->statement && $this->statement->execute($params)) {
+        $data = array();
+        while ($type == 'SELECT' && $row = $this->statement->fetch()) {
+          $data[] = $row;
+        }
+        $result = new \stdClass();
+        $result->row = (isset($data[0]) ? $data[0] : array());
+        $result->rows = $data;
+        $result->num_rows = $this->statement->rowCount();
      }
- } catch (PDOException $e) {
-   trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
-   exit();
- }
- 
-   if ($result) {
-     return $result;
-     } else {
-       $result = new stdClass();
-       $result->row = array();
-       $result->rows = array();
-       $result->num_rows = 0;
-       return $result;
+   } catch (PDOException $e) {
+    trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
+    exit();
     }
- }
+
+    if ($result) {
+      return $result;
+    } 
+    else {
+      $result = new stdClass();
+      $result->row = array();
+      $result->rows = array();
+      $result->num_rows = 0;
+      return $result;
+    }
+  }
  
- public function exec($sql) {
+  public function exec($sql) {
    return $this->pdo->exec($sql);
  }
  
