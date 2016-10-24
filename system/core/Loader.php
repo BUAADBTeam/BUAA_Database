@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Loader {
 
+	private $_models = array();
 	public function model($model, $name = '')
 	{
 		if (empty($model)) {
@@ -56,7 +57,7 @@ class Loader {
 		return $this;
 	}
 
-	public function view($view, $data = array())
+	public function view($view, $para = array())
 	{
 		include VIEWPATH.'header.php';
 		include VIEWPATH.$view.'.php';
