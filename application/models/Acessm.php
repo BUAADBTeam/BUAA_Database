@@ -10,8 +10,8 @@ class Acessm extends Model
 
   function user_has_role($role) {
     isser($_SESSION) OR session_start();
-  	if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
-  		$user = $_SESSION['user'];
+  	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+      $user = $_SESSION['user'];
 
   		// $sql = "SELECT CONUT(*) FROM users 
   			// INNER JOIN userrole ON user.id = userid
@@ -30,7 +30,7 @@ class Acessm extends Model
         INNER JOIN role ON roleid = role.id",
         "user = :user AND role.id = :role", array(':user' => $user, ':role' => $role));
       $this->db->close();
-  		if($row[0] > 0) {
+  		if ($row[0] > 0) {
   			return TRUE;
   		}
   		else {
@@ -46,19 +46,16 @@ class Acessm extends Model
 
   function userIsLoggedIn()
   {
-      if (isset($_POST['action']) and $_POST['action'] == 'login')
-      {
+      if (isset($_POST['action']) and $_POST['action'] == 'login') {
         if (!isset($_POST['username']) or $_POST['username'] == '' or
-          !isset($_POST['password']) or $_POST['password'] == '')
-        {
+          !isset($_POST['password']) or $_POST['password'] == '') {
           $GLOBALS['loginError'] = 'Please fill in both fields';
           return FALSE;
         }
 
         $password = md5($_POST['password'] . 'buaadb');
 
-        if (databaseContainsAuthor($_POST['username'], $password))
-        {
+        if (databaseContainsAuthor($_POST['username'], $password)) {
           // $sql = "SELECT userid FROM users 
                   // WHERE user = :user;
 
@@ -83,8 +80,7 @@ class Acessm extends Model
           $this->db->close();
           return TRUE;
         }
-        else
-        {
+        else {
           isser($_SESSION) OR session_start();
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
@@ -95,8 +91,7 @@ class Acessm extends Model
         }
       }
 
-      if (isset($_POST['action']) and $_POST['action'] == 'logout')
-      {
+      if (isset($_POST['action']) and $_POST['action'] == 'logout') {
         isser($_SESSION) OR session_start();
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
@@ -106,8 +101,7 @@ class Acessm extends Model
       }
 
       isser($_SESSION) OR session_start();
-      if (isset($_SESSION['loggedIn']))
-      {
+      if (isset($_SESSION['loggedIn'])) {
         return databaseContainsAuthor($_SESSION['user'], $_SESSION['pass']);
       }
   }
@@ -125,12 +119,10 @@ class Acessm extends Model
       $row = $this->db->select(array('COUNT(*)'), 'user', "user = :user AND password = :pass",array(':user' => $user, ':pass' => $pass))->row;
       // $row = $result->fetch();
       $this->db->close();
-      if ($row[0] > 0)
-      {
+      if ($row[0] > 0) {
         return TRUE;
       }
-      else
-      {
+      else {
         return FALSE;
       }
   }
