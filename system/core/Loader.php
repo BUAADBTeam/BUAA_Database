@@ -63,4 +63,8 @@ class Loader {
 		include VIEWPATH.$view.'.php';
 		include VIEWPATH.'footer.php';
 	}
+	public function view_once($view, $para = array())
+	{
+		include VIEWPATH.$view.'.php';
+	}
 }
