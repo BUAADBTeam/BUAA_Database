@@ -167,54 +167,40 @@ class Database {
    return $this->query($sql, $params);
  }
 
- /**
- * 插入数据
- * @param string $table 表名
- * @param Array $data 数据
- * @return int InsertId 新增ID
- */
- public function insert($table, $data, $params = array()) {
+
+ public function insert($table, $column, $params = array()) {
  
-   if (!is_array($data) || count($data) == 0) {
+   if (!is_array($column) || count($column) == 0) {
      return 0;
    }
    $field_arr = array();
    $value_arr = array();
-   foreach ($data as $key=>$val) {
+   foreach ($column as $key=>$val) {
      $field_arr[] = "$key ";
      $value_arr[] = "$val ";
    }
    $sql = "INSERT INTO " . $table . "(" . implode(',', $field_arr);
    $sql .= (") ". "VALUES(". implode(',', $value_arr). ")");
    $this -> query($sql, $params, $type = 1);
-   return $this->getLastId();
+   return $this->pdo->lastInsertId();
  }
  
- /**
- * 更新数据
- * @param string $table 表名
- * @param Array $data 数据
- * @param string $where 更新条件
- * @return int 影响数
- */
- public function update($table, $data, $where = '', $params = array()) {
+ public function update($table, $column, $where = '', $params = array()) {
    if(empty($where)) {
      return 0;
    }
-   if (!is_array($data) || count($data) == 0) {
+   if (!is_array($column) || count($column) == 0) {
      return 0;
    }
    $field_arr = array();
-   foreach ($data as $key=>$val) {
+   foreach ($column as $key=>$val) {
      $field_arr[] = " `$key` = $val ";
    }
    $sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
    return $this->query($sql, $params, $type = 1)->num_rows;
  }
  
- /**
- * 获得影响集合中
- */
+
  public function delete($table, $where = "", $params = array()) {
    if(empty($where)) {
      return 0;
@@ -223,49 +209,47 @@ class Database {
    return $this->query($sql, $params, $type = 1)->num_rows;
  }
  
- /**
- * 获得影响集合中
- */
- public function countAffected() {
-   if ($this->statement) {
-     return $this->statement->rowCount();
-   } else {
-     return 0;
-   }
- }
+
+ // public function countAffected() {
+ //   if ($this->statement) {
+ //     return $this->statement->rowCount();
+ //   } else {
+ //     return 0;
+ //   }
+ // }
  
- /*
- * 获得插入id
- */
- public function getLastId() {
-   return $this->pdo->lastInsertId();
- }
+ // /*
+ // * 获得插入id
+ // */
+ // public function getLastId() {
+ //   return $this->pdo->lastInsertId();
+ // }
  
- public function escape($value) {
-   $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
-   $replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
-   return str_replace($search, $replace, $value);
- }
+ // public function escape($value) {
+ //   $search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
+ //   $replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
+ //   return str_replace($search, $replace, $value);
+ // }
  
- /**
- * 返回错误信息也包括错误号
- */
- public function errorInfo() {
-   return $this->statement->errorInfo();
- }
+ // /**
+ // * 返回错误信息也包括错误号
+ // */
+ // public function errorInfo() {
+ //   return $this->statement->errorInfo();
+ // }
  
- /**
- * 返回错误号
- */
- public function errorCode() {
-   return $this->statement->errorCode();
- }
+ // /**
+ // * 返回错误号
+ // */
+ // public function errorCode() {
+ //   return $this->statement->errorCode();
+ // }
 
  public function close() {
    $this->pdo = null;
  }
 
- public function __destruct() {
-   $this->pdo = null;
- }
+ // public function __destruct() {
+ //   $this->pdo = null;
+ // }
 }
