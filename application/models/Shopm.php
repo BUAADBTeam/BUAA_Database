@@ -42,7 +42,7 @@ class Shopm extends Model {
 
 	public function put($sid, $cid)
 	{
-		$try {
+		try {
 			$this->db->connect();
 			$this->db->update($this->$cuisine, array('st' => '1'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
 			$this->db->close();
@@ -56,7 +56,7 @@ class Shopm extends Model {
 
 	public function off($sid, $cid)
 	{
-		$try {
+		try {
 			$this->db->connect();
 			$this->db->update($this->$cuisine, array('st' => '0'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
 			$this->db->close();
@@ -78,6 +78,12 @@ class Shopm extends Model {
 
 	public function getRecommandList()
 	{
-		$this->shopm->getRecommandList();
+		// $this->shopm->getRecommandList();
+		$res = array();
+		for ($i = 0; $i < 16; $i++) {
+			$res[] = array('id' => rand(1, 4), 'name' => '美食街', 'pic' => '', 'addr' => '233');
+		}
+		// print_r($res);
+		return $res;
 	}
 }

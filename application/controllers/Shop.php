@@ -46,16 +46,16 @@ class Shop extends Controller {
 		}
 	}
 
-	public function s()
+	public function s($id)
 	{
-		$id = getId();
-		if ($type == 'shop') {
-			$this->shopm->getCuisineList($id);
-		}
+		echo 'Under construct...';
 	}
 
-	public function r()
+	public function r($page = 0)
 	{
-		$this->shopm->getRecommandList();
+		$res['data'] = $this->shopm->getRecommandList();
+		$res['status'] = 0;
+		$res['count'] = sizeof($res['data']);
+		echo json_encode($res);
 	}
 }
