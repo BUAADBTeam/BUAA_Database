@@ -21,7 +21,7 @@ class Database {
 		
 	}
 	
-	public function connect($port = "3306") {
+	public function connect() {
 		try {
 			$this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
 		} catch(PDOException $e) {
@@ -63,7 +63,7 @@ class Database {
 				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
 			}
 
-			if ($result) {
+		if ($result) {
 			return $result;
 		}
 		else {
