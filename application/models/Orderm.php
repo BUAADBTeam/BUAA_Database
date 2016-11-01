@@ -213,12 +213,15 @@ class Orderm extends Model {
 	    return True;
 	}
 
-	private function checkOrder($info = array())
+	private function checkInfo($info = array(), $checkaddress = False)
 	{
 		if(is_array($info)) {
-			if(isset($info['userid']) && isset($info['shopid'])) )
-				return True
+			if(isset($info['userid']) && isset($info['shopid'])) {
+				if((count($info) == 2 && !$checkaddress) || (count($info) && isset($info['address']) && $checkaddress))
+					return True;
+			}
 			// return True;
+			// else 
 			return False;
 		}
 		else {
@@ -226,27 +229,87 @@ class Orderm extends Model {
 		}
 	}
 
-	function completeOrder($info = array())
+	private function updstatus($info = array(), $updInfo = array())
 	{
-		if(!checkOrder($info))
+		if(!$this->checkInfo($info, True))
 			return False;
-		$this->db->connect();
-		if(!isset($info['address'])) {
-			$info['address'] = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']))['row']['address'];
-			if(empty($info['address'])) {
-				return False;
-			}
-		}
+		
 		$sql = "";
 		$param = array();
 		foreach ($info as $key=>$val) {
-			if($key != 'address')
-				$sql .= " $key = :$key AND";
+			// if($key != 'address')
+			$sql .= " $key = :$key AND";
 			$param[":$key"] = $val;
 		}
 		$sql .= " status < 2";
+
+		$updArray = array();
+		foreach ($updInfo as $key => $value) {
+			$updArray[$key] = ":$key";
+			$param[":$key"] = $value;
+		}
+			
+
+		$num = $this->db->update('orders', array_merge(array('status' => 'status + 1'), $updArray), $sql, $param);
+		return $num == 1 ? True : False;
+	}
+
+	function completeOrder($info = array())
+	{
+		if(!$this->checkInfo($info))
+			return False;
+		$this->db->connect();
+		$add = $info['address'];
+		unset($info['address']);
+		if(empty($add)) {
+			$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']))['row']['address'];
+			if(empty($add)) {
+				return False;
+			}
+		}
+		// $sql = "";
+		// $param = array();
+		// foreach ($info as $key=>$val) {
+		// 	if($key != 'address')
+		// 		$sql .= " $key = :$key AND";
+		// 	$param[":$key"] = $val;
+		// }
+		// $sql .= " status < 2";
 		
-		$num = $this->db->update('orders', array('address' => ':address'), $sql, $param)['num_rows'];
-		return $num > 0 ? True : False;
+		// $num = $this->db->update('orders', array('address' => ':address', 'status' => 1), $sql, $param);
+		return updstatus($info, array('address' => $add));
+	}
+
+	
+
+	function paidOrder($info = array())
+	{
+		return $this->updStatus($info);
+	}
+
+	function shopAcceptOrder($info = array())
+	{
+		return $this->updStatus($info);
+	}
+
+	function allocDelivery($info = array())
+	{
+		if(!$this->checkInfo($info))
+			return False;
+		$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array())['row'];
+		if(empty($id))
+			return False;
+
+		return $this=>updstatus($info, array('deliveryid' => $id));
+	}
+
+	function deliveryAcceptOrder($info = array())
+	{
+		return $this->updStatus($info, array('deliverytime' => time()));
+	}
+
+	function CompleteOrder($info = array())
+	{
+		return $this->updStatus($info, array('finishtime' => time()));
 	}
 }
