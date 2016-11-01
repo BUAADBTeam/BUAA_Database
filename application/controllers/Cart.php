@@ -6,11 +6,11 @@ class Cart extends Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('cartm');
+		$this->load->model('orderm');
 	}
 
 	public function index()
 	{
-		print_r($this->cartm->delFood("1", "2", "2") ? 0 : 1);
+		print_r($this->orderm->completeOrder(array('userid' => 1, 'shopid' => 1, 'address' => 'nowhere')) ? 'good' : 'bad');
 	}
 }

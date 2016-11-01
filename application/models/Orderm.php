@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cartm extends Model {
+class Orderm extends Model {
 
 	function __construct()
 	{
@@ -24,7 +24,7 @@ class Cartm extends Model {
 	        $result = $this->db->select(array('*'), 'orderitems', 
 	        	"orderid in (SELECT orderid FROM orders 
 	                  WHERE userid = :userid AND status < 2)", array(':userid' => $userid));
-	        $cart = $result->rows;
+	        $cart = $result['rows'];
 	        $this->db->close();
 	        return $cart;
 	    } catch(PDOException $e) {
@@ -47,7 +47,7 @@ class Cartm extends Model {
 	  //       		WHERE id = $itemid";
 	  //       $sth = $pdo->prepare($sql);
 	  //       $sth->execute();
-			$result = $this->db->select(array('price'), 'products', "id = $itemid")->row;
+			$result = $this->db->select(array('price'), 'products', "id = $itemid")['row'];
 			if (!empty($result))
             	$price = $result['price'];	        
             else {
@@ -81,7 +81,7 @@ class Cartm extends Model {
 	        // var_dump($result);
 	        $result = $this->db->select(array('COUNT(*)'), 'orderitems', 
 	        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
-	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid))->row;
+	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid))['row'];
 	        if ($result[0] > 0) {
 	        	// $sql = "UPDATE orderitems
 	        			// SET amount = amount + $amount
@@ -142,7 +142,7 @@ class Cartm extends Model {
 	        		FROM products
 	        		WHERE id = $itemid";
 	        $this->db->prepare($sql);
-	        $result = $this->db->execute($mode = 'SELECT')->row;
+	        $result = $this->db->execute($mode = 'SELECT')['row'];
 	        // var_dump($result);
 	        // // die();
 			if(!empty($result))
@@ -211,5 +211,42 @@ class Cartm extends Model {
 	    }
 
 	    return True;
+	}
+
+	private function checkOrder($info = array())
+	{
+		if(is_array($info)) {
+			if(isset($info['userid']) && isset($info['shopid'])) )
+				return True
+			// return True;
+			return False;
+		}
+		else {
+			return False;
+		}
+	}
+
+	function completeOrder($info = array())
+	{
+		if(!checkOrder($info))
+			return False;
+		$this->db->connect();
+		if(!isset($info['address'])) {
+			$info['address'] = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']))['row']['address'];
+			if(empty($info['address'])) {
+				return False;
+			}
+		}
+		$sql = "";
+		$param = array();
+		foreach ($info as $key=>$val) {
+			if($key != 'address')
+				$sql .= " $key = :$key AND";
+			$param[":$key"] = $val;
+		}
+		$sql .= " status < 2";
+		
+		$num = $this->db->update('orders', array('address' => ':address'), $sql, $param)['num_rows'];
+		return $num > 0 ? True : False;
 	}
 }

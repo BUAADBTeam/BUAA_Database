@@ -7,6 +7,7 @@ class Database {
 	public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
 	private $pdo = null; // pdo连接
 	private $statement = null;
+	public $is_connected = false;
 	
 	public function __construct() {
 		if (!file_exists(APPPATH.'config/database.php')) {
@@ -22,6 +23,8 @@ class Database {
 	}
 	
 	public function connect() {
+		if($this->is_connected)
+			return ;
 		try {
 			$this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
 		} catch(PDOException $e) {
@@ -32,6 +35,7 @@ class Database {
 		$this->pdo->exec('SET NAMES "utf8"');
 		$this->pdo->exec('SET CHARACTER SET "utf8"');
 		$this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
+		$this->is_connected = true;
 	}
 
 	public function prepare($sql) {
@@ -191,7 +195,7 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($column as $key=>$val) {
-			$field_arr[] = " `$key` = $val ";
+			$field_arr[] = " $key = $val ";
 		}
 		$sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
 		return $this->query($sql, $params, $type = 1)['num_rows'];
@@ -248,6 +252,7 @@ class Database {
 
 	public function close() {
 		$this->pdo = null;
+		$this->is_connected = false;
 	}
 
 	// public function __destruct() {
