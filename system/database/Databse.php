@@ -194,7 +194,7 @@ class Database {
 			$field_arr[] = " `$key` = $val ";
 		}
 		$sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
-		return $this->query($sql, $params, $type = 1)->num_rows;
+		return $this->query($sql, $params, $type = 1)['num_rows'];
 	}
 	
 	/**
@@ -205,7 +205,7 @@ class Database {
 			return 0;
 		}
 		$sql = "DELETE FROM " . $table . " WHERE " . $where;
-		return $this->query($sql, $params, $type = 1)->num_rows;
+		return $this->query($sql, $params, $type = 1)['num_rows'];
 	}
 	
 	/**
