@@ -10,6 +10,7 @@ function &load_class($class, $directory = '', $param = NULL)
 
 	$exist = FALSE;
 	foreach (array(BASEPATH, APPPATH) as $path) {
+		// print_r($path.$directory.'/'.$class.'.php');
 		if (file_exists($path.$directory.'/'.$class.'.php')) {
 			if (!class_exists($class)) {
 				require_once $path.$directory.'/'.$class.'.php';
@@ -20,6 +21,7 @@ function &load_class($class, $directory = '', $param = NULL)
 	}
 
 	if (!$exist) {
+		print_r($path.$directory.'/'.$class.'.php');
 		throw new RuntimeException('Unable to locate the specified class: '.$class.'.php');
 	}
 
