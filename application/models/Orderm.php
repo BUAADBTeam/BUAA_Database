@@ -213,6 +213,28 @@ class Orderm extends Model {
 	    return True;
 	}
 
+	private function checkStatus($info, $status)
+	{
+		if(!checkInfo($info))
+			return False;
+
+		$this->db->connect();
+
+		$sql = "";
+		$param = array();
+		foreach ($info as $key=>$val) {
+			// if($key != 'address')
+			$sql .= " $key = :$key AND";
+			$param[":$key"] = $val;
+		}
+		$sql .= " status < 7";
+
+		$sta = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		if(empty($sta) || $sta != $status)
+			return False;
+		return True;
+	}
+
 	private function checkInfo($info = array(), $checkaddress = False)
 	{
 		if(is_array($info)) {
@@ -231,6 +253,7 @@ class Orderm extends Model {
 
 	private function updstatus($info = array(), $updInfo = array())
 	{
+		$this->db->connect();
 		if(!$this->checkInfo($info, True))
 			return False;
 		
@@ -241,7 +264,7 @@ class Orderm extends Model {
 			$sql .= " $key = :$key AND";
 			$param[":$key"] = $val;
 		}
-		$sql .= " status < 2";
+		$sql .= " status < 7";
 
 		$updArray = array();
 		foreach ($updInfo as $key => $value) {
@@ -254,11 +277,11 @@ class Orderm extends Model {
 		return $num == 1 ? True : False;
 	}
 
-	function completeOrder($info = array())
+	function submitOrder($info = array())
 	{
 		if(!$this->checkInfo($info))
 			return False;
-		$this->db->connect();
+		
 		$add = $info['address'];
 		unset($info['address']);
 		if(empty($add)) {
@@ -282,9 +305,9 @@ class Orderm extends Model {
 
 	
 
-	function paidOrder($info = array())
+	function paidOrder($info = array(), $money)
 	{
-		return $this->updStatus($info);
+		return $this->updStatus($info, array('money' => $money));
 	}
 
 	function shopAcceptOrder($info = array())

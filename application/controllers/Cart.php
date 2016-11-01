@@ -11,6 +11,6 @@ class Cart extends Controller {
 
 	public function index()
 	{
-		print_r($this->orderm->completeOrder(array('userid' => 1, 'shopid' => 1, 'address' => 'here')) ? 'good' : 'bad');
+		print_r($this->orderm->submitOrder(array('userid' => 1, 'shopid' => 1, 'address' => 'here')) ? 'good' : 'bad');
 	}
 }
