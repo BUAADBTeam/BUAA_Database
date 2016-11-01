@@ -49,9 +49,9 @@ class Database {
 		
 	}
 	
-	public function execute($mode = '') {
+	public function execute($mode = '', $params = array()) {
 		try {
-			if ($this->statement && $this->statement->execute()) {
+			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
 
 				while (!empty($mode) && $row = $this->statement->fetch()) {
@@ -64,7 +64,13 @@ class Database {
 			}
 		} 
 		catch(PDOException $e) {
+				print_r($mode);
 				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
+				$result = array();
+				$result['row'] = array();
+				$result['rows'] = array();
+				$result['num_rows'] = 0;
+				return $result;	
 			}
 
 		if ($result) {

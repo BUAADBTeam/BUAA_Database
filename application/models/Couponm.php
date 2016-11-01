@@ -27,10 +27,16 @@ class Couponm extends Model {
 		$this->db->connect();
 		if(empty($coupons))
 			return False;
-		foreach ($coupons as $key => $value) {
-			$this->db->insert('coupons', array('shopid' => ':shopid', $key => ":key"), array(":shopid" => $shopid, ":key" => $value) );
+		$sql = "INSERT INTO coupons(shopid, money, downmoney)  
+				VALUES (:shopid, :money, :downmoney)";
+		$this->db->prepare($sql);
+		foreach ($coupons as $money => $downmoney) {
+			$num = $this->db->execute('', array(':shopid' => $shopid, ':money' => $money, ':downmoney' => $downmoney))['num_rows'];
+			if($num == 0) 
+				return False;
 		}
+		return True;
 	}
 	
-
+}
 

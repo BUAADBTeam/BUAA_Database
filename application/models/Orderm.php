@@ -323,7 +323,7 @@ class Orderm extends Model {
 		if(empty($id))
 			return False;
 
-		return $this=>updstatus($info, array('deliveryid' => $id));
+		return $this->updstatus($info, array('deliveryid' => $id));
 	}
 
 	function deliveryAcceptOrder($info = array())
