@@ -64,7 +64,7 @@ class Database {
 			}
 		} 
 		catch(PDOException $e) {
-				print_r($mode);
+				// print_r($mode);
 				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
 				$result = array();
 				$result['row'] = array();

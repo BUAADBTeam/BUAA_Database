@@ -17,6 +17,6 @@ class Cart extends Controller {
 
 	public function coupon()
 	{
-		print_r($this->couponm->addCoupons(1, array('1' => '2', '2' => '3')));
+		print_r($this->couponm->addCoupons(1, array('3' => '2', '2' => '3')));
 	}
 }
