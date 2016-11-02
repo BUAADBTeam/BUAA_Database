@@ -5,6 +5,7 @@ class Welcome extends Controller {
 
 	public function index()
 	{
-		$this->load->view('welcome');
+		isset($_SESSION) or session_start();
+		$this->load->view('welcome', isset($_SESSION['user']) ? array('username' => $_SESSION['user']) : array());
 	}
 }

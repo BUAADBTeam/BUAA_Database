@@ -33,6 +33,13 @@ class Orderm extends Model {
 	    }
 	}
 
+	function getSpecificOrder($userid, $status)
+	{
+		$this->db->connect();
+		return $this->db->select('*', 'orders', "userid = :userid AND status = :status", array(':userid' => $userid, ':status' => $status))['rows'];
+	}
+
+
 	function addFood($userid, $itemid, $amount)
 	{
 		if (! is_numeric($amount) || !($amount + 0 > 0)) {
@@ -239,7 +246,7 @@ class Orderm extends Model {
 	{
 		if(is_array($info)) {
 			if(isset($info['userid']) && isset($info['shopid'])) {
-				if((count($info) == 2 && !$checkaddress) || (count($info) && isset($info['address']) && $checkaddress))
+				if((count($info) == 2 && !$checkaddress) || (count($info) && !empty(($info['address'])) && $checkaddress))
 					return True;
 			}
 			// return True;
@@ -274,6 +281,7 @@ class Orderm extends Model {
 			
 
 		$num = $this->db->update('orders', array_merge(array('status' => 'status + 1'), $updArray), $sql, $param);
+		$this->db->close();
 		return $num == 1 ? True : False;
 	}
 
@@ -281,7 +289,7 @@ class Orderm extends Model {
 	{
 		if(!$this->checkInfo($info))
 			return False;
-		
+		$this->db->connect();
 		$add = $info['address'];
 		unset($info['address']);
 		if(empty($add)) {
@@ -319,6 +327,7 @@ class Orderm extends Model {
 	{
 		if(!$this->checkInfo($info))
 			return False;
+		$this->db->connect();
 		$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array())['row'];
 		if(empty($id))
 			return False;
@@ -326,11 +335,7 @@ class Orderm extends Model {
 		return $this->updstatus($info, array('deliveryid' => $id));
 	}
 
-	function deliveryAcceptOrder($info = array())
-	{
-		return $this->updStatus($info, array('deliverytime' => time()));
-	}
-
+	
 	function CompleteOrder($info = array())
 	{
 		return $this->updStatus($info, array('finishtime' => time()));

@@ -8,8 +8,8 @@ class Acessm extends Model
     parent::__construct();
   }
 
-  function user_has_role($role) {
-    session_start();
+  function userHasRole($role) {
+    isset($_SESSION) or session_start();
   	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
       $user = $_SESSION['user'];
 
@@ -56,7 +56,7 @@ class Acessm extends Model
           // $row = $result->fetch($fetchstyle = PDO::FETCH_ASSOC);        
           $userid = $row['userid'];
 
-          session_start();
+          isset($_SESSION) or session_start();
           // session_register('loggedIn');
           // session_register('user');
           // session_register('pass');
@@ -69,7 +69,7 @@ class Acessm extends Model
           return True;
         }
         else {
-          session_start();
+          isset($_SESSION) or session_start();
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
           unset($_SESSION['pass']);
@@ -80,7 +80,7 @@ class Acessm extends Model
       }
 
       if (isset($_POST['action']) and $_POST['action'] == 'logout') {
-        session_start();
+        isset($_SESSION) or session_start();
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
@@ -88,9 +88,9 @@ class Acessm extends Model
         exit();
       }
 
-      session_start();
+      isset($_SESSION) or session_start();
       if (isset($_SESSION['loggedIn'])) {
-        return databaseContainsUser($_SESSION['user'], $_SESSION['pass']);
+        return $this->databaseContainsUser($_SESSION['user'], $_SESSION['pass']);
       }
   }
 

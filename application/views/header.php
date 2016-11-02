@@ -1,5 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+$act = array('welcome' => False, 'login' => false, 'register' => False);
+$act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
 ?>
 <html lang="zh-cn">
 <head>
@@ -19,9 +21,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <body>	
 	<div class="menu">
 		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="">Home</a></li>
-			<li role="presentation"><a href="login">Login</a></li>
-			<li role="presentation"><a href="">Registe</a></li>
+			<li role="presentation" <?php !$act['welcome'] or print('class="active"')?>><a href="<?php echo base_url()?>">Home</a></li>
+			<li role="presentation" <?php !$act['login'] or print('class="active"')?>><a href="login">Login</a></li>
+			<li role="presentation" <?php !$act['register'] or print('class="active"')?>><a href="">Registe</a></li>
 		</ul>
 	</div>
 
