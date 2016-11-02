@@ -26,7 +26,10 @@ class Delivery extends Controller {
 			if(isset($_POST['action'] && $_POST['action'] == 'deliveyAcceptOrder')) {
 				// 
 				if(isset($_POST['userid']) && isset($_POST['shopid'])) {
-					$this->deliverym->deliveryAcceptOrder(array('userid' => $_POST['userid'], 'shopid' => $_POST['shopid'], 'deliveryid' => $_SESSION['userid']));
+					$info = array('userid' => $_POST['userid'], 'shopid' => $_POST['shopid'], 'deliveryid' => $_SESSION['userid']);
+					if($this->deliverym->checkStatus($info, 4)) {
+						$this->deliverym->deliveryAcceptOrder($info);
+					}
 				}
 			}
 			

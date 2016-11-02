@@ -9,21 +9,25 @@ class Testm extends Model {
 		parent::__construct();
 	}
 
-	// private function checkInfo($info = array(), $checkaddress = False)
-	// {
-	// 	if(is_array($info)) {
-	// 		if(isset($info['userid']) && isset($info['shopid'])) {
-	// 			if((count($info) == 2 && !$checkaddress) || (count($info) && !empty(($info['address'])) && $checkaddress))
-	// 				return True;
-	// 		}
-	// 		// return True;
-	// 		// else 
-	// 		return False;
-	// 	}
-	// 	else {
-	// 		return False;
-	// 	}
-	// }
+	function checkStatus($info, $status)
+	{
+
+		$this->db->connect();
+
+		$sql = "";
+		$param = array();
+		foreach ($info as $key=>$val) {
+			// if($key != 'address')
+			$sql .= " $key = :$key AND";
+			$param[":$key"] = $val;
+		}
+		$sql .= " status < 7";
+
+		$sta = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		if(empty($sta) || $sta != $status)
+			return False;
+		return True;
+	}
 
 	private function updstatus($info = array(), $updInfo = array())
 	{

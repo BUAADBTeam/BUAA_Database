@@ -18,6 +18,7 @@ class Cart extends Controller {
 			$cart = $this->orderm->getCart($_SESSION['userid']);
 			print_r($cart);
 		}
+		$this->load->view('submitorder');
 	}
 
 	public function coupon()
@@ -25,13 +26,31 @@ class Cart extends Controller {
 		print_r($this->couponm->addCoupons(1, array('3' => '2', '2' => '3')));
 	}
 
-	public function submitOrder()
+	public function submit()
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'submitOrder') {
-			$this->orderm->submitOrder(array('address' => isset($_POST['address'] ? $_POST['address'] : '', 
-				'userid' => $_SESSION['userid'],
-				'shopid' => $_POST['shopid'])));
+			$info = array('userid' => $_SESSION['userid'],
+				'shopid' => $_POST['shopid']);
+
+			if($this->orderm->checkStatus($info, 0)) {
+			
+				$coupons = $this->couponm->calMoney($_POST['shopid']);
+				$this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()));
+			}
 		}	
+	}
+
+	public function paid()
+	{
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'payOrder') {
+
+			$info = array('userid' => $_SESSION['userid'],
+				'shopid' => $_POST['shopid']);
+			if($this->orderm->checkStatus($info, 1)) {
+				// echo "string";
+				$this->orderm->payOrder($info);
+			}
+		}
 	}
 
 

@@ -8,11 +8,14 @@ class Couponm extends Model {
 		parent::__construct();
 	}
 
-	function calMoney($shopid, $money)
+	function calMoney($shopid, $money = NULL)
 	{
 		$this->db->connect();
-		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid))[rows];
+		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid))['rows'];
 		if(count($coupons) > 0) {
+			if(is_null($money)) {
+				return $coupons;
+			}
 			foreach ($coupons as $key => $value) {
 				if($value['money'] <= $money) {
 					return $value['downmoney'];

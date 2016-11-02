@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+// require Couponm.php
 
 class Orderm extends Model {
 
@@ -113,7 +114,7 @@ class Orderm extends Model {
 		        // $sth->bindParam(':amount', $amount);
 		        // $sth->execute();
 		        $this->db->insert('orderitems', 
-		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount), 
+		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount, 'status' => '0'), 
 		        		array(':userid' => $userid,
 		        			':orderid' => $orderid,
 		        			':itemid' => $itemid));
@@ -160,11 +161,6 @@ class Orderm extends Model {
             }
             $price *= $amount;
 
-			// $sql = "SELECT orderid FROM orders 
-   //                WHERE userid = :userid AND status < 2"; 
-            // $sth = $pdo->prepare($sql);
-            // $sth->bindParam(':userid', $userid);
-            // $sth->execute();
             $result = $this->db->select(array('orderid'), 'orders', 
             	"userid = :userid AND status < 2",
             	array(':userid' => $userid))->row;
@@ -175,13 +171,7 @@ class Orderm extends Model {
             	return False;
             }
 
-	    //     $sql = "SELECT amount 
-	    //     		FROM orderitems
-					// WHERE orderid = $orderid AND itemid = :itemid"; 
-	    //     $sth = $pdo->prepare($sql);
-	    //     $sth->bindParam(':itemid', $itemid);
-	    //     $sth->execute();
-	    //     $result = $sth->fetch();
+
 			$result = $this->db->select(array('amount'), 'orderitems',
 				"orderid = $orderid AND itemid = :itemid",
 				array(':itemid' => $itemid))->row;	        
@@ -220,9 +210,9 @@ class Orderm extends Model {
 	    return True;
 	}
 
-	private function checkStatus($info, $status)
+	function checkStatus($info, $status)
 	{
-		if(!checkInfo($info))
+		if(!$this->checkInfo($info))
 			return False;
 
 		$this->db->connect();
@@ -235,9 +225,8 @@ class Orderm extends Model {
 			$param[":$key"] = $val;
 		}
 		$sql .= " status < 7";
-
-		$sta = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
-		if(empty($sta) || $sta != $status)
+		$sta = $this->db->select(array('status'), 'orders', $sql, $param);
+		if(empty($sta['row']) || $sta['num_rows'] > 1 || $sta['row']['status'] != $status)
 			return False;
 		return True;
 	}
@@ -246,7 +235,7 @@ class Orderm extends Model {
 	{
 		if(is_array($info)) {
 			if(isset($info['userid']) && isset($info['shopid'])) {
-				if((count($info) == 2 && !$checkaddress) || (count($info) && !empty(($info['address'])) && $checkaddress))
+				if((count($info) == 2 && !$checkaddress) || (count($info) && !isset($info['address']) && $checkaddress))
 					return True;
 			}
 			// return True;
@@ -258,10 +247,10 @@ class Orderm extends Model {
 		}
 	}
 
-	private function updstatus($info = array(), $updInfo = array())
+	private function updStatus($info = array(), $updInfo = array())
 	{
 		$this->db->connect();
-		if(!$this->checkInfo($info, True))
+		if(!$this->checkInfo($info))
 			return False;
 		
 		$sql = "";
@@ -290,7 +279,8 @@ class Orderm extends Model {
 		if(!$this->checkInfo($info))
 			return False;
 		$this->db->connect();
-		$add = $info['address'];
+		// $add = isset($info['address']) ? $;
+		!isset($info['address']) or ($add = $info['address']);
 		unset($info['address']);
 		if(empty($add)) {
 			$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']))['row']['address'];
@@ -298,6 +288,8 @@ class Orderm extends Model {
 				return False;
 			}
 		}
+		$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']))['row']['total'];
+		$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
 		// $sql = "";
 		// $param = array();
 		// foreach ($info as $key=>$val) {
@@ -308,14 +300,14 @@ class Orderm extends Model {
 		// $sql .= " status < 2";
 		
 		// $num = $this->db->update('orders', array('address' => ':address', 'status' => 1), $sql, $param);
-		return updstatus($info, array('address' => $add));
+		return $this->updStatus($info, array('address' => $add, 'total' => $money));
 	}
 
 	
 
-	function paidOrder($info = array(), $money)
+	function payOrder($info = array())
 	{
-		return $this->updStatus($info, array('money' => $money));
+		return $this->updStatus($info);
 	}
 
 	function shopAcceptOrder($info = array())
@@ -332,7 +324,7 @@ class Orderm extends Model {
 		if(empty($id))
 			return False;
 
-		return $this->updstatus($info, array('deliveryid' => $id));
+		return $this->updStatus($info, array('deliveryid' => $id));
 	}
 
 	
