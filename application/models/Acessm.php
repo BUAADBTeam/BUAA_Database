@@ -9,53 +9,41 @@ class Acessm extends Model
   }
 
   function user_has_role($role) {
-    isser($_SESSION) OR session_start();
+    session_start();
   	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
       $user = $_SESSION['user'];
 
-  		// $sql = "SELECT CONUT(*) FROM users 
-  			// INNER JOIN userrole ON user.id = userid
-  			// INNER JOIN role ON roleid = role.id
-  		// 	WHERE user = :user AND role.id = :role";
-
-
-    //   $pdo = $this->db->connect();
-  		// $result = $pdo->prepare($sql);
-    //   $result->bindValue(':user', $user);
-    //   $result->bindValue(':role', $role);
-  		// $result->execute();
+  	
       $this->db->connect();
-      $row = $this->db->select('COUNT(*)', "users 
-        INNER JOIN userrole ON user.id = userid
-        INNER JOIN role ON roleid = role.id",
-        "user = :user AND role.id = :role", array(':user' => $user, ':role' => $role));
+      $row = $this->db->select(array('COUNT(*)'), "users",
+        "username = :user AND role = :role", array(':user' => $user, ':role' => $role))['row'];
       $this->db->close();
   		if ($row[0] > 0) {
-  			return TRUE;
+  			return True;
   		}
   		else {
   			$_GLOBALS['auth_error'] = "抱歉，您的权限不足";
-  			return FALSE;
+  			return False;
   		}
   	}
   	else {
   		$_GLOBALS['auth_error'] = "请您先登录";
-  		return FALSE;
+  		return False;
   	}
   }
 
   function userIsLoggedIn()
   {
       if (isset($_POST['action']) and $_POST['action'] == 'login') {
-        if (!isset($_POST['username']) or $_POST['username'] == '' or
-          !isset($_POST['password']) or $_POST['password'] == '') {
+        if (!isset($_POST['user']) or $_POST['user'] == '' or
+          !isset($_POST['pass']) or $_POST['pass'] == '') {
           $GLOBALS['loginError'] = 'Please fill in both fields';
-          return FALSE;
+          return False;
         }
 
-        $password = md5($_POST['password'] . 'buaadb');
+        $password = md5($_POST['pass'] . 'buaadb');
 
-        if (databaseContainsAuthor($_POST['username'], $password)) {
+        if ($this->databaseContainsUser($_POST['user'], $password)) {
           // $sql = "SELECT userid FROM users 
                   // WHERE user = :user;
 
@@ -64,35 +52,35 @@ class Acessm extends Model
           // $result->bindValue(':user', $_POST['user']);
           // $result->execute();
           $this->db->connect();
-          $row = $this->db->select(array('userid'), 'user', "user = :user", array(':user' => $user))->row;
+          $row = $this->db->select(array('userid'), 'users', "username = :user", array(':user' => $_POST['user']))['row'];
           // $row = $result->fetch($fetchstyle = PDO::FETCH_ASSOC);        
           $userid = $row['userid'];
 
-          isser($_SESSION) OR session_start();
-          session_register('loggedIn');
-          session_register('user');
-          session_register('pass');
-          session_register('userid');
-          $_SESSION['loggedIn'] = TRUE;
+          session_start();
+          // session_register('loggedIn');
+          // session_register('user');
+          // session_register('pass');
+          // session_register('userid');
+          $_SESSION['loggedIn'] = True;
           $_SESSION['user'] = $_POST['user'];
           $_SESSION['pass'] = $password;
           $_SESSION['userid'] = $userid;
           $this->db->close();
-          return TRUE;
+          return True;
         }
         else {
-          isser($_SESSION) OR session_start();
+          session_start();
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
           unset($_SESSION['pass']);
           $GLOBALS['loginError'] =
               'The specified email address or password was incorrect.';
-          return FALSE;
+          return False;
         }
       }
 
       if (isset($_POST['action']) and $_POST['action'] == 'logout') {
-        isser($_SESSION) OR session_start();
+        session_start();
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
@@ -100,9 +88,9 @@ class Acessm extends Model
         exit();
       }
 
-      isser($_SESSION) OR session_start();
+      session_start();
       if (isset($_SESSION['loggedIn'])) {
-        return databaseContainsAuthor($_SESSION['user'], $_SESSION['pass']);
+        return databaseContainsUser($_SESSION['user'], $_SESSION['pass']);
       }
   }
 
@@ -116,10 +104,10 @@ class Acessm extends Model
       // $result->bindValue(':user', $user);
       // $result->bindValue(':pass', $pass);
       // $result->execute();
-      $row = $this->db->select(array('COUNT(*)'), 'user', "user = :user AND password = :pass",array(':user' => $user, ':pass' => $pass))->row;
+      $row = $this->db->select(array('COUNT(*)'), 'users', "username = :user AND password = :pass",array(':user' => $user, ':pass' => $pass))['row'];
       // $row = $result->fetch();
       $this->db->close();
-      if ($row[0] > 0) {
+      if ($row[0] == 1) {
         return TRUE;
       }
       else {

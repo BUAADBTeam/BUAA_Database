@@ -16,8 +16,9 @@ class Login extends Controller {
 
 	public function check()
 	{
-		if($this->acessm->databaseContainsUser($_POST['username'], $_POST['password'])) {
-			$this->load->view('welcome', array('username' => $_POST['username']));
+		// if($this->acessm->databaseContainsUser($_POST['username'], $_POST['password'])) {
+		if($this->acessm->userIsLoggedIn()) {
+			$this->load->view('welcome', array('username' => $_POST['user']));
 		}
 		else {
 			$this->load->view('login');	
