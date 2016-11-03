@@ -12,6 +12,7 @@ class Couponm extends Model {
 	{
 		$this->db->connect();
 		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid))['rows'];
+		$this->db->close();
 		if(count($coupons) > 0) {
 			if(is_null($money)) {
 				return $coupons;
@@ -35,6 +36,7 @@ class Couponm extends Model {
 		$this->db->prepare($sql);
 		foreach ($coupons as $money => $downmoney) {
 			$num = $this->db->execute('', array(':shopid' => $shopid, ':money' => $money, ':downmoney' => $downmoney))['num_rows'];
+			$this->db->close();
 			if($num == 0) 
 				return False;
 		}

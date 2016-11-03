@@ -22,6 +22,17 @@ class Database {
 		
 	}
 	
+	private function validType($val, $type = 7)
+	{
+		if(($type & 1) && is_bool($val)) 
+			return true;
+		if(($type & 2) && is_numeric($val))
+			return true;
+		if(($type & 4) && is_string($val))
+			return true;
+		return false;
+	}
+
 	public function connect() {
 		if($this->is_connected)
 			return ;
@@ -94,7 +105,7 @@ class Database {
 		try {
 			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
-				while ($type == 'SELECT' && $row = $this->statement->fetch()) {
+				while ($type === 'SELECT' && $row = $this->statement->fetch()) {
 					$data[] = $row;
 				}
 				$result = array();
@@ -168,7 +179,7 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
-				!is_string($val) or $field_arr[] = "$val";
+				!$this->validType($val) or $field_arr[] = "$val";
 		}
 		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
 		return $this->query($sql, $params);
@@ -182,7 +193,7 @@ class Database {
 		$field_arr = array();
 		$value_arr = array();
 		foreach ($column as $key=>$val) {
-			if(is_string($key) && is_string($val)) {
+			if($this->validType($key) && $this->validType($val)) {
 				$field_arr[] = "$key ";
 				$value_arr[] = "$val ";
 			}
@@ -203,7 +214,7 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($column as $key=>$val) {
-			if(is_string($key) && is_string($val)) {
+			if($this->validType($key) && $this->validType($val)) {
 				$field_arr[] = " $key = $val ";
 			}
 		}

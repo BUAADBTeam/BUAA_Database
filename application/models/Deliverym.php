@@ -25,6 +25,7 @@ class Testm extends Model {
 		$sql .= " status < 7";
 
 		$sta = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		$this->db->close();
 		if(empty($sta) || $sta != $status)
 			return False;
 		return True;
@@ -62,6 +63,7 @@ class Testm extends Model {
 	{
 		$this->db->connect();
 		$list = $this->db->select(array('*'), 'orders', "deliveryid = :deliveryid AND (status = 4". ($includeFinished ? 'OR status = 5)' : ')'), array(':deliveryid' => $deliveryid))['rows'];
+		$this->db->close();
 		return $list;
 	}
 

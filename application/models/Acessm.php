@@ -8,6 +8,17 @@ class Acessm extends Model
     parent::__construct();
   }
 
+  private function validType($val, $type = 7)
+  {
+    if(($type & 1) && is_bool($val)) 
+      return true;
+    if(($type & 2) && is_numeric($val))
+      return true;
+    if(($type & 4) && is_string($val))
+      return true;
+    return false;
+  }
+
   function userHasRole($role) {
     isset($_SESSION) or session_start();
   	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
@@ -115,14 +126,89 @@ class Acessm extends Model
       }
   }
 
-  function checkDuplication($mode = '')
+  private function validName($name)
   {
-      
+    if(!is_string($name))
+      return FALSE;
+    return TRUE;
   }
 
-  function addUser($info)
+  private function validEmail($email)
   {
-    
+    if(!is_string($email))
+      return FALSE;
+    return TRUE
   }
+
+  function checkInfo($info = array(), $mode = '')
+  {
+      //判断信息是否未重复并且有效
+      $this->db->connect();
+      if($mode == 'user') {
+        if(isset($info['username']) && $this->validName($info['username'])) {
+          if($this->db->select('COUNT(*)', 'users', "username = :username", array(':username' => $info['username']))['row'][0] == 0) {
+            $this->db->close();
+            return TRUE;
+          }
+        }
+        $this->db->close();
+        return FALSE;
+      }
+      if($mode == 'email') {
+        if(isset($info['email']) && $this->validEmail($info['email'])) {
+          if($this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
+            $this->db->close();
+            return TRUE;
+          }
+        }
+        $this->db->close();
+        return FALSE; 
+      }
+      else {
+        // if()
+        if(isset($info['email']) && $this->validEmail($info['email'])
+        && isset($info['username'] && $this->validName($info['username'])) && isset($info['password']) && $this->validType($info['password']) && isset($info['$type']) && is_numeric($info['type']) && count($info) == 4) {
+
+          if(($info['type'] + 0 <= 3 && $info['type'] + 0 >= 1) && $this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
+            $this->db->close();
+            return TRUE;
+          }
+        }
+        $this->db->close();
+        return FALSE;  
+      }
+  }
+
+  function addUser($info, &$token)
+  {
+      if(!$this->checkInfo($info))   
+        return FALSE;
+      $this->db->connect();
+      $token = md5($info['username'].rand(1,100).'buaaDb');
+      $params = array();
+      $columns = array();
+      foreach ($info as $key => $value) {
+        $columns["$key"] = ":$key";
+        $params[":$key"] = $value;
+      }
+      $columns['verified'] = FALSE;
+      $columns['token'] = $token;
+      $id = $this->db->insert('users', $columns, $params);
+      $this->db->close();
+      return $id > 0 ? TRUE : FALSE;
+  }
+
+
+  function verify($username, $token)  
+  {
+      if(!is_string($username) || !is_string($token))
+        return FALSE;
+      $res = $this->db->select('COUNT(*)', 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token))['num'][0];
+      if(!($res == 1))
+        return FALSE;
+      $this->db->update('users', array('status' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
+      return TRUE;
+  }
+
 }
 ?>

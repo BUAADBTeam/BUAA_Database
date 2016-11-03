@@ -231,13 +231,24 @@ class Orderm extends Model {
 		return True;
 	}
 
+	private function validType($val, $type = 7)
+	{
+		if(($type & 1) && is_bool($val)) 
+			return true;
+		if(($type & 2) && is_numeric($val))
+			return true;
+		if(($type & 4) && is_string($val))
+			return true;
+		return false;
+	}
+
 	private function checkInfo($info = array(), $checkaddress = False)
 	{
 		if(is_array($info)) {
 			if(isset($info['userid']) && isset($info['shopid'])) {
 				if((count($info) == 2 && !$checkaddress) || (count($info) && !isset($info['address']) && $checkaddress)) {
 					foreach ($info as $key => $value) {
-						if(!is_string($value))
+						if(!$this->validType($value))
 							return False;
 					}
 					return True;
