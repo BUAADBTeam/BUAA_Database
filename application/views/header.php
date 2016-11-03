@@ -23,7 +23,7 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" <?php !$act['welcome'] or print('class="active"')?>><a href="<?php echo base_url()?>">Home</a></li>
 			<li role="presentation" <?php !$act['login'] or print('class="active"')?>><a href="login">Login</a></li>
-			<li role="presentation" <?php !$act['register'] or print('class="active"')?>><a href="">Registe</a></li>
+			<li role="presentation" <?php !$act['register'] or print('class="active"')?>><a href="register">Registe</a></li>
 		</ul>
 	</div>
 

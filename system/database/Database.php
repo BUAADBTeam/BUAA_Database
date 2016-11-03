@@ -97,7 +97,6 @@ class Database {
 	}
 	
 	public function query($sql, $params = array(), $type = 'SELECT') {
-	// print_r($sql);
 		$this->statement = $this->pdo->prepare($sql);
 		$result = false;
 		$this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -114,6 +113,7 @@ class Database {
 				$result['num_rows'] = $this->statement->rowCount();
 			}
 		} catch (PDOException $e) {
+			print_r($sql);
 			trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
 			exit();
 		}

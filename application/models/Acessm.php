@@ -12,10 +12,12 @@ class Acessm extends Model
   {
     if(($type & 1) && is_bool($val)) 
       return true;
-    if(($type & 2) && is_numeric($val))
+    if(($type & 2) && is_numeric($val)) {
       return true;
-    if(($type & 4) && is_string($val))
+    }
+    if(($type & 4) && is_string($val)) {
       return true;
+    }
     return false;
   }
 
@@ -137,10 +139,10 @@ class Acessm extends Model
   {
     if(!is_string($email))
       return FALSE;
-    return TRUE
+    return TRUE;
   }
 
-  function checkInfo($info = array(), $mode = '')
+  function checkInfo(&$info = array(), $mode = '')
   {
       //判断信息是否未重复并且有效
       $this->db->connect();
@@ -165,12 +167,11 @@ class Acessm extends Model
         return FALSE; 
       }
       else {
-        // if()
         if(isset($info['email']) && $this->validEmail($info['email'])
-        && isset($info['username'] && $this->validName($info['username'])) && isset($info['password']) && $this->validType($info['password']) && isset($info['$type']) && is_numeric($info['type']) && count($info) == 4) {
-
-          if(($info['type'] + 0 <= 3 && $info['type'] + 0 >= 1) && $this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
+        && isset($info['username']) && $this->validName($info['username']) && isset($info['password']) && $this->validType($info['password']) && isset($info['role']) && is_numeric($info['role']) && isset($info['address']) && is_string($info['address'])) {
+          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
             $this->db->close();
+            unset($info['action']);
             return TRUE;
           }
         }
@@ -183,16 +184,18 @@ class Acessm extends Model
   {
       if(!$this->checkInfo($info))   
         return FALSE;
+
       $this->db->connect();
       $token = md5($info['username'].rand(1,100).'buaaDb');
+      $info['token'] = $token;
       $params = array();
       $columns = array();
       foreach ($info as $key => $value) {
         $columns["$key"] = ":$key";
         $params[":$key"] = $value;
       }
-      $columns['verified'] = FALSE;
-      $columns['token'] = $token;
+      $params[":password"] = md5($info['password']."buaadb");
+      $columns['verified'] = 'FALSE';
       $id = $this->db->insert('users', $columns, $params);
       $this->db->close();
       return $id > 0 ? TRUE : FALSE;
@@ -201,12 +204,14 @@ class Acessm extends Model
 
   function verify($username, $token)  
   {
+      $this->db->connect();
       if(!is_string($username) || !is_string($token))
         return FALSE;
-      $res = $this->db->select('COUNT(*)', 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token))['num'][0];
+      $res = $this->db->select(array('COUNT(*)'), 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token))['row'][0];
+   
       if(!($res == 1))
         return FALSE;
-      $this->db->update('users', array('status' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
+      $this->db->update('users', array('verified' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
       return TRUE;
   }
 

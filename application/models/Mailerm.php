@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Couponm extends Model {
+class Mailerm extends Model {
 
 	function __construct()
 	{

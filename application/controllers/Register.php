@@ -7,7 +7,7 @@ class Register extends Controller {
 	{
 		parent::__construct();
 		$this->load->model('acessm');
-		$this->load->model('mailerm')
+		$this->load->model('mailerm');
 	}
 
 	public function index()
@@ -28,13 +28,17 @@ class Register extends Controller {
 	public function registerUser()
 	{
 		$token = '';
-		if($this->acessm->addUser($_POST, $token)) {
-			$this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token);
+		if(isset($_POST['action']) && $_POST['action'] == 'register') {
+			if($this->acessm->addUser($_POST, $token)) {
+				print_r($token);
+				$this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token);
+			}
 		}
 	}
 
 	public function verify()
 	{
-		$this->acessm->verify($_GET['username'], $_GET['token']);
+		if($this->acessm->verify($_GET['username'], $_GET['token']))
+			echo "fuck";
 	}
 }
