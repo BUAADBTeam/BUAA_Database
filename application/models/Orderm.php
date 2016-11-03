@@ -290,16 +290,7 @@ class Orderm extends Model {
 		}
 		$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']))['row']['total'];
 		$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
-		// $sql = "";
-		// $param = array();
-		// foreach ($info as $key=>$val) {
-		// 	if($key != 'address')
-		// 		$sql .= " $key = :$key AND";
-		// 	$param[":$key"] = $val;
-		// }
-		// $sql .= " status < 2";
-		
-		// $num = $this->db->update('orders', array('address' => ':address', 'status' => 1), $sql, $param);
+
 		return $this->updStatus($info, array('address' => $add, 'total' => $money));
 	}
 

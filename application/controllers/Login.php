@@ -29,4 +29,6 @@ class Login extends Controller {
 			$this->load->view('login');	
 		}
 	}
+
+	
 }

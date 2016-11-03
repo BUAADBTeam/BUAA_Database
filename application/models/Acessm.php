@@ -84,7 +84,7 @@ class Acessm extends Model
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
-        header('Location: ' . $_POST['goto']);
+        header('Location: ' . base_url());
         exit();
       }
 
@@ -113,6 +113,11 @@ class Acessm extends Model
       else {
         return FALSE;
       }
+  }
+
+  function addUser($info)
+  {
+    
   }
 }
 ?>
