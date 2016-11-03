@@ -43,7 +43,7 @@ class Orderm extends Model {
 
 	function addFood($userid, $itemid, $amount)
 	{
-		if (! is_numeric($amount) || !($amount + 0 > 0)) {
+		if (! is_numeric($amount) || !($amount + 0 > 0) || !(is_numeric($itemid) && is_numeric($userid))) {
 			$this->db->close();
 			return False;
 		}
@@ -137,8 +137,8 @@ class Orderm extends Model {
 
 	function delFood($userid, $itemid, $amount)
 	{
-		if (!is_numeric($amount) || !($amount + 0 > 0)) {
-			$this->db->close();
+		if (!is_numeric($amount) || !($amount + 0 > 0) || !(is_numeric($itemid))) {
+			// $this->db->close();
 			return False;
 		}
 		$amount = $amount + 0;
@@ -235,8 +235,13 @@ class Orderm extends Model {
 	{
 		if(is_array($info)) {
 			if(isset($info['userid']) && isset($info['shopid'])) {
-				if((count($info) == 2 && !$checkaddress) || (count($info) && !isset($info['address']) && $checkaddress))
+				if((count($info) == 2 && !$checkaddress) || (count($info) && !isset($info['address']) && $checkaddress)) {
+					foreach ($info as $key => $value) {
+						if(!is_string($value))
+							return False;
+					}
 					return True;
+				}
 			}
 			// return True;
 			// else 

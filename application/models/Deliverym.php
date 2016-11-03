@@ -17,9 +17,10 @@ class Testm extends Model {
 		$sql = "";
 		$param = array();
 		foreach ($info as $key=>$val) {
-			// if($key != 'address')
-			$sql .= " $key = :$key AND";
-			$param[":$key"] = $val;
+			if(is_string($key) && is_string($val)) {
+				$sql .= " $key = :$key AND";
+				$param[":$key"] = $val;
+			}
 		}
 		$sql .= " status < 7";
 
@@ -38,9 +39,10 @@ class Testm extends Model {
 		$sql = "";
 		$param = array();
 		foreach ($info as $key=>$val) {
-			// if($key != 'address')
-			$sql .= " $key = :$key AND";
-			$param[":$key"] = $val;
+			if(is_string($key) && is_string($val)) {
+				$sql .= " $key = :$key AND";
+				$param[":$key"] = $val;
+			}
 		}
 		$sql .= " status < 7";
 

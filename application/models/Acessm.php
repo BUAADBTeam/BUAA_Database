@@ -115,6 +115,11 @@ class Acessm extends Model
       }
   }
 
+  function checkDuplication($mode = '')
+  {
+      
+  }
+
   function addUser($info)
   {
     

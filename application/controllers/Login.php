@@ -11,6 +11,7 @@ class Login extends Controller {
 
 	public function index()
 	{
+		print_r($_GET);
 		$this->load->view('login');	
 	}
 
@@ -30,5 +31,5 @@ class Login extends Controller {
 		}
 	}
 
-	
+
 }

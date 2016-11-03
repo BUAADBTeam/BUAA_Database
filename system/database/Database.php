@@ -160,7 +160,7 @@ class Database {
 	// }
 	
 	public function select($data, $table, $where = '', $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 				return 0;
 		}
 		if (!is_array($data) || count($data) == 0) {
@@ -168,7 +168,7 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
-				$field_arr[] = "$val";
+				!is_string($val) or $field_arr[] = "$val";
 		}
 		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
 		return $this->query($sql, $params);
@@ -182,8 +182,10 @@ class Database {
 		$field_arr = array();
 		$value_arr = array();
 		foreach ($column as $key=>$val) {
-			$field_arr[] = "$key ";
-			$value_arr[] = "$val ";
+			if(is_string($key) && is_string($val)) {
+				$field_arr[] = "$key ";
+				$value_arr[] = "$val ";
+			}
 		}
 		$sql = "INSERT INTO " . $table . "(" . implode(',', $field_arr);
 		$sql .= (") ". "VALUES(". implode(',', $value_arr). ")");
@@ -193,7 +195,7 @@ class Database {
 	
 	
 	public function update($table, $column, $where = '', $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 			return 0;
 		}
 		if (!is_array($column) || count($column) == 0) {
@@ -201,7 +203,9 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($column as $key=>$val) {
-			$field_arr[] = " $key = $val ";
+			if(is_string($key) && is_string($val)) {
+				$field_arr[] = " $key = $val ";
+			}
 		}
 		$sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
 		return $this->query($sql, $params, $type = 1)['num_rows'];
@@ -211,7 +215,7 @@ class Database {
 	* 获得影响集合中
 	*/
 	public function delete($table, $where = "", $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 			return 0;
 		}
 		$sql = "DELETE FROM " . $table . " WHERE " . $where;
