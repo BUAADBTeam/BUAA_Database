@@ -183,7 +183,7 @@ class PHPMailer {
    * supports sendmail's "-oi -f" options
    * @var boolean
    */
-  public $UseSendmailOptions	= true;
+  public $UseSendmailOptions  = true;
 
   /**
    * Path to PHPMailer plugins.  Useful if the SMTP class
@@ -2462,12 +2462,12 @@ class PHPMailer {
    * @return string
    */
   public function FixEOL($str) {
-	// condense down to \n
-	$nstr = str_replace(array("\r\n", "\r"), "\n", $str);
-	// Now convert LE as needed
-	if ($this->LE !== "\n") {
-		$nstr = str_replace("\n", $this->LE, $nstr);
-	}
+  // condense down to \n
+  $nstr = str_replace(array("\r\n", "\r"), "\n", $str);
+  // Now convert LE as needed
+  if ($this->LE !== "\n") {
+    $nstr = str_replace("\n", $this->LE, $nstr);
+  }
     return  $nstr;
   }
 
@@ -2480,12 +2480,12 @@ class PHPMailer {
    * @return void
    */
   public function AddCustomHeader($name, $value=null) {
-	if ($value === null) {
-		// Value passed in as name:value
-		$this->CustomHeader[] = explode(':', $name, 2);
-	} else {
-		$this->CustomHeader[] = array($name, $value);
-	}
+  if ($value === null) {
+    // Value passed in as name:value
+    $this->CustomHeader[] = explode(':', $name, 2);
+  } else {
+    $this->CustomHeader[] = array($name, $value);
+  }
   }
 
   /**
@@ -2763,7 +2763,7 @@ class PHPMailer {
   }
 
 
-	/**
+  /**
    * Set the private key file and password to sign the message.
    *
    * @access public
@@ -2936,17 +2936,17 @@ class PHPMailer {
   }
 }
 
-// /**
-//  * Exception handler for PHPMailer
-//  * @package PHPMailer
-//  */
-// class phpmailerException extends Exception {
-//   *
-//    * Prettify error message output
-//    * @return string
-   
-//   public function errorMessage() {
-//     $errorMsg = '<strong>' . $this->getMessage() . "</strong><br />\n";
-//     return $errorMsg;
-//   }
-// }
+/**
+ * Exception handler for PHPMailer
+ * @package PHPMailer
+ */
+class phpmailerException extends Exception {
+  /**
+   * Prettify error message output
+   * @return string
+   */
+  public function errorMessage() {
+    $errorMsg = '<strong>' . $this->getMessage() . "</strong><br />\n";
+    return $errorMsg;
+  }
+}

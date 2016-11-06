@@ -6,11 +6,12 @@ class Mailerm extends Model {
 	function __construct()
 	{
 		parent::__construct();
+		require("class.phpmailer.php");
 	}
 
 	function sendVerifyMail($name, $email, $token)
 	{
-		require("class.phpmailer.php"); //这个是一个smtp的php文档，网上可以下载得到
+		 //这个是一个smtp的php文档，网上可以下载得到
 		$mail = new PHPMailer(); //建立邮件发送类
 		$mail->CharSet = "UTF-8";
 		$address = $email;
@@ -28,16 +29,18 @@ class Mailerm extends Model {
 		//$mail->AddAttachment("/var/tmp/file.tar.gz"); // 添加附件
 		// $mail->IsHTML(true); // set email format to HTML //是否使用HTML格式
 		// $mail->SMTPDebug = true;
-		$mail->Subject = "点击以继续"; //邮件标题
-		$mail->Body = "http://10.138.114.217/dataBase/register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
-
+		$mail->Subject = "点击以继"; //邮件标题
+		$mail->Body = "http://192.168.2.139/dataBase"."register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
+		
 		if(!$mail->Send())
 		{
 		    echo "邮件发送失败. <p>";
 		    echo "错误原因: " . $mail->ErrorInfo;
-		    exit;
+		    // print_r($mail->Body);
+		    return False;
 		}
-
+		// print_r($mail->Body);
+		return True;
 	}
 	
 }
