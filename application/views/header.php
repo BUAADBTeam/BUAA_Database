@@ -17,7 +17,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script type="text/javascript" src="<?php echo base_url()?>static/js/common.js"></script>
 	<script type="text/javascript" src="<?php echo base_url()?>static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="D:/Apache24/htdocs/db/static/js/common.js"></script>
 </head>
 <body>
 	<div class="menu">

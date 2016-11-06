@@ -13,16 +13,22 @@ class Shopm extends Model {
 
 	public function add($sid)
 	{
+		if (unset($_POST['name']) || unset($_POST['price'])) {
+			return FALSE;
+		}
 		try {
 			$this->db->connect();
-			$this->db->insert($this->$cuisine, array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st'), 
-												array(':name' => $_POST['name'], ':pic' => '', ':price' => $_POST['price'], ':sid' => $sid, ':st' => $_POST['st']));
+			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
+			$params = array(':name' => $_POST['name'], ':pic' => '', ':price' => $_POST['price'], ':sid' => $sid, ':st' => isset($_POST['st']) ? $_POST['st'] : 1);
+			if ($this->db->insert($this->$cuisine, $column, $params) == FALSE) {
+				return FALSE;
+			}						
 			$this->db->close();
 			return TRUE;
 
 		} catch (Exception $e) {
 			$this->db->close();
-			return null;
+			return FALSE;
 		}
 	}
 
@@ -36,7 +42,7 @@ class Shopm extends Model {
 
 		} catch (Exception $e) {
 			$this->db->close();
-			return null;
+			return FALSE;
 		}
 	}
 
@@ -50,7 +56,7 @@ class Shopm extends Model {
 
 		} catch (Exception $e) {
 			$this->db->close();
-			return null;
+			return FALSE;
 		}
 	}
 
@@ -64,16 +70,13 @@ class Shopm extends Model {
 
 		} catch (Exception $e) {
 			$this->db->close();
-			return null;
+			return FALSE;
 		}
 	}
 
-	public function getCuisineList()
+	public function getCuisineList($sid = 0)
 	{
-		$id = getId();
-		if ($type == 'shop') {
-			$this->shopm->getCuisineList($id);
-		}
+		return $this->select($this->cuisine, "sid = $sid");
 	}
 
 	public function getRecommandList()
