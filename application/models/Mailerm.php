@@ -10,7 +10,7 @@ class Mailerm extends Model {
 
 	function sendVerifyMail($name, $email, $token)
 	{
-		require("class.phpmailer.php"); //这个是一个smtp的php文档，网上可以下载得到
+		require(BASEPATH."mail/class.phpmailer.php"); //这个是一个smtp的php文档，网上可以下载得到
 		$mail = new PHPMailer(); //建立邮件发送类
 		$mail->CharSet = "UTF-8";
 		$address = $email;
