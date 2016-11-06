@@ -7,7 +7,7 @@ class Database {
 	public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
 	private $pdo = null; // pdo连接
 	private $statement = null;
-	
+	private $is_connect = False;
 	public function __construct() {
 		if (!file_exists(APPPATH.'config/database.php')) {
 			throw new RuntimeException('Unable to locate the database config');
@@ -22,6 +22,8 @@ class Database {
 	}
 	
 	public function connect($port = "3306") {
+		if($this->is_connect)
+			return;
 		try {
 			$this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
 		} catch(PDOException $e) {
@@ -32,6 +34,7 @@ class Database {
 		$this->pdo->exec('SET NAMES "utf8"');
 		$this->pdo->exec('SET CHARACTER SET "utf8"');
 		$this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
+		$this->is_connect = True;
 	}
 
 	public function prepare($sql) {
@@ -45,9 +48,9 @@ class Database {
 		
 	}
 	
-	public function execute($mode = '') {
+	public function execute($mode = '', $params = array()) {
 		try {
-			if ($this->statement && $this->statement->execute()) {
+			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
 
 				while (!empty($mode) && $row = $this->statement->fetch()) {
@@ -248,6 +251,7 @@ class Database {
 
 	public function close() {
 		$this->pdo = null;
+		$this->connect = False;
 	}
 
 	// public function __destruct() {
