@@ -7,17 +7,17 @@
 <div class="popup" id="popup-login">
 	<h2>Login form</h2>
 	<hr class="separator">
-	<form method="post" action="" class="form clearfix">
+	<form method="post" action="<?php echo base_url()?>/login/check"" class="form clearfix">
 		<fieldset>
 			<label for="login-username">用户名:</label>
-			<input type="text" name="" id="login-username" class="input text">
+			<input type="text" name="user" id="login-username" class="input text">
 			<label for="login-password">密码:</label>
-			<input type="password" name="" id="login-password" class="input text">
+			<input type="password" name="pass" id="login-password" class="input text">
 		</fieldset>
 	</form>
 	<hr class="separator">
-	<button class="button submit">登录</button>
-	<div class="links"><a href="#">忘记密码 </a> | <a href="#" class="register-btn"> 新账户</a></div>
+	<button class="btn btn-warning btn-loginsize" onClick="submitForm()" >登录</button>
+	<div class="links"><a href="<?php echo base_url()?>/login/check"">忘记密码 </a> | <a href="#" class="register-btn"> 新账户</a></div>
 	<a class="close" href="#"></a>
 </div>
 <div class="popup" id="popup-register">

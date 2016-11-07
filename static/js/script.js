@@ -12,6 +12,29 @@ function mycarousel_initCallback(a) {
 		a.startAuto()
 	})
 };
+
+function submitForm() {
+        $.ajax({
+            cache: true,
+            type:"POST",
+            url: "/login.php/check",
+            dataType:"json",
+            data:$("#loginForm").serializeArray(),
+            async: false,
+            success:function(data){
+                if(data.flag == "1") { //登陆成功
+                    alert("aa"); //这里返回正确
+                    location.href="index.html";//这里没有作用，什么原因?
+                }else{ //登陆失败
+                    alert("warnings");
+                }
+            },
+            error:function(data){
+                alert("error");
+            }
+        });
+    }
+
 $(document).ready(function () {
 	var a = 'easeOutElastic';
 	if ($('.main-menu li.current').length) {
