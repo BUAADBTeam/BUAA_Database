@@ -7,7 +7,8 @@ class Database {
 	public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
 	private $pdo = null; // pdo连接
 	private $statement = null;
-	private $is_connect = False;
+	public $is_connected = false;
+	
 	public function __construct() {
 		if (!file_exists(APPPATH.'config/database.php')) {
 			throw new RuntimeException('Unable to locate the database config');
@@ -21,9 +22,20 @@ class Database {
 		
 	}
 	
-	public function connect($port = "3306") {
-		if($this->is_connect)
-			return;
+	private function validType($val, $type = 7)
+	{
+		if(($type & 1) && is_bool($val)) 
+			return true;
+		if(($type & 2) && is_numeric($val))
+			return true;
+		if(($type & 4) && is_string($val))
+			return true;
+		return false;
+	}
+
+	public function connect() {
+		if($this->is_connected)
+			return ;
 		try {
 			$this->pdo = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
 		} catch(PDOException $e) {
@@ -34,7 +46,7 @@ class Database {
 		$this->pdo->exec('SET NAMES "utf8"');
 		$this->pdo->exec('SET CHARACTER SET "utf8"');
 		$this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
-		$this->is_connect = True;
+		$this->is_connected = true;
 	}
 
 	public function prepare($sql) {
@@ -63,10 +75,16 @@ class Database {
 			}
 		} 
 		catch(PDOException $e) {
+				// print_r($mode);
 				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
+				$result = array();
+				$result['row'] = array();
+				$result['rows'] = array();
+				$result['num_rows'] = 0;
+				return $result;	
 			}
 
-			if ($result) {
+		if ($result) {
 			return $result;
 		}
 		else {
@@ -79,7 +97,6 @@ class Database {
 	}
 	
 	public function query($sql, $params = array(), $type = 'SELECT') {
-	// print_r($sql);
 		$this->statement = $this->pdo->prepare($sql);
 		$result = false;
 		$this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -87,7 +104,7 @@ class Database {
 		try {
 			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
-				while ($type == 'SELECT' && $row = $this->statement->fetch()) {
+				while ($type === 'SELECT' && $row = $this->statement->fetch()) {
 					$data[] = $row;
 				}
 				$result = array();
@@ -96,6 +113,7 @@ class Database {
 				$result['num_rows'] = $this->statement->rowCount();
 			}
 		} catch (PDOException $e) {
+			print_r($sql);
 			trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
 			exit();
 		}
@@ -153,7 +171,7 @@ class Database {
 	// }
 	
 	public function select($data, $table, $where = '', $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 				return 0;
 		}
 		if (!is_array($data) || count($data) == 0) {
@@ -161,7 +179,7 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
-				$field_arr[] = "$val";
+				!$this->validType($val) or $field_arr[] = "$val";
 		}
 		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
 		return $this->query($sql, $params);
@@ -175,8 +193,10 @@ class Database {
 		$field_arr = array();
 		$value_arr = array();
 		foreach ($column as $key=>$val) {
-			$field_arr[] = "$key ";
-			$value_arr[] = "$val ";
+			if($this->validType($key) && $this->validType($val)) {
+				$field_arr[] = "$key ";
+				$value_arr[] = "$val ";
+			}
 		}
 		$sql = "INSERT INTO " . $table . "(" . implode(',', $field_arr);
 		$sql .= (") ". "VALUES(". implode(',', $value_arr). ")");
@@ -186,7 +206,7 @@ class Database {
 	
 	
 	public function update($table, $column, $where = '', $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 			return 0;
 		}
 		if (!is_array($column) || count($column) == 0) {
@@ -194,7 +214,9 @@ class Database {
 		}
 		$field_arr = array();
 		foreach ($column as $key=>$val) {
-			$field_arr[] = " `$key` = $val ";
+			if($this->validType($key) && $this->validType($val)) {
+				$field_arr[] = " $key = $val ";
+			}
 		}
 		$sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
 		return $this->query($sql, $params, $type = 1)['num_rows'];
@@ -204,7 +226,7 @@ class Database {
 	* 获得影响集合中
 	*/
 	public function delete($table, $where = "", $params = array()) {
-		if(empty($where)) {
+		if(empty($where) || !is_string($where)) {
 			return 0;
 		}
 		$sql = "DELETE FROM " . $table . " WHERE " . $where;
@@ -251,7 +273,7 @@ class Database {
 
 	public function close() {
 		$this->pdo = null;
-		$this->connect = False;
+		$this->is_connected = false;
 	}
 
 	// public function __destruct() {

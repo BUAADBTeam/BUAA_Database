@@ -11,16 +11,25 @@ class Login extends Controller {
 
 	public function index()
 	{
-		$this->load->view('login');
+		print_r($_GET);
+		$this->load->view('login');	
 	}
 
 	public function check()
 	{
-		if($this->acessm->databaseContainsUser($_POST['username'], $_POST['password'])) {
-			$this->load->view('welcome', array('username' => $_POST['username']));
+		
+		if($this->acessm->userIsLoggedIn()) {
+			echo 'Logged In';
+			if($this->acessm->userHasRole(1))
+				$this->load->view('welcome', array('username' => $_SESSION['user']));
+			else if($this->acessm->userHasRole(2)) {
+				// echo 'Dear shopHos'
+			}
 		}
 		else {
 			$this->load->view('login');	
 		}
 	}
+
+
 }

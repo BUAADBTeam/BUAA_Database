@@ -1,21 +1,19 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Test extends Controller {
+class Mailerm extends Model {
 
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('testm');
-		$this->load->model('mailerm');
 	}
 
-	public function index()
+	function sendVerifyMail($name, $email, $token)
 	{
-		require("class.phpmailer.php"); //这个是一个smtp的php文档，网上可以下载得到
+		require(BASEPATH."mail/class.phpmailer.php"); //这个是一个smtp的php文档，网上可以下载得到
 		$mail = new PHPMailer(); //建立邮件发送类
 		$mail->CharSet = "UTF-8";
-		$address ="704788525@qq.com";
+		$address = $email;
 		$mail->IsSMTP(); // 使用SMTP方式发送
 		$mail->Host = "smtp.126.com"; // 您的企业邮局域名
 		$mail->SMTPAuth = true; // 启用SMTP验证功能
@@ -31,7 +29,7 @@ class Test extends Controller {
 		// $mail->IsHTML(true); // set email format to HTML //是否使用HTML格式
 		// $mail->SMTPDebug = true;
 		$mail->Subject = "点击以继续"; //邮件标题
-		$mail->Body = "http://10.138.114.217/dataBase/"; //邮件内容，上面设置HTML，则可以是HTML
+		$mail->Body = "http://10.138.114.217/dataBase/register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
 
 		if(!$mail->Send())
 		{
@@ -39,5 +37,8 @@ class Test extends Controller {
 		    echo "错误原因: " . $mail->ErrorInfo;
 		    exit;
 		}
+
 	}
+	
 }
+
