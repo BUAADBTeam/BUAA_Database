@@ -16,39 +16,54 @@ class Shop extends Controller {
 
 	public function add()
 	{
-		$id = getId();
+		$sid = getId();
 		if ($type == 'shop') {
-			$this->shopm->add($id);
+			if ($this->shopm->add($sid)) {
+				return TRUE;
+			}
 		}
+		return FALSE;
 	}
 
 	public function del()
 	{
-		$id = getId();
+		$sid = getId();
 		if ($type == 'shop') {
-			$this->shopm->del($id);
+			if ($this->shopm->del($sid)) {
+				return TRUE;
+			}
 		}
+		return FALSE;
 	}
 
 	public function put()
 	{
-		$id = getId();
+		$sid = getId();
 		if ($type == 'shop') {
-			$this->shopm->put($id);
+			if ($this->shopm->put($sid)) {
+				return TRUE;
+			}
 		}
+		return FALSE;
 	}
 
 	public function off()
 	{
-		$id = getId();
+		$sid = getId();
 		if ($type == 'shop') {
-			$this->shopm->off($id);
+			if ($this->shopm->off($sid)) {
+				return TRUE;
+			}
 		}
+		return FALSE;
 	}
 
 	public function s($id)
 	{
-		echo 'Under construct...';
+		$res['data'] = $this->shopm->getCuisineList();
+		$res['status'] = 0;
+		$res['count'] = sizeof($res['data']);
+		echo json_encode($res);
 	}
 
 	public function r($page = 0)

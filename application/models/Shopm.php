@@ -32,9 +32,10 @@ class Shopm extends Model {
 		}
 	}
 
-	public function del($sid, $cid)
+	public function del($sid)
 	{
 		try {
+			$cid = $_POST['id'];
 			$this->db->connect();
 			$this->db->delete($this->$cuisine, "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
 			$this->db->close();
@@ -46,9 +47,10 @@ class Shopm extends Model {
 		}
 	}
 
-	public function put($sid, $cid)
+	public function put($sid)
 	{
 		try {
+			$cid = $_POST['id'];
 			$this->db->connect();
 			$this->db->update($this->$cuisine, array('st' => '1'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
 			$this->db->close();
@@ -60,9 +62,10 @@ class Shopm extends Model {
 		}
 	}
 
-	public function off($sid, $cid)
+	public function off($sid)
 	{
 		try {
+			$cid = $_POST['id'];
 			$this->db->connect();
 			$this->db->update($this->$cuisine, array('st' => '0'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
 			$this->db->close();
