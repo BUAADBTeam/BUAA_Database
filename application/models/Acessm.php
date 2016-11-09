@@ -28,8 +28,10 @@ class Acessm extends Model
 
   	
       $this->db->connect();
+      $this->db->beginTransaction();
       $row = $this->db->select(array('COUNT(*)'), "users",
-        "username = :user AND role = :role", array(':user' => $user, ':role' => $role))['row'];
+        "username = :user AND role = :role", array(':user' => $user, ':role' => $role), "S")['row'];
+      $this->db->commit();
       $this->db->close();
   		if ($row[0] > 0) {
   			return True;
@@ -57,23 +59,15 @@ class Acessm extends Model
         $password = md5($_POST['pass'] . 'buaadb');
 
         if ($this->databaseContainsUser($_POST['user'], $password)) {
-          // $sql = "SELECT userid FROM users 
-                  // WHERE user = :user;
-
-          // $pdo = $this->db->connect();
-          // $result = $pdo->prepare($sql);
-          // $result->bindValue(':user', $_POST['user']);
-          // $result->execute();
+          
           $this->db->connect();
-          $row = $this->db->select(array('userid'), 'users', "username = :user", array(':user' => $_POST['user']))['row'];
-          // $row = $result->fetch($fetchstyle = PDO::FETCH_ASSOC);        
+          $this->db->beginTransaction();
+          $row = $this->db->select(array('userid'), 'users', "username = :user", array(':user' => $_POST['user']), "S")['row'];
+          
           $userid = $row['userid'];
 
           isset($_SESSION) or session_start();
-          // session_register('loggedIn');
-          // session_register('user');
-          // session_register('pass');
-          // session_register('userid');
+
           $_SESSION['loggedIn'] = True;
           $_SESSION['user'] = $_POST['user'];
           $_SESSION['pass'] = $password;
@@ -113,12 +107,10 @@ class Acessm extends Model
       // $sql = "SELECT COUNT(*) FROM user
       //      WHERE user = :user AND password = :pass";
       $this->db->connect();
-      // $result = $pdo->prepare($sql);
-      // $result->bindValue(':user', $user);
-      // $result->bindValue(':pass', $pass);
-      // $result->execute();
-      $row = $this->db->select(array('COUNT(*)'), 'users', "username = :user AND password = :pass",array(':user' => $user, ':pass' => $pass))['row'];
+      $this->db->beginTransaction();
+      $row = $this->db->select(array('COUNT(*)'), 'users', "username = :user AND password = :pass",array(':user' => $user, ':pass' => $pass), "S")['row'];
       // $row = $result->fetch();
+      $this->db->commit();
       $this->db->close();
       if ($row[0] == 1) {
         return TRUE;
@@ -148,7 +140,9 @@ class Acessm extends Model
       $this->db->connect();
       if($mode == 'user') {
         if(isset($info['username']) && $this->validName($info['username'])) {
-          if($this->db->select('COUNT(*)', 'users', "username = :username", array(':username' => $info['username']))['row'][0] == 0) {
+          $this->db->beginTransaction();
+          if($this->db->select('COUNT(*)', 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
+            $this->db->commit();
             $this->db->close();
             return TRUE;
           }
@@ -158,7 +152,9 @@ class Acessm extends Model
       }
       if($mode == 'email') {
         if(isset($info['email']) && $this->validEmail($info['email'])) {
-          if($this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
+          $this->db->beginTransaction();
+          if($this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
+            $this->db->commit();
             $this->db->close();
             return TRUE;
           }
@@ -169,7 +165,9 @@ class Acessm extends Model
       else {
         if(isset($info['email']) && $this->validEmail($info['email'])
         && isset($info['username']) && $this->validName($info['username']) && isset($info['password']) && $this->validType($info['password']) && isset($info['role']) && is_numeric($info['role']) && isset($info['address']) && is_string($info['address'])) {
-          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']))['row'][0] == 0) {
+          $this->db->beginTransaction();
+          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
+            $this->db->commit();
             $this->db->close();
             unset($info['action']);
             return TRUE;
@@ -186,6 +184,7 @@ class Acessm extends Model
         return FALSE;
 
       $this->db->connect();
+      $this->db->beginTransaction();
       $token = md5($info['username'].rand(1,100).'buaaDb');
       $info['token'] = $token;
       $params = array();
@@ -197,6 +196,7 @@ class Acessm extends Model
       $params[":password"] = md5($info['password']."buaadb");
       $columns['verified'] = 'FALSE';
       $id = $this->db->insert('users', $columns, $params);
+      $this->db->commit();
       $this->db->close();
       return $id > 0 ? TRUE : FALSE;
   }
@@ -205,15 +205,20 @@ class Acessm extends Model
   function verify($username, $token)  
   {
       $this->db->connect();
+      $this->db->beginTransaction();
       if(!is_string($username) || !is_string($token))
         return FALSE;
-      $res = $this->db->select(array('COUNT(*)'), 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token))['row'][0];
-   
-      if(!($res == 1))
+      $res = $this->db->select(array('COUNT(*)'), 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token), "S")['row'][0];
+      // $this->db->
+      if(!($res == 1)) {
+        $this->db->rollback();
+        $this->db->close();
         return FALSE;
+      }
       $this->db->update('users', array('verified' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
+      $this->db->commit();
+      $this->db->close();
       return TRUE;
   }
 
 }
-?>

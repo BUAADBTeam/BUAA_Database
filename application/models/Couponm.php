@@ -11,7 +11,9 @@ class Couponm extends Model {
 	function calMoney($shopid, $money = NULL)
 	{
 		$this->db->connect();
-		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid))['rows'];
+		$this->db->beginTransaction();
+		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid), "S")['rows'];
+		$this->db->commit();
 		$this->db->close();
 		if(count($coupons) > 0) {
 			if(is_null($money)) {
@@ -29,6 +31,7 @@ class Couponm extends Model {
 	function addCoupons($shopid, $coupons = array())
 	{
 		$this->db->connect();
+		$this->db->beginTransaction();
 		if(empty($coupons))
 			return False;
 		$sql = "INSERT INTO coupons(shopid, money, downmoney)  
@@ -36,10 +39,9 @@ class Couponm extends Model {
 		$this->db->prepare($sql);
 		foreach ($coupons as $money => $downmoney) {
 			$num = $this->db->execute('', array(':shopid' => $shopid, ':money' => $money, ':downmoney' => $downmoney))['num_rows'];
-			$this->db->close();
-			if($num == 0) 
-				return False;
 		}
+		$this->db->commit();
+		$this->db->close();
 		return True;
 	}
 	

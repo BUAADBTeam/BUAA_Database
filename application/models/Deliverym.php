@@ -13,7 +13,7 @@ class Testm extends Model {
 	{
 
 		$this->db->connect();
-
+		$this->db->beginTransaction();
 		$sql = "";
 		$param = array();
 		foreach ($info as $key=>$val) {
@@ -24,7 +24,8 @@ class Testm extends Model {
 		}
 		$sql .= " status < 7";
 
-		$sta = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		$sta = $this->db->select(array('status'), 'orders', $sql, $param, "S")['row'];
+		$this->db->commit();
 		$this->db->close();
 		if(empty($sta) || $sta != $status)
 			return False;
@@ -36,7 +37,7 @@ class Testm extends Model {
 		$this->db->connect();
 		// if(!$this->checkInfo($info, True))
 		// 	return False;
-		
+		$this->db->beginTransaction();
 		$sql = "";
 		$param = array();
 		foreach ($info as $key=>$val) {
@@ -55,6 +56,7 @@ class Testm extends Model {
 			
 
 		$num = $this->db->update('orders', array_merge(array('status' => 'status + 1'), $updArray), $sql, $param);
+		$this->db->commit();
 		$this->db->close();
 		return $num == 1 ? True : False;
 	}
@@ -62,7 +64,9 @@ class Testm extends Model {
 	function getDeliveryList($deleveryID, $includeFinished = False)
 	{
 		$this->db->connect();
-		$list = $this->db->select(array('*'), 'orders', "deliveryid = :deliveryid AND (status = 4". ($includeFinished ? 'OR status = 5)' : ')'), array(':deliveryid' => $deliveryid))['rows'];
+		$this->db->beginTransaction();
+		$list = $this->db->select(array('*'), 'orders', "deliveryid = :deliveryid AND (status = 4". ($includeFinished ? 'OR status = 5)' : ')'), array(':deliveryid' => $deliveryid), "S")['rows'];
+		$this->db->commit();
 		$this->db->close();
 		return $list;
 	}

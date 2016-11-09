@@ -14,21 +14,16 @@ class Orderm extends Model {
 		
 		try {
 			$this->db->connect();
-			// $sql = "SELECT * FROM orderitems
-			// 		  WHERE orderid in (SELECT orderid FROM orders 
-	  //                 WHERE userid = :userid AND status < 2)"; 
-					  
-			// $pdo = $this->db->connect();
-	        // $sth = $pdo->prepare($sql);
-	        // $sth->bindParam(':userid', $userid);
-	        // $sth->execute();
+			$this->db->beginTransaction();
 	        $result = $this->db->select(array('*'), 'orderitems', 
 	        	"orderid in (SELECT orderid FROM orders 
-	                  WHERE userid = :userid AND status < 2)", array(':userid' => $userid));
+	                  WHERE userid = :userid AND status < 2)", array(':userid' => $userid), "S");
 	        $cart = $result['rows'];
+	        $this->db->commit();
 	        $this->db->close();
 	        return $cart;
 	    } catch(PDOException $e) {
+	    	$this->db->rollback();
 	    	$this->db->close();
 	    	return null;
 	    }
@@ -49,16 +44,17 @@ class Orderm extends Model {
 		}
 		try {
 			$this->db->connect();
-
+			$this->db->beginTransaction();
 			// $sql = "SELECT price 
 	  //       		FROM products
 	  //       		WHERE id = $itemid";
 	  //       $sth = $pdo->prepare($sql);
 	  //       $sth->execute();
-			$result = $this->db->select(array('price'), 'products', "id = $itemid")['row'];
+			$result = $this->db->select(array('price'), 'products', "id = $itemid", "S")['row'];
 			if (!empty($result))
             	$price = $result['price'];	        
             else {
+            	$this->db->rollback();
             	$this->db->close();
             	return False;
             }
@@ -70,10 +66,11 @@ class Orderm extends Model {
             // // $sth = $pdo->prepare($sql);
             // $sth->bindParam(':userid', $userid);
             // $sth->execute();
-            $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid))->row;
+            $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid), "S")->row;
             if (count($result) > 0)
             	$orderid = $result['orderid'];
             else {
+            	$this->db->commit();
             	$this->db->close();
             	return False;
             }
@@ -89,7 +86,7 @@ class Orderm extends Model {
 	        // var_dump($result);
 	        $result = $this->db->select(array('COUNT(*)'), 'orderitems', 
 	        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
-	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid))['row'];
+	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid), "S")['row'];
 	        if ($result[0] > 0) {
 	        	// $sql = "UPDATE orderitems
 	        			// SET amount = amount + $amount
@@ -125,7 +122,7 @@ class Orderm extends Model {
             		SET total = total + $price
             		WHERE orderid = $orderid";
             $this->db->exec($sql);
-
+            $this->db->commit();
 	        $this->db->close();
 	    } catch(PDOException $e) {
 	    	$this->db->close();
@@ -145,10 +142,10 @@ class Orderm extends Model {
 		try {
 					  
 			$this->db->connect();
-
+			$this->db->beginTransaction();
 			$sql = "SELECT price 
 	        		FROM products
-	        		WHERE id = $itemid";
+	        		WHERE id = $itemid LOCK IN SHARE MODE";
 	        $this->db->prepare($sql);
 	        $result = $this->db->execute($mode = 'SELECT')['row'];
 	        // var_dump($result);
@@ -156,6 +153,7 @@ class Orderm extends Model {
 			if(!empty($result))
             	$price = $result['price'];	        
             else {
+            	$this->db->commit();
             	$this->db->close();
             	return False;
             }
@@ -163,10 +161,11 @@ class Orderm extends Model {
 
             $result = $this->db->select(array('orderid'), 'orders', 
             	"userid = :userid AND status < 2",
-            	array(':userid' => $userid))->row;
+            	array(':userid' => $userid), "S")->row;
             if (!empty($result))
             	$orderid = $result['orderid'];
             else {
+            	$this->db->commit();
             	$this->db->close();
             	return False;
             }
@@ -174,7 +173,7 @@ class Orderm extends Model {
 
 			$result = $this->db->select(array('amount'), 'orderitems',
 				"orderid = $orderid AND itemid = :itemid",
-				array(':itemid' => $itemid))->row;	        
+				array(':itemid' => $itemid), "S")->row;	        
 	        if($result[0] > $amount) {
 	        	$sql = "UPDATE orderitems
 	        			SET amount = amount - $amount
@@ -193,6 +192,7 @@ class Orderm extends Model {
 	        	$this->db->execute();
 	        }
 	        else {
+	        	$this->db->commit();
 	        	$this->db->close();
 	        	return False;
 	        }
@@ -201,8 +201,10 @@ class Orderm extends Model {
             		SET total = total - $price
             		WHERE orderid = $orderid";
             $this->db->exec($sql);
+            $this->db->commit();
 	        $this->db->close();
 	    } catch(PDOException $e) {
+	    	$this->db->rollback();
 	    	$this->db->close();
 	    	return False;
 	    }
@@ -210,26 +212,26 @@ class Orderm extends Model {
 	    return True;
 	}
 
-	function checkStatus($info, $status)
-	{
-		if(!$this->checkInfo($info))
-			return False;
+	// function checkStatus($info, $status)
+	// {
+	// 	if(!$this->checkInfo($info))
+	// 		return False;
 
-		$this->db->connect();
+		
 
-		$sql = "";
-		$param = array();
-		foreach ($info as $key=>$val) {
-			// if($key != 'address')
-			$sql .= " $key = :$key AND";
-			$param[":$key"] = $val;
-		}
-		$sql .= " status < 7";
-		$sta = $this->db->select(array('status'), 'orders', $sql, $param);
-		if(empty($sta['row']) || $sta['num_rows'] > 1 || $sta['row']['status'] != $status)
-			return False;
-		return True;
-	}
+	// 	$sql = "";
+	// 	$param = array();
+	// 	foreach ($info as $key=>$val) {
+	// 		// if($key != 'address')
+	// 		$sql .= " $key = :$key AND";
+	// 		$param[":$key"] = $val;
+	// 	}
+	// 	$sql .= " status < 7";
+	// 	$sta = $this->db->select(array('status'), 'orders', $sql, $param);
+	// 	if(empty($sta['row']) || $sta['num_rows'] > 1 || $sta['row']['status'] != $status)
+	// 		return False;
+	// 	return True;
+	// }
 
 	private function validType($val, $type = 7)
 	{
@@ -265,7 +267,7 @@ class Orderm extends Model {
 
 	private function updStatus($info = array(), $updInfo = array())
 	{
-		$this->db->connect();
+		// $this->db->connect();
 		if(!$this->checkInfo($info))
 			return False;
 		
@@ -295,31 +297,45 @@ class Orderm extends Model {
 		if(!$this->checkInfo($info))
 			return False;
 		$this->db->connect();
+		$this->beginTransaction();
 		// $add = isset($info['address']) ? $;
 		!isset($info['address']) or ($add = $info['address']);
 		unset($info['address']);
 		if(empty($add)) {
-			$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']))['row']['address'];
+			$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row']['address'];
 			if(empty($add)) {
 				return False;
 			}
 		}
-		$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']))['row']['total'];
+		$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row']['total'];
 		$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
 
-		return $this->updStatus($info, array('address' => $add, 'total' => $money));
+		$res = $this->updStatus($info, array('address' => $add, 'total' => $money));
+		$this->db->commit()
+		$this->db->close();
+		return $res;
 	}
 
 	
 
 	function payOrder($info = array())
 	{
-		return $this->updStatus($info);
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res = $this->updStatus($info);
+		$this->db->commit();
+		$this->db->close();
+		return $res;
 	}
 
 	function shopAcceptOrder($info = array())
 	{
-		return $this->updStatus($info);
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res = $this->updStatus($info);
+		$this->db->commit();
+		$this->db->close();
+		return $res;
 	}
 
 	function allocDelivery($info = array())
@@ -327,16 +343,28 @@ class Orderm extends Model {
 		if(!$this->checkInfo($info))
 			return False;
 		$this->db->connect();
-		$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array())['row'];
-		if(empty($id))
+		$this->db->beginTransaction();
+		$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array(), "S")['row'];
+		if(empty($id)) {
+			$this->db->commit();
+			$this->db->close();
 			return False;
+		}
 
-		return $this->updStatus($info, array('deliveryid' => $id));
+		$res = $this->updStatus($info, array('deliveryid' => $id));
+		$this->db->commit();
+		$this->db->close();
+		return $res;
 	}
 
 	
 	function CompleteOrder($info = array())
 	{
-		return $this->updStatus($info, array('finishtime' => time()));
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res = $this->updStatus($info, array('finishtime' => time()));
+		$this->db->commit();
+		$this->db->close();
+		return $res;
 	}
 }

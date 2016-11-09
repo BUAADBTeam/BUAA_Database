@@ -46,7 +46,20 @@ class Database {
 		$this->pdo->exec('SET NAMES "utf8"');
 		$this->pdo->exec('SET CHARACTER SET "utf8"');
 		$this->pdo->exec('SET CHARACTER_SET_CONNECTION= "utf8"');
+		$this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);  
 		$this->is_connected = true;
+	}
+
+	public function beginTransaction() {
+		$this->pdo->beginTransaction();
+	}
+
+	public function rollback() {
+		$this->pdo->rollback();
+	}
+
+	public function commit() {
+		$this->pdo->commit();
 	}
 
 	public function prepare($sql) {
@@ -54,6 +67,7 @@ class Database {
 		// $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
 	}
 	
+
 	public function bindParam($parameter, $variable) {
 		
 		$this->statement->bindParam($parameter, $variable);
@@ -170,18 +184,27 @@ class Database {
 	// 	return $this->query($sql, $params)->num_rows;
 	// }
 	
-	public function select($data, $table, $where = '', $params = array()) {
+	public function select($data, $table, $where , $params = array(), $Lock = NULL) {
 		if(empty($where) || !is_string($where)) {
 				return 0;
 		}
 		if (!is_array($data) || count($data) == 0) {
 				return 0;
 		}
+
+		if($Lock === "S") {
+			$Lock = " LOCK IN SHARE MODE";
+		}
+		elseif ($Lock === "X") {
+			$Lock = " FOR UPDATE";
+		}
+		else
+			$Lock = "";
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
-		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
+		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where + $Lock);
 		return $this->query($sql, $params);
 	}
 
