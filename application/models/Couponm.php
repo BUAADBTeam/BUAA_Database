@@ -10,9 +10,15 @@ class Couponm extends Model {
 
 	function calMoney($shopid, $money = NULL)
 	{
-		$this->db->connect();
-		$this->db->beginTransaction();
-		$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid), "S")['rows'];
+		try {
+			$this->db->connect();
+			$this->db->beginTransaction();
+			$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid), "S")['rows'];
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
+			return 0;
+		}
 		$this->db->commit();
 		$this->db->close();
 		if(count($coupons) > 0) {
@@ -26,23 +32,31 @@ class Couponm extends Model {
 			}
 		}
 		return 0;
+		
 	}
 
 	function addCoupons($shopid, $coupons = array())
 	{
-		$this->db->connect();
-		$this->db->beginTransaction();
-		if(empty($coupons))
+		try {
+			$this->db->connect();
+			$this->db->beginTransaction();
+			if(empty($coupons))
+				return False;
+			$sql = "INSERT INTO coupons(shopid, money, downmoney)  
+					VALUES (:shopid, :money, :downmoney)";
+			$this->db->prepare($sql);
+			foreach ($coupons as $money => $downmoney) {
+				$num = $this->db->execute('', array(':shopid' => $shopid, ':money' => $money, ':downmoney' => $downmoney))['num_rows'];
+			}
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
 			return False;
-		$sql = "INSERT INTO coupons(shopid, money, downmoney)  
-				VALUES (:shopid, :money, :downmoney)";
-		$this->db->prepare($sql);
-		foreach ($coupons as $money => $downmoney) {
-			$num = $this->db->execute('', array(':shopid' => $shopid, ':money' => $money, ':downmoney' => $downmoney))['num_rows'];
 		}
 		$this->db->commit();
 		$this->db->close();
 		return True;
+
 	}
 	
 }

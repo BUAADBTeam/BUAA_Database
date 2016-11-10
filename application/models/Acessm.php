@@ -26,25 +26,32 @@ class Acessm extends Model
   	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
       $user = $_SESSION['user'];
 
-  	
-      $this->db->connect();
-      $this->db->beginTransaction();
-      $row = $this->db->select(array('COUNT(*)'), "users",
-        "username = :user AND role = :role", array(':user' => $user, ':role' => $role), "S")['row'];
-      $this->db->commit();
-      $this->db->close();
-  		if ($row[0] > 0) {
-  			return True;
-  		}
-  		else {
-  			$_GLOBALS['auth_error'] = "抱歉，您的权限不足";
-  			return False;
-  		}
-  	}
-  	else {
-  		$_GLOBALS['auth_error'] = "请您先登录";
-  		return False;
-  	}
+  	 
+        $this->db->connect();
+        $this->db->beginTransaction();
+        try {
+        $row = $this->db->select(array('COUNT(*)'), "users",
+          "username = :user AND role = :role", array(':user' => $user, ':role' => $role), "S")['row'];
+        } catch(Exception $e) {
+          $this->db->rollback();
+          $this->db->close()
+          return False;
+        }
+        $this->db->commit();
+        $this->db->close();
+    		if ($row[0] > 0) {
+    			return True;
+    		}
+    		else {
+    			$_GLOBALS['auth_error'] = "抱歉，您的权限不足";
+    			return False;
+    		}
+    	}
+    	else {
+    		$_GLOBALS['auth_error'] = "请您先登录";
+    		return False;
+    	}
+
   }
 
   function userIsLoggedIn()
@@ -62,8 +69,14 @@ class Acessm extends Model
           
           $this->db->connect();
           $this->db->beginTransaction();
+          try{
           $row = $this->db->select(array('userid'), 'users', "username = :user", array(':user' => $_POST['user']), "S")['row'];
-          
+          } catch(Exception $e) {
+            $this->db->rollback();
+            $this->db->close()
+            return False;
+          }
+          $this->db->commit();
           $userid = $row['userid'];
 
           isset($_SESSION) or session_start();
@@ -106,12 +119,19 @@ class Acessm extends Model
 
       // $sql = "SELECT COUNT(*) FROM user
       //      WHERE user = :user AND password = :pass";
+    
       $this->db->connect();
       $this->db->beginTransaction();
+      try {
       $row = $this->db->select(array('COUNT(*)'), 'users', "username = :user AND password = :pass",array(':user' => $user, ':pass' => $pass), "S")['row'];
       // $row = $result->fetch();
       $this->db->commit();
       $this->db->close();
+    } catch(Exception $e) {
+      $this->db->rollback();
+      $this->db->close();
+      return False;
+    }
       if ($row[0] == 1) {
         return TRUE;
       }
@@ -147,6 +167,7 @@ class Acessm extends Model
             return TRUE;
           }
         }
+
         $this->db->close();
         return FALSE;
       }
@@ -180,25 +201,38 @@ class Acessm extends Model
 
   function addUser($info, &$token)
   {
-      if(!$this->checkInfo($info))   
-        return FALSE;
+      try {
+        if(!$this->checkInfo($info))   
+          return FALSE;
 
-      $this->db->connect();
-      $this->db->beginTransaction();
-      $token = md5($info['username'].rand(1,100).'buaaDb');
-      $info['token'] = $token;
-      $params = array();
-      $columns = array();
-      foreach ($info as $key => $value) {
-        $columns["$key"] = ":$key";
-        $params[":$key"] = $value;
+        $this->db->connect();
+        $this->db->beginTransaction();
+        $token = md5($info['username'].rand(1,100).'buaaDb');
+        $info['token'] = $token;
+        $params = array();
+        $columns = array();
+        foreach ($info as $key => $value) {
+          $columns["$key"] = ":$key";
+          $params[":$key"] = $value;
+        }
+        $params[":password"] = md5($info['password']."buaadb");
+        $columns['verified'] = 'FALSE';
+        try {
+          $id = $this->db->insert('users', $columns, $params);  
+        } catch (Exception $e) {
+          $this->db->rollback();
+          $this->db->close();
+          return FALSE;
+        }
+        
+        $this->db->commit();
+        $this->db->close();
+        return TRUE;
+      } catch(Exception $e) {
+        $this->db->rollback();
+        $this->db->close();
+        return FALSE;
       }
-      $params[":password"] = md5($info['password']."buaadb");
-      $columns['verified'] = 'FALSE';
-      $id = $this->db->insert('users', $columns, $params);
-      $this->db->commit();
-      $this->db->close();
-      return $id > 0 ? TRUE : FALSE;
   }
 
 
@@ -206,19 +240,25 @@ class Acessm extends Model
   {
       $this->db->connect();
       $this->db->beginTransaction();
-      if(!is_string($username) || !is_string($token))
-        return FALSE;
-      $res = $this->db->select(array('COUNT(*)'), 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token), "S")['row'][0];
-      // $this->db->
-      if(!($res == 1)) {
+      try {
+        if(!is_string($username) || !is_string($token))
+          return FALSE;
+        $res = $this->db->select(array('COUNT(*)'), 'users', "username = :username AND token = :token", array(":username" => $username, ":token" => $token), "S")['row'][0];
+        // $this->db->
+        if(!($res == 1)) {
+          $this->db->rollback();
+          $this->db->close();
+          return FALSE;
+        }
+        $this->db->update('users', array('verified' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
+        $this->db->commit();
+        $this->db->close();
+        return TRUE;
+      } catch(Exception $e) {
         $this->db->rollback();
         $this->db->close();
         return FALSE;
       }
-      $this->db->update('users', array('verified' => True), "username = :username AND token = :token", array(":username" => $username, ":token" => $token));
-      $this->db->commit();
-      $this->db->close();
-      return TRUE;
   }
 
 }

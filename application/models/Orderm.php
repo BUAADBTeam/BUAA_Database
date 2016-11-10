@@ -12,9 +12,10 @@ class Orderm extends Model {
 	function getCart($userid)
 	{
 		
+		
+		$this->db->connect();
+		$this->db->beginTransaction();
 		try {
-			$this->db->connect();
-			$this->db->beginTransaction();
 	        $result = $this->db->select(array('*'), 'orderitems', 
 	        	"orderid in (SELECT orderid FROM orders 
 	                  WHERE userid = :userid AND status < 2)", array(':userid' => $userid), "S");
@@ -22,7 +23,7 @@ class Orderm extends Model {
 	        $this->db->commit();
 	        $this->db->close();
 	        return $cart;
-	    } catch(PDOException $e) {
+	    } catch(Exception $e) {
 	    	$this->db->rollback();
 	    	$this->db->close();
 	    	return null;
@@ -42,9 +43,10 @@ class Orderm extends Model {
 			$this->db->close();
 			return False;
 		}
+		
+		$this->db->connect();
+		$this->db->beginTransaction();
 		try {
-			$this->db->connect();
-			$this->db->beginTransaction();
 			// $sql = "SELECT price 
 	  //       		FROM products
 	  //       		WHERE id = $itemid";
@@ -88,28 +90,17 @@ class Orderm extends Model {
 	        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
 	        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid), "S")['row'];
 	        if ($result[0] > 0) {
-	        	// $sql = "UPDATE orderitems
-	        			// SET amount = amount + $amount
-            // 			WHERE userid = :userid  AND orderid = :orderid AND itemid = :itemid";
-
-	         //    $sth = $pdo->prepare($sql);
-		        // $sth->bindParam(':userid', $userid);
-		        // $sth->bindParam(':orderid', $orderid);
-		        // $sth->bindParam(':itemid', $itemid);
-		        // $sth->execute();
-		        $this->db->update('orderitems', array('amount' => "amount + $amount"), 
+		        $num = $this->db->update('orderitems', array('amount' => "amount + $amount"), 
 		        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
 		        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid));
+		        if($num == 0) {
+		        	$this->db->rollback()
+		        	$this->db->close();
+		        	return False;
+		        }
 	        }
 	        else {
-				// $sql = "INSERT INTO orderitems(userid, orderid, itemid, amount) 
-						  // -- VALUES(:userid, :orderid, :itemid, :amount)"; 	
-		        // $sth = $pdo->prepare($sql);
-		        // $sth->bindParam(':userid', $userid);
-		        // $sth->bindParam(':orderid', $orderid);
-		        // $sth->bindParam(':itemid', $itemid);
-		        // $sth->bindParam(':amount', $amount);
-		        // $sth->execute();
+				
 		        $this->db->insert('orderitems', 
 		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount, 'status' => '0'), 
 		        		array(':userid' => $userid,
@@ -121,10 +112,15 @@ class Orderm extends Model {
             $sql = "UPDATE orders
             		SET total = total + $price
             		WHERE orderid = $orderid";
-            $this->db->exec($sql);
+            $num = $this->db->exec($sql);
+            if($num == 0) {
+            	$this->db->rollback();
+	        	$this->db->close();	
+            }
             $this->db->commit();
 	        $this->db->close();
-	    } catch(PDOException $e) {
+	    } catch(Exception $e) {
+	    	$this->db->rollback();
 	    	$this->db->close();
 	    	return False;
 	    }
@@ -139,10 +135,11 @@ class Orderm extends Model {
 			return False;
 		}
 		$amount = $amount + 0;
-		try {
+		
 					  
-			$this->db->connect();
-			$this->db->beginTransaction();
+		$this->db->connect();
+		$this->db->beginTransaction();
+		try {
 			$sql = "SELECT price 
 	        		FROM products
 	        		WHERE id = $itemid LOCK IN SHARE MODE";
@@ -203,7 +200,7 @@ class Orderm extends Model {
             $this->db->exec($sql);
             $this->db->commit();
 	        $this->db->close();
-	    } catch(PDOException $e) {
+	    } catch(Exception $e) {
 	    	$this->db->rollback();
 	    	$this->db->close();
 	    	return False;
@@ -212,26 +209,7 @@ class Orderm extends Model {
 	    return True;
 	}
 
-	// function checkStatus($info, $status)
-	// {
-	// 	if(!$this->checkInfo($info))
-	// 		return False;
 
-		
-
-	// 	$sql = "";
-	// 	$param = array();
-	// 	foreach ($info as $key=>$val) {
-	// 		// if($key != 'address')
-	// 		$sql .= " $key = :$key AND";
-	// 		$param[":$key"] = $val;
-	// 	}
-	// 	$sql .= " status < 7";
-	// 	$sta = $this->db->select(array('status'), 'orders', $sql, $param);
-	// 	if(empty($sta['row']) || $sta['num_rows'] > 1 || $sta['row']['status'] != $status)
-	// 		return False;
-	// 	return True;
-	// }
 
 	private function validType($val, $type = 7)
 	{
@@ -296,75 +274,132 @@ class Orderm extends Model {
 	{
 		if(!$this->checkInfo($info))
 			return False;
+		
 		$this->db->connect();
 		$this->beginTransaction();
-		// $add = isset($info['address']) ? $;
-		!isset($info['address']) or ($add = $info['address']);
-		unset($info['address']);
-		if(empty($add)) {
-			$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row']['address'];
+		try {
+			// $add = isset($info['address']) ? $;
+			!isset($info['address']) or ($add = $info['address']);
+			unset($info['address']);
 			if(empty($add)) {
-				return False;
+				$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row']['address'];
+				if(empty($add)) {
+					$this->db->commit();
+					$this->db->close();
+					return False;
+				}
 			}
-		}
-		$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row']['total'];
-		$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
+			$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row']['total'];
+			if(!isset($money)) {
+				$this->db->rollback();
+				$this->db->close();	
+			}
+			$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
 
-		$res = $this->updStatus($info, array('address' => $add, 'total' => $money));
-		$this->db->commit()
-		$this->db->close();
-		return $res;
+			$res = $this->updStatus($info, array('address' => $add, 'total' => $money));
+			if(!$res) {
+				$this->db->rollback();
+				$this->db->close();	
+			}
+			$this->db->commit();
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close();
+			return False;
+		}
 	}
 
 	
 
 	function payOrder($info = array())
 	{
+		
 		$this->db->connect();
 		$this->db->beginTransaction();
-		$res = $this->updStatus($info);
-		$this->db->commit();
-		$this->db->close();
-		return $res;
+		try {
+			$res = $this->updStatus($info);
+			if(!$res)
+				$this->db->rollback();
+			else
+				$this->db->commit();
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
+			return False;
+		}
 	}
 
 	function shopAcceptOrder($info = array())
 	{
+		
 		$this->db->connect();
 		$this->db->beginTransaction();
-		$res = $this->updStatus($info);
-		$this->db->commit();
-		$this->db->close();
-		return $res;
+		try {
+			$res = $this->updStatus($info);
+			if(!$res)
+				$this->db->rollback();
+			else
+				$this->db->commit();
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
+			return False;
+		}
 	}
 
 	function allocDelivery($info = array())
 	{
+		
 		if(!$this->checkInfo($info))
 			return False;
 		$this->db->connect();
 		$this->db->beginTransaction();
-		$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array(), "S")['row'];
-		if(empty($id)) {
-			$this->db->commit();
+		try {
+			$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array(), "S")['row'];
+			if(empty($id)) {
+				$this->db->commit();
+				$this->db->close();
+				return False;
+			}
+
+			$res = $this->updStatus($info, array('deliveryid' => $id));
+			if(!$res)
+				$this->db->rollback();
+			else
+				$this->db->commit();
 			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
 			return False;
 		}
-
-		$res = $this->updStatus($info, array('deliveryid' => $id));
-		$this->db->commit();
-		$this->db->close();
-		return $res;
 	}
 
 	
 	function CompleteOrder($info = array())
 	{
+	
 		$this->db->connect();
 		$this->db->beginTransaction();
-		$res = $this->updStatus($info, array('finishtime' => time()));
-		$this->db->commit();
-		$this->db->close();
-		return $res;
+		try {
+			$res = $this->updStatus($info, array('finishtime' => time()));
+			if(!$res)
+				$this->db->rollback();
+			else
+				$this->db->commit();
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close()
+			return False;
+		}
 	}
 }

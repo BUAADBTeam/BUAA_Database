@@ -49,18 +49,6 @@ class Database {
 		$this->is_connected = true;
 	}
 
-	public function beginTransaction() {
-		$this->pdo->beginTransaction();
-	}
-
-	public function rollback() {
-		$this->pdo->rollback();
-	}
-
-	public function commit() {
-		$this->pdo->commit();
-	}
-
 	public function prepare($sql) {
 		$this->statement = $this->pdo->prepare($sql);
 		// $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -88,7 +76,6 @@ class Database {
 		} 
 		catch(PDOException $e) {
 				// print_r($mode);
-				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
 				return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 			}
 
@@ -117,9 +104,7 @@ class Database {
 				$result['num_rows'] = $this->statement->rowCount();
 			}
 		} catch (PDOException $e) {
-			print_r($sql);
-			trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
-			exit();
+			return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 		}
 
 		if ($result) {
@@ -134,18 +119,26 @@ class Database {
 		return $this->pdo->exec($sql);
 	}
 
-	public function select($data, $table, $where = '', $params = array()) {
+	public function select($data, $table, $where , $params = array(), $Lock = NULL) {
 		if(empty($where) || !is_string($where)) {
 				return 0;
 		}
 		if (!is_array($data) || count($data) == 0) {
 				return 0;
 		}
+		if($Lock === "S") {
+			$Lock = " LOCK IN SHARE MODE";
+		}
+		elseif ($Lock === "X") {
+			$Lock = " FOR UPDATE";
+		}
+		else
+			$Lock = "";
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
-		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
+		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where + $Lock);
 		return $this->query($sql, $params);
 	}
 
@@ -203,5 +196,82 @@ class Database {
 		$this->pdo = null;
 		$this->is_connected = false;
 	}
+	/**
+	* 获得影响集合中
+	*/
+	// public function countAffected() {
+	// 	if ($this->statement) {
+	// 		return $this->statement->rowCount();
+	// 	} else {
+	// 		return 0;
+	// 	}
+	// }
 	
+	// /*
+	// * 获得插入id
+	// */
+	// public function getLastId() {
+	// 	return $this->pdo->lastInsertId();
+	// }
+	
+	// public function escape($value) {
+	// 	$search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
+	// 	$replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
+	// 	return str_replace($search, $replace, $value);
+	// }
+	
+	// /**
+	// * 返回错误信息也包括错误号
+	// */
+	// public function errorInfo() {
+	// 	return $this->statement->errorInfo();
+	// }
+	
+	// /**
+	// * 返回错误号
+	// */
+	// public function errorCode() {
+	// 	return $this->statement->errorCode();
+	// }
+
+	
+	/**
+	* 获得所有查询条件的值
+	*/
+	// public function fetchAll($sql, $params = array()) {
+	// 	$rows = $this->query($sql, $params)->rows;
+	// 	return !empty($rows) ? $rows : false;
+	// }
+	
+	// *
+	// * 获得单行记录的值
+	
+	// public function fetchAssoc($sql, $params = array()) {
+	// 	$row = $this->query($sql, $params)->row;
+	// 	return !empty($row) ? $row : false;
+	// }
+	
+	// *
+	// * 获得单个字段的值
+	
+	// public function fetchColumn($sql, $params = array()) {
+	// 	$data = $this->query($sql, $params)->row;
+	// 	if(is_array($data)) {
+	// 	foreach ($data as $value) {
+	// 		return $value;
+	// 	}
+	// }
+	// return false;
+	// }
+	
+	/**
+	* 返回statement记录集的行数
+	*/
+	// public function rowCount($sql, $params = array()) {
+	// 	return $this->query($sql, $params)->num_rows;
+	// }
+	
+	// public function __destruct() {
+	// 	$this->pdo = null;
+	// }
 }
