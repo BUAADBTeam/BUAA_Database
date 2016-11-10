@@ -122,18 +122,26 @@ class Database {
 		return $this->pdo->exec($sql);
 	}
 
-	public function select($data, $table, $where = '', $params = array()) {
+	public function select($data, $table, $where , $params = array(), $Lock = NULL) {
 		if(empty($where) || !is_string($where)) {
 				return 0;
 		}
 		if (!is_array($data) || count($data) == 0) {
 				return 0;
 		}
+		if($Lock === "S") {
+			$Lock = " LOCK IN SHARE MODE";
+		}
+		elseif ($Lock === "X") {
+			$Lock = " FOR UPDATE";
+		}
+		else
+			$Lock = "";
 		$field_arr = array();
 		foreach ($data as $key=>$val) {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
-		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . $where;
+		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where + $Lock);
 		return $this->query($sql, $params);
 	}
 
