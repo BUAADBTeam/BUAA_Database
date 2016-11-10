@@ -77,22 +77,14 @@ class Database {
 		catch(PDOException $e) {
 				// print_r($mode);
 				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
-				$result = array();
-				$result['row'] = array();
-				$result['rows'] = array();
-				$result['num_rows'] = 0;
-				return $result;	
+				return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 			}
 
 		if ($result) {
 			return $result;
 		}
 		else {
-			$result = array();
-			$result['row'] = array();
-			$result['rows'] = array();
-			$result['num_rows'] = 0;
-			return $result;
+			return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 		}
 	}
 	
@@ -122,54 +114,14 @@ class Database {
 			return $result;
 		} 
 		else {
-			$result = array();
-			$result['row'] = array();
-			$result['rows'] = array();
-			$result['num_rows'] = 0;
-			return $result;
+			return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 		}
 	}
 	
 	public function exec($sql) {
 		return $this->pdo->exec($sql);
 	}
-	
-	/**
-	* 获得所有查询条件的值
-	*/
-	// public function fetchAll($sql, $params = array()) {
-	// 	$rows = $this->query($sql, $params)->rows;
-	// 	return !empty($rows) ? $rows : false;
-	// }
-	
-	// *
-	// * 获得单行记录的值
-	
-	// public function fetchAssoc($sql, $params = array()) {
-	// 	$row = $this->query($sql, $params)->row;
-	// 	return !empty($row) ? $row : false;
-	// }
-	
-	// *
-	// * 获得单个字段的值
-	
-	// public function fetchColumn($sql, $params = array()) {
-	// 	$data = $this->query($sql, $params)->row;
-	// 	if(is_array($data)) {
-	// 	foreach ($data as $value) {
-	// 		return $value;
-	// 	}
-	// }
-	// return false;
-	// }
-	
-	/**
-	* 返回statement记录集的行数
-	*/
-	// public function rowCount($sql, $params = array()) {
-	// 	return $this->query($sql, $params)->num_rows;
-	// }
-	
+
 	public function select($data, $table, $where = '', $params = array()) {
 		if(empty($where) || !is_string($where)) {
 				return 0;
@@ -200,7 +152,9 @@ class Database {
 		}
 		$sql = "INSERT INTO " . $table . "(" . implode(',', $field_arr);
 		$sql .= (") ". "VALUES(". implode(',', $value_arr). ")");
-		$this -> query($sql, $params, $type = 1);
+		if ($this -> query($sql, $params, $type = 1)['num_rows'] == 0) {
+			throw new Exception("Fail to insert", 1);
+		}
 		return $this->pdo->lastInsertId();
 	}
 	
@@ -233,6 +187,10 @@ class Database {
 		return $this->query($sql, $params, $type = 1)['num_rows'];
 	}
 	
+	public function close() {
+		$this->pdo = null;
+		$this->is_connected = false;
+	}
 	/**
 	* 获得影响集合中
 	*/
@@ -271,11 +229,43 @@ class Database {
 	// 	return $this->statement->errorCode();
 	// }
 
-	public function close() {
-		$this->pdo = null;
-		$this->is_connected = false;
-	}
-
+	
+	/**
+	* 获得所有查询条件的值
+	*/
+	// public function fetchAll($sql, $params = array()) {
+	// 	$rows = $this->query($sql, $params)->rows;
+	// 	return !empty($rows) ? $rows : false;
+	// }
+	
+	// *
+	// * 获得单行记录的值
+	
+	// public function fetchAssoc($sql, $params = array()) {
+	// 	$row = $this->query($sql, $params)->row;
+	// 	return !empty($row) ? $row : false;
+	// }
+	
+	// *
+	// * 获得单个字段的值
+	
+	// public function fetchColumn($sql, $params = array()) {
+	// 	$data = $this->query($sql, $params)->row;
+	// 	if(is_array($data)) {
+	// 	foreach ($data as $value) {
+	// 		return $value;
+	// 	}
+	// }
+	// return false;
+	// }
+	
+	/**
+	* 返回statement记录集的行数
+	*/
+	// public function rowCount($sql, $params = array()) {
+	// 	return $this->query($sql, $params)->num_rows;
+	// }
+	
 	// public function __destruct() {
 	// 	$this->pdo = null;
 	// }

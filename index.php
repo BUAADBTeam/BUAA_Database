@@ -51,6 +51,7 @@ else {
 }
 
 require APPPATH.'config/config.php';
+require APPPATH.'config/constants.php';
 $url = empty($_GET) ? '' : array_keys($_GET)[0];
 
 require_once BASEPATH.'core/core.php';

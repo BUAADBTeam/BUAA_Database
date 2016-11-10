@@ -13,7 +13,7 @@ class Shopm extends Model {
 
 	public function add($sid)
 	{
-		if (unset($_POST['name']) || unset($_POST['price'])) {
+		if (!isset($_POST['name']) || !isset($_POST['price'])) {
 			return FALSE;
 		}
 		try {

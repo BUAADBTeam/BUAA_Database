@@ -12,13 +12,13 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
 
 	<script type="text/javascript">BASEURL='<?php echo base_url();?>';</script>
 <!-- Bootstrap -->
-	<link href="<?php echo base_url()?>static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="static/css/bootstrap.min.css" rel="stylesheet">
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script type="text/javascript" src="<?php echo base_url()?>static/js/common.js"></script>
-	<script type="text/javascript" src="<?php echo base_url()?>static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="static/js/common.js"></script>
+	<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="menu">
