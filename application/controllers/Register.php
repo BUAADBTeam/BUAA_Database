@@ -30,8 +30,10 @@ class Register extends Controller {
 		$token = '';
 		if(isset($_POST['action']) && $_POST['action'] == 'register') {
 			if($this->acessm->addUser($_POST, $token)) {
-				print_r($token);
-				$this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token);
+				
+			$this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token);
+						
+				
 			}
 		}
 	}
@@ -40,5 +42,10 @@ class Register extends Controller {
 	{
 		if($this->acessm->verify($_GET['username'], $_GET['token']))
 			echo "fuck";
+	}
+
+	public function test()
+	{
+		$this->mailerm->sendVerifyMail("user", "704788525@qq.com", "what");
 	}
 }

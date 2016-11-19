@@ -76,7 +76,6 @@ class Database {
 		} 
 		catch(PDOException $e) {
 				// print_r($mode);
-				trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
 				return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 			}
 
@@ -105,9 +104,7 @@ class Database {
 				$result['num_rows'] = $this->statement->rowCount();
 			}
 		} catch (PDOException $e) {
-			print_r($sql);
-			trigger_error('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode() . ' <br />' . $sql);
-			exit();
+			return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 		}
 
 		if ($result) {
