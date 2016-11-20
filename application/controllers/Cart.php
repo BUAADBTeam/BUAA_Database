@@ -15,6 +15,7 @@ class Cart extends Controller {
 	{
 		// print_r($this->orderm->submitOrder(array('userid' => 1, 'shopid' => 1, 'address' => 'here')) ? 'good' : 'bad');
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1)) {
+			$this->acessm->db->selecetRole(1);
 			$cart = $this->orderm->getCart($_SESSION['userid']);
 			print_r($cart);
 		}
@@ -29,6 +30,7 @@ class Cart extends Controller {
 	public function submit()
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'submitOrder') {
+			$this->acessm->db->selecetRole(1);
 			$info = array('userid' => $_SESSION['userid'],
 				'shopid' => $_POST['shopid']);
 
@@ -43,7 +45,7 @@ class Cart extends Controller {
 	public function paid()
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'payOrder') {
-
+			$this->acessm->db->selecetRole(1);
 			$info = array('userid' => $_SESSION['userid'],
 				'shopid' => $_POST['shopid']);
 			if($this->orderm->checkStatus($info, 1)) {
