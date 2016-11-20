@@ -17,12 +17,14 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
     <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <script src="<?php echo base_url();?>static/js/bootstrap.js"></script>
+    <script src="<?php echo base_url();?>static/js/md5.js"></script>
     <script src="<?php echo base_url();?>static/js/jquery.min.js"></script>
     <link rel="stylesheet" href="<?php echo base_url();?>static/css/flexslider.css" type="text/css" media="screen" />
     <script src="<?php echo base_url();?>static/js/simpleCart.min.js"> </script>
     <script src="<?php echo base_url();?>static/js/common.js"> </script>
     <script type="text/javascript">BASEURL='<?php echo base_url();?>';</script>
-</head>
+
+<body>
 <body>
 <!-- header -->
 <div class="head-top"></div>
@@ -38,7 +40,7 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
                     <li id="headerHome"><a href="<?php echo base_url();?>welcome">Home</a></li>
                     <li id="headerResturants"><a href="<?php echo base_url();?>shop">Resturants</a></li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">Sign In</a></li>
-                    <li id="headerRegister"><a href="">Register</a></li>
+                    <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">Register</a></li>
                     <div class="clearfix"> </div>
                 </ul>
                 <!-- script-for-nav -->

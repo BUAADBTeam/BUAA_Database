@@ -19,8 +19,8 @@ class Database {
 		foreach ($dbconfig as $key => $value) {
 			$this->$key = $value;
 		}
-		$this->username = $this->user_pass['username'][3];	
-		$this->password = $this->user_pass['password'][3];
+		$this->username = $this->user_pass['username'][4];	
+		$this->password = $this->user_pass['password'][4];
 			// $this->pdo->exec("SET SQL_MODE = ''");
 	}
 	
@@ -127,6 +127,7 @@ class Database {
 				$result['num_rows'] = $this->statement->rowCount();
 			}
 		} catch (PDOException $e) {
+			print($e->getMessage());
 			return array('row' => array(), 'rows' => array(), 'num_rows' => 0);
 		}
 

@@ -26,8 +26,10 @@ class Mailerm extends Model {
 		{
 		    echo "邮件发送失败. <p>";
 		    echo "错误原因: " . $mail->ErrorInfo;
-		    exit;
+		    print($email);
+		    return false;
 		}
+		return true;
 	}
 	
 }

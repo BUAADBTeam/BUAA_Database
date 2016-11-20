@@ -28,13 +28,24 @@ class Register extends Controller {
 	public function registerUser()
 	{
 		$token = '';
+		getRawPost();
 		if(isset($_POST['action']) && $_POST['action'] == 'register') {
+			// print_r($_POST);
 			if($this->acessm->addUser($_POST, $token)) {
 				
-			$this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token);
-						
-				
+				if($this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token)) {
+					echo json_encode(array('status' => 0));			
+				}
+				else {
+					echo json_encode(array('status' => 12));
+				}
 			}
+			else {
+				echo json_encode(array('status' => 904));				
+			}
+		}
+		else {
+			echo json_encode(array('status' => 101));			
 		}
 	}
 
