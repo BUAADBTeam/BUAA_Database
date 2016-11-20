@@ -16,16 +16,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
         <div class="cur">
           <div class="cur-left">
-          <div class="btn-group">
-           <button type="button" class="btn btn-default" data-toggle="dropdown">
-		    Action <span class="caret"></span>
-		  </button>
-		  </div>
-            <a class="morebtn hvr-rectangle-in" href="#">上架</a>
-          </div>
-          <div class="cur-right">
-            <a class="morebtn hvr-rectangle-in" href="#">删除</a>
-            <div class="item_add"><span class="item_price"><h6>$45.00</h6></span></div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-success">
+      		      上架 </span>
+      		    </button>
+              <button type="button" class="btn btn-danger">
+                删除 </span>
+              </button>
+            </div>
           </div>
             <div class="clearfix"> </div>
         </div>

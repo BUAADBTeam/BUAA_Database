@@ -111,6 +111,7 @@ class Acessm extends Model
       if (isset($_SESSION['loggedIn'])) {
         return $this->databaseContainsUser($_SESSION['user'], $_SESSION['pass']);
       }
+      return FALSE;
   }
 
   function databaseContainsUser($user, $pass)
