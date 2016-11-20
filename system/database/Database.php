@@ -60,6 +60,18 @@ class Database {
 		$this->is_connected = true;
 	}
 
+	public function beginTransaction() {
+		$this->pdo->beginTransaction();
+	}
+
+	public function rollback() {
+		$this->pdo->rollback();
+	}
+
+	public function commit() {
+		$this->pdo->commit();
+	}
+
 	public function prepare($sql) {
 		$this->statement = $this->pdo->prepare($sql);
 		// $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
@@ -149,7 +161,7 @@ class Database {
 		foreach ($data as $key=>$val) {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
-		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where + $Lock);
+		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where . $Lock);
 		return $this->query($sql, $params);
 	}
 

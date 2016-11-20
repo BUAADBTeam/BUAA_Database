@@ -62,7 +62,6 @@ class Acessm extends Model
           $GLOBALS['loginError'] = 'Please fill in both fields';
           return False;
         }
-
         $password = md5($_POST['pass'] . 'buaadb');
 
         if ($this->databaseContainsUser($_POST['user'], $password)) {

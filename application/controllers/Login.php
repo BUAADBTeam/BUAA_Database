@@ -29,7 +29,7 @@ class Login extends Controller {
 			}
 		}
 		else {
-			$this->load->view('login');	
+			//$this->load->view('login');	
 		}
 	}
 
