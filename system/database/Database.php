@@ -35,7 +35,7 @@ class Database {
 		return false;
 	}
 
-	public selectRole($role = 4)
+	public function selectRole($role = 4)
 	{
 		if(!is_numeric($role) || $role > 4 || $role < 0)
 			return false;
