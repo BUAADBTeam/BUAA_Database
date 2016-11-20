@@ -171,7 +171,7 @@ class Acessm extends Model
         $this->db->close();
         return FALSE;
       }
-      if($mode == 'email') {
+      else if($mode == 'email') {
         if(isset($info['email']) && $this->validEmail($info['email'])) {
           $this->db->beginTransaction();
           if($this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
@@ -187,6 +187,7 @@ class Acessm extends Model
         if(isset($info['email']) && $this->validEmail($info['email'])
         && isset($info['username']) && $this->validName($info['username']) && isset($info['password']) && $this->validType($info['password']) && isset($info['role']) && is_numeric($info['role']) && isset($info['address']) && is_string($info['address'])) {
           $this->db->beginTransaction();
+        // print_r($info);
           if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
             $this->db->commit();
             $this->db->close();
@@ -215,7 +216,7 @@ class Acessm extends Model
           $columns["$key"] = ":$key";
           $params[":$key"] = $value;
         }
-        $params[":password"] = md5($info['password']."buaadb");
+        // $params[":password"] = md5($info['password']."buaadb");
         $columns['verified'] = 'FALSE';
         try {
           $id = $this->db->insert('users', $columns, $params);  

@@ -46,7 +46,7 @@ function getRawPost()
 {
 	foreach (preg_split('/&/', $GLOBALS['HTTP_RAW_POST_DATA']) as $value) {
 		$d = preg_split('/=/', $value);
-		$_POST[$d[0]] = $d[1];
+		$_POST[$d[0]] = urldecode($d[1]);
 	}
 }
 require_once BASEPATH.'core/Router.php';
