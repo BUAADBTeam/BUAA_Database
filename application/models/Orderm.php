@@ -361,7 +361,7 @@ class Orderm extends Model {
 		$this->db->connect();
 		$this->db->beginTransaction();
 		try {
-			$id = $this->db->select(array('deliveryid'), 'deliverymen', "status = 0 ORDER BY credit DESC", array(), "S")['row'];
+			$id = $this->db->select(array('deliveryid'), 'available_delivery', "", array(), "S")['row'];
 			if(empty($id)) {
 				$this->db->commit();
 				$this->db->close();

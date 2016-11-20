@@ -7,8 +7,10 @@ class Database {
 	public $SqlBug = ''; // 记录mysql调试语句，可以查看完整的执行的mysql语句
 	private $pdo = null; // pdo连接
 	private $statement = null;
-	public $is_connected = false;
-	
+	private $is_connected = false;
+	private $username = "";
+	private $password = "";
+
 	public function __construct() {
 		if (!file_exists(APPPATH.'config/database.php')) {
 			throw new RuntimeException('Unable to locate the database config');
@@ -17,9 +19,9 @@ class Database {
 		foreach ($dbconfig as $key => $value) {
 			$this->$key = $value;
 		}
-			
+		$this->username = $this->user_pass['username'][3];	
+		$this->password = $this->user_pass['password'][3];
 			// $this->pdo->exec("SET SQL_MODE = ''");
-		
 	}
 	
 	private function validType($val, $type = 7)
@@ -31,6 +33,15 @@ class Database {
 		if(($type & 4) && is_string($val))
 			return true;
 		return false;
+	}
+
+	public selectRole($role = 4)
+	{
+		if(!is_numeric($role) || $role > 4 || $role < 0)
+			return false;
+		$this->username = $this->user_pass['username'][$role];
+		$this->password = $this->user_pass['password'][$role];
+		return true;
 	}
 
 	public function connect() {

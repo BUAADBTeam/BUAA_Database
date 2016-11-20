@@ -20,8 +20,10 @@ class Login extends Controller {
 		
 		if($this->acessm->userIsLoggedIn()) {
 			echo 'Logged In';
-			if($this->acessm->userHasRole(1))
+			if($this->acessm->userHasRole(1)) {
+				
 				$this->load->view('welcome', array('username' => $_SESSION['user']));
+			}
 			else if($this->acessm->userHasRole(2)) {
 				// echo 'Dear shopHos'
 			}
