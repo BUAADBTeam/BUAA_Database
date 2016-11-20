@@ -13,83 +13,103 @@ class Shopm extends Model {
 
 	public function add($sid)
 	{
+/*INSERT INTO `db`.`cuisine` (`id`, `sid`, `name`, `pic`, `price`, `info`, `st`) VALUES 
+(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
+(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
+(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
+(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
+(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
+(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
+(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
+(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
+(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '1'),
+(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0');*/
 		if (!isset($_POST['name']) || !isset($_POST['price'])) {
 			return FALSE;
 		}
 		try {
 			$this->db->connect();
+			$this->db->beginTransaction();
 			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
 			$params = array(':name' => $_POST['name'], ':pic' => '', ':price' => $_POST['price'], ':sid' => $sid, ':st' => isset($_POST['st']) ? $_POST['st'] : 1);
-			if ($this->db->insert($this->$cuisine, $column, $params) == FALSE) {
+			if ($this->db->insert($this->cuisine, $column, $params) == FALSE) {
+				$this->db->rollback();
+				$this->db->close();
 				return FALSE;
-			}						
+			}
+			$this->db->commit();
 			$this->db->close();
 			return TRUE;
 
 		} catch (Exception $e) {
+			$this->db->rollback();
 			$this->db->close();
 			return FALSE;
 		}
 	}
 
-	public function del($sid)
+	public function del($sid, $cid)
 	{
 		try {
-			$cid = $_POST['id'];
 			$this->db->connect();
-			$this->db->delete($this->$cuisine, "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->beginTransaction();
+			$this->db->delete($this->cuisine, "sid = :sid and id = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->commit();
 			$this->db->close();
 			return TRUE;
 
 		} catch (Exception $e) {
+			$this->db->rollback();
 			$this->db->close();
 			return FALSE;
 		}
 	}
 
-	public function put($sid)
+	public function put($sid, $cid)
 	{
 		try {
-			$cid = $_POST['id'];
 			$this->db->connect();
-			$this->db->update($this->$cuisine, array('st' => '1'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->beginTransaction();
+			$this->db->update($this->cuisine, array('st' => '0'), "sid = :sid and id = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->commit();
 			$this->db->close();
 			return TRUE;
 
 		} catch (Exception $e) {
+			$this->db->rollback();
 			$this->db->close();
 			return FALSE;
 		}
 	}
 
-	public function off($sid)
+	public function off($sid, $cid)
 	{
 		try {
-			$cid = $_POST['id'];
 			$this->db->connect();
-			$this->db->update($this->$cuisine, array('st' => '0'), "sid = :sid and cid = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->beginTransaction();
+			$this->db->update($this->cuisine, array('st' => '1'), "sid = :sid and id = :cid", array(':sid' => $sid, ':cid' => $cid));
+			$this->db->commit();
 			$this->db->close();
 			return TRUE;
 
 		} catch (Exception $e) {
+			$this->db->rollback();
 			$this->db->close();
 			return FALSE;
 		}
 	}
 
-	public function getCuisineList($sid = 0)
+	public function getCuisineList($sid = 0, $All = FALSE)
 	{
-		$res = array();
-		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
-		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
-		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
-		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
-		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
-		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
-		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
-		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
-		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
-		return $res;
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res = $this->db->select(array('*'), $this->cuisine, 'sid = :sid' . ($All ? '' : ' and st=0'), array(':sid' => $sid), 'S');
+		$this->db->commit();
+		$this->db->close();
+		if ($res == 0) {
+			return null;
+		}
+		return $res['rows'];
 	}
 
 	public function getRecommandList()

@@ -7,6 +7,9 @@ class Shop extends Controller {
 	{
 		parent::__construct();
 		$this->load->model('shopm');
+		$this->load->model('acessm');
+		define('_shop', 2);
+		$_SESSION['userid'] = 0;
 	}
 
 	public function index()
@@ -25,37 +28,63 @@ class Shop extends Controller {
 		return FALSE;
 	}
 
-	public function del()
+	public function del($cid)
 	{
-		$sid = getId();
-		if ($type == 'shop') {
-			if ($this->shopm->del($sid)) {
-				return TRUE;
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->del($sid, $cid)) {
+				echo json_encode(array('status' => 0));
+				return;
 			}
 		}
-		return FALSE;
+		else {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->del($sid, $cid)) {
+				echo json_encode(array('status' => 0));
+				return;
+			}
+		}
+		echo json_encode(array('status' => 1));
+		return;
 	}
 
-	public function put()
+	public function put($cid)
 	{
-		$sid = getId();
-		if ($type == 'shop') {
-			if ($this->shopm->put($sid)) {
-				return TRUE;
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->put($sid, $cid)) {
+				echo json_encode(array('status' => 0));
+				return;
 			}
 		}
-		return FALSE;
+		else {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->put($sid, $cid)) {
+				echo json_encode(array('status' => 0));
+				return;
+			}
+		}
+		echo json_encode(array('status' => 1));
+		return;
 	}
 
-	public function off()
+	public function off($cid)
 	{
-		$sid = getId();
-		if ($type == 'shop') {
-			if ($this->shopm->off($sid)) {
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->off($sid, $cid)) {
+				echo json_encode(array('status' => 0));
+				return;
+			}
+		}
+		else {
+			$sid = $_SESSION['userid'];
+			if ($this->shopm->off($sid, $cid)) {
+				echo json_encode(array('status' => 0));
 				return TRUE;
 			}
 		}
-		return FALSE;
+		echo json_encode(array('status' => 1));
 	}
 
 	public function s($id = 0)
@@ -63,9 +92,9 @@ class Shop extends Controller {
 		$this->load->view("showOneShop", array("id" => $id));
 	}
 
-	public function c($id = 0)
+	public function c($id = 0, $All = FALSE)
 	{
-		$res['data'] = $this->shopm->getCuisineList($id);
+		$res['data'] = $this->shopm->getCuisineList($id, $All);
 		$res['status'] = 0;
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);
@@ -73,7 +102,12 @@ class Shop extends Controller {
 
 	public function manage()
 	{
-		$this->load->view("manage");
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
+			$this->load->view("manage", array('id'=> 0)); //yic-get_shop_id;
+		}
+		else {
+			$this->load->view("manage", array('id'=> 0));
+		}
 	}
 
 	public function r($page = 0)

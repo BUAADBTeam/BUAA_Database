@@ -29,13 +29,32 @@ function wrap_cuisine(item) {
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
 			'<div class="special-info grid_1 simpleCart_shelfItem">'+
-				'<p>'+item.desc+'</p>'+
+				'<p>'+item.info+'</p>'+
 				'<div class="cur">'+
 					'<div class="cur-left">'+
 						'<div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>'+
 					'</div>'+
 					'<div class="cur-right">'+
 						'<div class="item_add"><span class="item_price"><h6>only ￥'+item.price+'</h6></span></div>'+
+					'</div>'+
+					'<div class="clearfix"> </div>'+
+				'</div>'+
+			'</div>'+
+		'</div>';
+	return res;
+}
+function wrap_cuisine_manage(item) {
+	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
+			'<h3>'+item.name+'</h3>'+
+			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
+			'<div class="special-info grid_1 simpleCart_shelfItem">'+
+				'<p>'+item.info+'</p>'+
+				'<div class="cur">'+
+					'<div class="cur-left">'+
+						'<button type="button" ' + (item.st == 0 ? 'style="display: none;"' : '') +  ' class="putbtn btn btn-default" onclick="put('+item.id+')">上架</button><button type="button" ' + (item.st == 1 ? 'style="display: none;"' : '') +  ' class="offbtn btn btn-success" onclick="off('+item.id+')">下架</button>'+
+					'</div>'+
+					'<div class="cur-right">'+
+						'<button type="button" class="delbtn btn btn-danger" onclick="del('+item.id+')">删除</button>'+
 					'</div>'+
 					'<div class="clearfix"> </div>'+
 				'</div>'+
