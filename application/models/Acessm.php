@@ -34,7 +34,7 @@ class Acessm extends Model
           "username = :user AND role = :role", array(':user' => $user, ':role' => $role), "S")['row'];
         } catch(Exception $e) {
           $this->db->rollback();
-          $this->db->close()
+          $this->db->close();
           return False;
         }
         $this->db->commit();
@@ -73,7 +73,7 @@ class Acessm extends Model
           $row = $this->db->select(array('userid'), 'users', "username = :user", array(':user' => $_POST['user']), "S")['row'];
           } catch(Exception $e) {
             $this->db->rollback();
-            $this->db->close()
+            $this->db->close();
             return False;
           }
           $this->db->commit();

@@ -79,7 +79,17 @@ class Shopm extends Model {
 
 	public function getCuisineList($sid = 0)
 	{
-		return $this->select($this->cuisine, "sid = $sid");
+		$res = array();
+		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
+		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
+		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
+		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
+		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
+		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
+		$res[] = array('name' => 'Maecenas ornare enim', 'pic' => 'static/images/1.jpg', 'price' => '45.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '1');
+		$res[] = array('name' => 'Dis parturient montes', 'pic' => 'static/images/3.jpg', 'price' => '55.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '2');
+		$res[] = array('name' => 'Curabitur congue blandit', 'pic' => 'static/images/3.jpg', 'price' => '65.00', 'desc' => 'Cum sociis natodiculus mus.rhoncus egestas ac sit', 'id' => '3');
+		return $res;
 	}
 
 	public function getRecommandList()

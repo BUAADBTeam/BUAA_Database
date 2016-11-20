@@ -11,7 +11,7 @@ class Shop extends Controller {
 
 	public function index()
 	{
-		header("Location:".base_url());
+		$this->load->view('showShopList');
 	}
 
 	public function add()
@@ -58,12 +58,22 @@ class Shop extends Controller {
 		return FALSE;
 	}
 
-	public function s($id)
+	public function s($id = 0)
 	{
-		$res['data'] = $this->shopm->getCuisineList();
+		$this->load->view("showOneShop", array("id" => $id));
+	}
+
+	public function c($id = 0)
+	{
+		$res['data'] = $this->shopm->getCuisineList($id);
 		$res['status'] = 0;
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);
+	}
+
+	public function manage()
+	{
+		$this->load->view("manage");
 	}
 
 	public function r($page = 0)

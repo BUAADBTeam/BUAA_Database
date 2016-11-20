@@ -1,48 +1,99 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<div id="shops">
-  <div class="row">
-    <div class="col-xs-6 col-md-3">
-      <div class="shop">
-        <div class="thumbnail">
-        <a href="">
-        <img src="<?php echo base_url();?>/static/src/1.jpg" height="10000" weight="200" alt="Loading...">
-        </a>
-        <!-- <img src="<?php echo base_url();?>/static/src/1.jpg"> -->
-        <p class="lead"><span class="label label-default">商家</span>北航大食堂<br/><span class="label label-default">地址</span>北航</p>
-        </div>
-      </div>
+<script type="text/javascript">
+  $('#headerResturants').attr('class', 'active');
+</script>
+<!-- about -->
+<div class="orders">
+  <div class="container">
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/1p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <P> Many desktop publishing packages</P>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/2p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>The point of using Lorem Ipsum</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/3p.png" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>words which don't look even</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/4p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>Neque porro quisquam est, qui dolorem</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/5p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>or again is there anyone who loves</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/6p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>Nam libero tempore, cum soluta nobis</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div>
+    <div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/7p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>with righteous indignation and dislike men</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
+    </div><br /><div class="order-top">
+      <li class="im-g"><a href="#"><img src="static/images/8p.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>Diners - Calangute Grande</h4>
+        <p>EuropeanNorth Indian</p>
+        <p>voluptates repudiandae sint et molestiae non</p>
+      </li>
+      <li class="bt-nn">
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">Explore</a>
+      </li>
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>
-<script type="text/javascript">
-  pageNum=<?php echo $pageNum;?>;
-  f1 = function(data) {
-    if (data.status != 0) {
-      alert(data.msg);
-      return;
-    }
-    for (var i = 0; i < data.count; i += 4) {
-      $('#shops').append("<div class=\"row\" id=row"+i+"><>");
-      for (var j = 0; j < 4 && i + j < data.count; j++) {
-      	$('.row'+i).append(wrap_shop(data.data[i + j]));
-      }
-    }
-  };
-  f2 = function(data) {
-    alert("Something amazing happened! Please try again later.");
-  }
-  url = BASEURL+'shop/s/'+pageNum.toString();
-  $(function(){
-    ajax_send(url,0,f1,f2);
-    $('.pageBar').append(pageDIV(pageNum>0?pageNum:1,'Prev',tk));
-    for (var i=1;i<=<?php echo $count;?>;++i) {
-      $('.pageBar').append(pageDIV(i,i.toString(),tk));
-    }
-    $('.pageBar').append(pageDIV(<?php echo $pageNum+2>$count?$count:($pageNum+2)?>,'Next',tk));
-    $('.pageBar').append('<div class="clear"></div>');
-  });
-</script>
-
-<div class="pageBar" style="margin-top:15px;">
+<!-- about -->  
