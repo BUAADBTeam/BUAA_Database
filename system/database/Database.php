@@ -60,6 +60,18 @@ class Database {
 		$this->is_connected = true;
 	}
 
+	public function beginTransaction() {
+		$this->pdo->beginTransaction();
+	}
+
+	public function rollback() {
+		$this->pdo->rollback();
+	}
+
+	public function commit() {
+		$this->pdo->commit();
+	}
+
 	public function prepare($sql) {
 		$this->statement = $this->pdo->prepare($sql);
 		// $this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
