@@ -1,4 +1,5 @@
-function ajax_send(postURL,objJSON,sFunc,eFunc) {
+function ajax_send(postURL,objJSON,sFunc,eFunc)
+{
 	if (objJSON==0) {
 		$.ajax({
 				url: postURL,
@@ -18,11 +19,24 @@ function ajax_send(postURL,objJSON,sFunc,eFunc) {
 			error: eFunc
 		});
 }
-function wrap_shop(item) {
+
+function load_error(data)
+{
+	alert("加载失败，请重试");
+}
+
+function op_error(data)
+{
+	alert("操作失败，请重试");
+}
+
+function wrap_shop(item)
+{
 	return '<div class="col-xs-6 col-md-3"><div class="shop"><div class="thumbnail"><a href="'+BASEURL+'/shop/s/'+item.id+'"><img src="'+BASEURL+'/static/src/'+item.id+'.jpg" alt="Loading..."></a><p class="lead"><span class="label label-default">商家</span>'+item.name+'<br/><span class="label label-default">地址</span>'+item.addr+'</p></div></div></div>';
 }
 
-function wrap_cuisine(item) {
+function wrap_cuisine(item)
+{
 	res = '<div class="col-md-4 latis-left">'+
 			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
 				'<h3>'+item.name+'</h3>'+
@@ -45,7 +59,9 @@ function wrap_cuisine(item) {
 		'</div>';
 	return res;
 }
-function wrap_cuisine_manage(item) {
+
+function wrap_cuisine_manage(item)
+{
 	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
@@ -64,7 +80,9 @@ function wrap_cuisine_manage(item) {
 		'</div>';
 	return res;
 }
-function wrap_cuisine_order(item) {
+
+function wrap_cuisine_order(item)
+{
 	return '<div class="row">'+
               '<div class="col-lg-3 thumbnail">'+
               '<img src="'+BASEURL+item.pic+'" alt="...">'+
