@@ -1,4 +1,5 @@
-function ajax_send(postURL,objJSON,sFunc,eFunc) {
+function ajax_send(postURL,objJSON,sFunc,eFunc)
+{
 	if (objJSON==0) {
 		$.ajax({
 				url: postURL,
@@ -18,11 +19,24 @@ function ajax_send(postURL,objJSON,sFunc,eFunc) {
 			error: eFunc
 		});
 }
-function wrap_shop(item) {
+
+function load_error(data)
+{
+	alert("加载失败，请重试");
+}
+
+function op_error(data)
+{
+	alert("操作失败，请重试");
+}
+
+function wrap_shop(item)
+{
 	return '<div class="col-xs-6 col-md-3"><div class="shop"><div class="thumbnail"><a href="'+BASEURL+'/shop/s/'+item.id+'"><img src="'+BASEURL+'/static/src/'+item.id+'.jpg" alt="Loading..."></a><p class="lead"><span class="label label-default">商家</span>'+item.name+'<br/><span class="label label-default">地址</span>'+item.addr+'</p></div></div></div>';
 }
 
-function wrap_cuisine(item) {
+function wrap_cuisine(item)
+{
 	res = '<div class="col-md-4 latis-left">'+
 			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
 				'<h3>'+item.name+'</h3>'+
@@ -45,7 +59,9 @@ function wrap_cuisine(item) {
 		'</div>';
 	return res;
 }
-function wrap_cuisine_manage(item) {
+
+function wrap_cuisine_manage(item)
+{
 	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
@@ -64,7 +80,14 @@ function wrap_cuisine_manage(item) {
 		'</div>';
 	return res;
 }
-function wrap_cuisine_order(item) {
+
+function wrap_total_price(total)
+{
+	return '<div class="row"><div class="col-lg-4 col-md-offset-2"><h3>总计</h3></div><div class="col-lg-3 col-md-offset-3"><h3>￥'+parseFloat(total).toFixed(2)+'</h3></div></div>'
+}
+
+function wrap_cuisine_order(item)
+{
 	return '<div class="row">'+
               '<div class="col-lg-3 thumbnail">'+
               '<img src="'+BASEURL+item.pic+'" alt="...">'+
@@ -75,4 +98,26 @@ function wrap_cuisine_order(item) {
               '<div class="col-lg-2">&times;'+item.num+'</div>'+
               '<div class="col-lg-2">￥'+(item.num*item.price).toFixed(2)+'</div>'+
             '</div>';
+}
+
+function wrap_order(order)
+{
+	order.count = parseInt(order.count);
+	res = '<div class="order-top" id="order"'+order.id+' orderid="'+order.id+'">'+
+				'<li class="im-g"><img src="'+BASEURL+order.user.pic+'" class="img-responsive" alt=""></li>'+
+				'<li class="data"><h3>'+order.user.name+'</h3>'+
+				'<p>'+order.user.addr+'</p>'+
+				'<P>'+order.user.info+'</P>'+
+			'</li>'+
+			'<li class="bt-nn">'+
+				'<button type="button" class="btn btn-success btn-lg" onclick="showOrder('+order.id+')" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
+			'</li>'+
+			'<div class="clearfix"></div>'+
+			'<div id="orderDetail'+order.id+'" style="display:none">';
+	for (var i = 0; i < order.count; i++) {
+		res += wrap_cuisine_order(order.items[i]);
+	}
+	res += wrap_total_price(order.All);
+	res += '</div></div>';
+	return res;
 }
