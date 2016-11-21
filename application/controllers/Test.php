@@ -9,14 +9,13 @@ class Test extends Controller {
 		$this->load->model('testm');
 		$this->load->model('mailerm');
 		$this->load->model('acessm');
+		$this->load->model('orderm');
 	}
 
 	public function index()
 	{
-		if($this->acessm->userHasRole(3)) {
-		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
-		print_r($host);
-		}
+		$res = $this->orderm->getSpecificOrders(43, userMode);
+		print_r($res);
 	}
 	public function post()
 	{

@@ -37,14 +37,18 @@ class Orderm extends Model {
 			return null;
 		}
 		$this->db->connect();
-		$this->beginTransaction();
+		$this->db->beginTransaction();
 		$result = array();
+		$res = array();
 		if($mode == userMode) {
 			try {
-				$result = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id,), "S")['rows'];
-				foreach ($result as $key => $value) {
-					$value['items'] = $this->db->select(array(*), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id), "S")['rows'];
+				foreach ($res as $key => $value) {
+					$value['items'] = $this->db->select(array('*'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
 				}
+				$result['list'] = $res;
+				$res = $this->db->select(array('*'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
+				$result['user'] = $res;
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
@@ -52,10 +56,13 @@ class Orderm extends Model {
 		}
 		else if($mode == shopMode) {
 			try {
-				$result = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "shopid = :shopid", array(':shopid' => $id,), "S")['rows'];
-				foreach ($result as $key => $value) {
-					$value['items'] = $this->db->select(array(*), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
-				}
+				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "shopid = :shopid", array(':shopid' => $id), "S")['rows'];
+				foreach ($res as $key => $value) {
+					$value['items'] = $this->db->select(array('*'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+				}2
+				$result['list'] = $res;
+				$res = $this->db->select(array('*'), 'shop', 'id = :shopid', array(':shopid' => $id), "S")['row'];
+				$result['shop'] = $res;
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
@@ -63,6 +70,7 @@ class Orderm extends Model {
 		}
 		return $result;
 	}
+
 
 
 	function addFood($userid, $itemid, $amount, $shopid)
