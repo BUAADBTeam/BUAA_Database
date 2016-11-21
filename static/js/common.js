@@ -23,21 +23,23 @@ function wrap_shop(item) {
 }
 
 function wrap_cuisine(item) {
-	res = '<div class="col-md-4 latis-left" id="cuisine'+item.id+'" num="0" price="'+item.price+'">' + 
-			'<h3>'+item.name+'</h3>'+
-			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
-			'<div class="special-info grid_1 simpleCart_shelfItem">'+
-				'<p>'+item.info+'</p>'+
-				'<div class="cur">'+
-					'<div class="cur-left">'+
-						'<button type="button" class="offbtn btn btn-success disabled" id="subbtn'+item.id+'" onclick="sub('+item.id+')">-</button>'+
-						' <kbd class="" style="font-size:18px" id="cuisineNum'+item.id+'">0</kbd> '+
-						'<button type="button" class="offbtn btn btn-success" onclick="add('+item.id+')">+</button>'+
+	res = '<div class="col-md-4 latis-left">'+
+			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
+				'<h3>'+item.name+'</h3>'+
+				'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
+				'<div class="special-info grid_1 simpleCart_shelfItem">'+
+					'<p>'+item.info+'</p>'+
+					'<div class="cur">'+
+						'<div class="cur-left">'+
+							'<button type="button" class="offbtn btn btn-success disabled" id="subbtn'+item.id+'" onclick="sub('+item.id+')">-</button>'+
+							' <kbd class="" style="font-size:18px" id="cuisineNum'+item.id+'">0</kbd> '+
+							'<button type="button" class="offbtn btn btn-success" onclick="add('+item.id+')">+</button>'+
+						'</div>'+
+						'<div class="cur-right">'+
+							'<span class="item_price"><h6>only ￥'+item.price+'</h6></span>'+
+						'</div>'+
+						'<div class="clearfix"> </div>'+
 					'</div>'+
-					'<div class="cur-right">'+
-						'<span class="item_price"><h6>only ￥'+item.price+'</h6></span>'+
-					'</div>'+
-					'<div class="clearfix"> </div>'+
 				'</div>'+
 			'</div>'+
 		'</div>';
@@ -61,4 +63,16 @@ function wrap_cuisine_manage(item) {
 			'</div>'+
 		'</div>';
 	return res;
+}
+function wrap_cuisine_order(item) {
+	return '<div class="row">'+
+              '<div class="col-lg-3 thumbnail">'+
+              '<img src="'+BASEURL+item.pic+'" alt="...">'+
+              '</div>'+
+              '<div class="col-lg-9">&nbsp;</div>'+
+              '<div class="col-lg-9">&nbsp;</div>'+
+              '<div class="col-lg-5"><span style="font-size: 20px">'+item.name+'</span></div>'+
+              '<div class="col-lg-2">&times;'+item.num+'</div>'+
+              '<div class="col-lg-2">￥'+(item.num*item.price).toFixed(2)+'</div>'+
+            '</div>';
 }

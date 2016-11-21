@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div data-spy="affix" data-offset-top="60" data-offset-bottom="60">
   <div style="position: relative;left: 30px;top: 450px;">
     <span class="glyphicon glyphicon-shopping-cart" style="font-size: 20px"></span>￥<text id="sumPrice">0</text>
-    <div><button type="button" class="offbtn btn btn-primary"">马上结账</button></div>
+    <div><button type="button" class="offbtn btn btn-primary" data-toggle="modal" data-target="#mymodal-order" onclick="acount()">马上结账</button></div>
   </div>
 </div>
 <div class="latis">
@@ -21,9 +21,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </div>
 </div>
 
-<div>
-  
-</div>
 <script type="text/javascript">
   f1 = function(data) {
     if (data.status != 0) {
@@ -64,4 +61,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     $('#subbtn'+id).attr('class', 'offbtn btn btn-success');
     $('#sumPrice').html((parseFloat($('#sumPrice').html()) + parseFloat($('#cuisine'+id).attr('price'))).toFixed(2));
   }
+  // $.ajax({url:"http://localhost/db/test",data:{a:{b:2,C:3},b:4},type: 'post',success:function(result){
+  //     alert(result);
+  //   }, error:function(result){
+  //     alert(result);
+  //   }});
+  function acount() {
+    body = $('#mymodal-order .modal-body');
+    body.empty();
+    num = $('.cuisine').size();
+    all = 0;
+    for (var i = 0; i < num; i++) {
+      obj = $('.cuisine').eq(i);
+      if (obj.attr('num') != '0') {
+        item = new Object();
+        item.name = obj.attr('name');
+        item.id = obj.attr('cuisineid');
+        item.pic = obj.attr('picsrc');
+        item.price = obj.attr('price');
+        item.num = obj.attr('num');
+
+        tmp = item.num * item.price;
+        all += tmp;
+        body.append(wrap_cuisine_order(item));
+      }
+    }
+    body.append('<div class="row"><div class="col-lg-4 col-md-offset-2"><h3>总计</h3></div><div class="col-lg-3 col-md-offset-3"><h3>￥'+all.toFixed(2)+'</h3></div></div>');
+  }
 </script>
+<div class="modal fade" id="mymodal-order">
+
+    <div class="modal-dialog">
+        <div class="modal-content" style="">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title lead">订单</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="login_submit" onclick="" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认付款</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
