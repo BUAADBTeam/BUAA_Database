@@ -145,10 +145,10 @@ class Database {
 
 	public function select($data, $table, $where , $params = array(), $Lock = NULL) {
 		if(empty($where) || !is_string($where)) {
-				return 0;
+				throw new Exception(emptyWhere);
 		}
 		if (!is_array($data) || count($data) == 0) {
-				return 0;
+				throw new Exception(noColomnFound);
 		}
 		if($Lock === "S") {
 			$Lock = " LOCK IN SHARE MODE";
@@ -163,13 +163,14 @@ class Database {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
 		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where . $Lock);
+		// echo "$sql"."<br>";
 		return $this->query($sql, $params);
 	}
 
 
 	public function insert($table, $column, $params = array()) {
 		if (!is_array($column) || count($column) == 0) {
-			return 0;
+			throw new Exception(noColomnFound);
 		}
 		$field_arr = array();
 		$value_arr = array();
@@ -190,10 +191,10 @@ class Database {
 	
 	public function update($table, $column, $where = '', $params = array()) {
 		if(empty($where) || !is_string($where)) {
-			return 0;
+			throw new Exception(emptyWhere);
 		}
 		if (!is_array($column) || count($column) == 0) {
-			return 0;
+			throw new Exception(noColomnFound);
 		}
 		$field_arr = array();
 		foreach ($column as $key=>$val) {
@@ -210,7 +211,7 @@ class Database {
 	*/
 	public function delete($table, $where = "", $params = array()) {
 		if(empty($where) || !is_string($where)) {
-			return 0;
+			throw new Exception(emptyWhere);
 		}
 		$sql = "DELETE FROM " . $table . " WHERE " . $where;
 		return $this->query($sql, $params, $type = 1)['num_rows'];
@@ -220,82 +221,5 @@ class Database {
 		$this->pdo = null;
 		$this->is_connected = false;
 	}
-	/**
-	* 获得影响集合中
-	*/
-	// public function countAffected() {
-	// 	if ($this->statement) {
-	// 		return $this->statement->rowCount();
-	// 	} else {
-	// 		return 0;
-	// 	}
-	// }
 	
-	// /*
-	// * 获得插入id
-	// */
-	// public function getLastId() {
-	// 	return $this->pdo->lastInsertId();
-	// }
-	
-	// public function escape($value) {
-	// 	$search = array("\\", "\0", "\n", "\r", "\x1a", "'", '"');
-	// 	$replace = array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"');
-	// 	return str_replace($search, $replace, $value);
-	// }
-	
-	// /**
-	// * 返回错误信息也包括错误号
-	// */
-	// public function errorInfo() {
-	// 	return $this->statement->errorInfo();
-	// }
-	
-	// /**
-	// * 返回错误号
-	// */
-	// public function errorCode() {
-	// 	return $this->statement->errorCode();
-	// }
-
-	
-	/**
-	* 获得所有查询条件的值
-	*/
-	// public function fetchAll($sql, $params = array()) {
-	// 	$rows = $this->query($sql, $params)->rows;
-	// 	return !empty($rows) ? $rows : false;
-	// }
-	
-	// *
-	// * 获得单行记录的值
-	
-	// public function fetchAssoc($sql, $params = array()) {
-	// 	$row = $this->query($sql, $params)->row;
-	// 	return !empty($row) ? $row : false;
-	// }
-	
-	// *
-	// * 获得单个字段的值
-	
-	// public function fetchColumn($sql, $params = array()) {
-	// 	$data = $this->query($sql, $params)->row;
-	// 	if(is_array($data)) {
-	// 	foreach ($data as $value) {
-	// 		return $value;
-	// 	}
-	// }
-	// return false;
-	// }
-	
-	/**
-	* 返回statement记录集的行数
-	*/
-	// public function rowCount($sql, $params = array()) {
-	// 	return $this->query($sql, $params)->num_rows;
-	// }
-	
-	// public function __destruct() {
-	// 	$this->pdo = null;
-	// }
 }

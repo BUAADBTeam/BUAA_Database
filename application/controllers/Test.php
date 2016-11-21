@@ -12,6 +12,7 @@ class Test extends Controller {
 
 	public function index()
 	{
-		print_r(base_url());
+		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+		print_r($host);
 	}
 }

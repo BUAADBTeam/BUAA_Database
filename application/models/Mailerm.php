@@ -21,12 +21,15 @@ class Mailerm extends Model {
 		$mail->FromName = "点击以继续";
 		$mail->AddAddress("$address", "a");
 		$mail->Subject = "点击以继续"; //邮件标题
-		$mail->Body = "http://10.138.114.217/dataBase/register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
+		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? 
+			$_SERVER['HTTP_X_FORWARDED_HOST'] : 
+			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+		$mail->Body = "http://$host/dataBase/register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
 		if(!$mail->Send())
 		{
-		    echo "邮件发送失败. <p>";
-		    echo "错误原因: " . $mail->ErrorInfo;
-		    print($email);
+		    // echo "邮件发送失败. <p>";
+		    // echo "错误原因: " . $mail->ErrorInfo;
+		    // print($email);
 		    return false;
 		}
 		return true;

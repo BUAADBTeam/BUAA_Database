@@ -149,7 +149,7 @@ class Acessm extends Model
 
   private function validEmail($email)
   {
-    if(!is_string($email))
+    if(!filter_val($email, FILTER_VALIDATE_EMAIL))
       return FALSE;
     return TRUE;
   }
@@ -161,7 +161,7 @@ class Acessm extends Model
       if($mode == 'user') {
         if(isset($info['username']) && $this->validName($info['username'])) {
           $this->db->beginTransaction();
-          if($this->db->select('COUNT(*)', 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
+          if($this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
             $this->db->commit();
             $this->db->close();
             return TRUE;
@@ -185,10 +185,15 @@ class Acessm extends Model
       }
       else {
         if(isset($info['email']) && $this->validEmail($info['email'])
-        && isset($info['username']) && $this->validName($info['username']) && isset($info['password']) && $this->validType($info['password']) && isset($info['role']) && is_numeric($info['role']) && isset($info['address']) && is_string($info['address'])) {
+        && 
+        isset($info['username']) && $this->validName($info['username']) && 
+        isset($info['password']) && $this->validType($info['password']) && 
+        isset($info['role']) && is_numeric($info['role']) 
+        && isset($info['phone']) && is_numeric($info['phone'])) {
           $this->db->beginTransaction();
         // print_r($info);
-          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
+          if(($info['role'] + 0 <= 2 && $info['role'] + 0 >= 0) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0 && $this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
+            // print_r($info);
             $this->db->commit();
             $this->db->close();
             unset($info['action']);
@@ -205,7 +210,10 @@ class Acessm extends Model
       try {
         if(!$this->checkInfo($info))   
           return FALSE;
-
+        $neededInfo = array('username', 'password', 'email', 'role', 'phone');
+        if($info['role'] != 2) {
+          $neededInfo[] = 'address';
+        }
         $this->db->connect();
         $this->db->beginTransaction();
         $token = md5($info['username'].rand(1,100).'buaaDb');
@@ -213,8 +221,10 @@ class Acessm extends Model
         $params = array();
         $columns = array();
         foreach ($info as $key => $value) {
-          $columns["$key"] = ":$key";
-          $params[":$key"] = $value;
+          if(in_array($key, $neededInfo)) {
+            $columns["$key"] = ":$key";
+            $params[":$key"] = $value;
+          }
         }
         // $params[":password"] = md5($info['password']."buaadb");
         $columns['verified'] = 'FALSE';

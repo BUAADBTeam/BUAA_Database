@@ -129,8 +129,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-body">
                 <form id="login_form" class="form-horizontal" role="form" method="post" action="register">
                     <input type="hidden" name="_token" value="R5gsW4ojTAXtGfwlp4lfX9X64y9uP2n2ceyTZ76d">
-          <div class="alert alert-danger" role="alert" id="loginAlert" style="display:none;height:30px;padding:5px;">
-                        <span class="glyphicon glyphicon-remove-sign"></span><span id="errorMessage">&nbsp; 用户名或密码错误!</span>
+          <div class="alert alert-danger" role="alert" id="registerAlert" style="display:none;height:30px;padding:5px;">
+                        <span class="glyphicon glyphicon-remove-sign"></span><span id="registerErrorMessage">&nbsp; 用户名或密码错误!</span>
                     </div>
                     <div class="form-group">
                         <label for="InputAccount" class="col-md-2 control-label">用户名</label>
@@ -146,7 +146,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <input type="password" class="form-control" id="registerPassword" placeholder="请输入您的密码" name="password" value="">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="reAddress">
                         <label for="InputAddress" class="col-md-2 control-label">地址</label>
                         <div class="input-group col-md-9">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-eye-close"></span></span>
@@ -166,11 +166,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <label for="InputEmail" class="col-md-2 control-label">邮箱</label>
                         <div class="input-group col-md-9">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-eye-close"></span></span>
-                            <input type="text" class="form-control" id="registerEmail" placeholder="请输入您的邮箱" name="email" value="">
+                            <input type="text" class="form-control" id="registerEmail" placeholder="请输入您的邮箱" name="email" value="" >
                         </div>
                     </div>
 
+                    <div class="form-group">
+                          <div >
+                        <label for="InputEmail" class="col-md-2 control-label">身份</label>
+                          <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group btn-group">
+                              <button type="button" class="btn btn-default" onclick="selectRole(0)">用户</button>
+                            </div>
+                            <div class="btn-group btn-group">
+                              <button type="button" class="btn btn-default" onclick="selectRole(1)">商家</button>
+                            </div>
+                            <div class="btn-group btn-group">
+                              <button type="button" class="btn btn-default" onclick="selectRole(2)">快递员 </button>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
                     
+
                     <div class="modal-footer">
                         <button type="button" id="login_submit" onclick="PostRegister()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;&nbsp;注册 &nbsp; </button>
                     </div>
@@ -181,32 +198,97 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div><!-- /.modal -->
 
 <script type="text/javascript">
+    var role = 0;
+    var textbox = new Array('#registerUsername', '#registerPassword', '#registerPhone', '#registerEmail');
+    var status = 0;
+    // if(role == 0 || role == 2) {
+    //   $('#reAddress').attr('style', 'display:none');
+    // }
+    function checkInfo()
+    {
+      var i;
+      for(i = 0; i < textbox.length; i++) {
+        if($(textbox[i]).val() == '') {
+          return false;
+        }
+        if(role != 2 && $('#registerAddress').val() == '') {
+          return false;
+        }
+        return true;
+      }
+    }
     registerSuccess = function(data) {
-        if(data.status==0){
-            $('#loginAlert').attr('style','display:none;height:30px;padding:5px;');
-            window.location.reload();
+        if(status == 2 && data.status==<?php echo scRegistered; ?>){
+          $('#registerAlert').attr('style','display:none;height:30px;padding:5px;');
+          window.location.reload();
+        }
+        else if(status == 0 && data.status == <?php echo validName; ?>) {
+          status += 1;
+        }
+        else if(status == 1 && data.status == <?php echo validEmail; ?>) {
+          status += 1;
         }
         else{
-            $('#loginAlert').attr('style','height:30px;padding:5px;');
-            if(data.status==904){
-                $('#loginErrorMessage').text("账号或密码不能为空");
+            $('#registerAlert').attr('style','height:30px;padding:5px;');
+            if(data.status==<?php echo failedEmail; ?>){
+                $('#registerErrorMessage').text("邮件发送错误");
             }
-            else if(data.status==101){
-                $('#loginErrorMessage').text("用户名或密码错误");
+            else if(data.status==<?php echo errorInfo; ?>){
+                $('#registerErrorMessage').text("用户名或密码错误");
+            }
+            else if(data.status==<?php echo invalidName; ?>) {
+                $('#registerErrorMessage').text("此用户名已被注册啦"); 
+                status = 0;
+            }
+            else if(data.status==<?php echo invalidEmail; ?>) {
+                $('#registerErrorMessage').text("此邮箱已被注册或者格式不正确"); 
+                status = 0;
             }
             else{
-                $('#loginErrorMessage').text("未知错误");
+                $('#registerErrorMessage').text("未知错误");
             }
+            return ;
         }
-        alert(data.status);
+        // alert(data.status);
     };
     registerError = function(data) {
         alert("Something amazing happened! Please try again later.");
+        return ;
     };
     function PostRegister() {
         url = BASEURL + 'register/registerUser';
-        
-        ajax_send(url,{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI('1'), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), action:encodeURI('register')},registerSuccess,registerError);
+        if(!checkInfo()) {
+          alert("信息不完整");
+          return ;
+        }
+        ajax_send(BASEURL + 'register/checkUser', 
+          {username:encodeURI($('#registerUsername').val())}, 
+          registerSuccess, registerError);
+        ajax_send(BASEURL + 'register/checkEmail', 
+          {email:encodeURI($('#registerEmail').val())}, 
+          registerSuccess, registerError);
+        ajax_send(url,{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), action:encodeURI('register')},registerSuccess,registerError);
     };
+
+    function selectRole(r) {
+      if(r == 1) {
+        role = 1;
+        $('#reAddress').attr('style', '');
+      }
+      else if(r == 2) {
+        role = 2;
+        $('#reAddress').attr('style', 'display:none');
+      }
+      else {
+        role = 0;
+        $('#reAddress').attr('style', ''); 
+      }
+    }
+
+    function fuck() {
+      alert('fuck');
+    }
+
+
     // alert(hex_md5('asd'));
 </script>

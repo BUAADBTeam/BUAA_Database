@@ -17,12 +17,22 @@ class Register extends Controller {
 
 	public function checkUser()
 	{
-		return isset($_POST['username']) ? $this->acessm->checkInfo($_POST['username'], 'user') : False;
+		 if(isset($_POST['username']) ? $this->acessm->checkInfo($_POST['username'], 'user') : False) {
+		 	echo json_encode(array('status' => validName));
+		 }
+		 else {
+		 	echo json_encode(array('status' => invalidName));
+		 }
 	}
 
 	public function checkEmail()
 	{
-		return isset($_POST['email']) ? $this->acessm->checkInfo($_POST['email']) : False;
+		if(isset($_POST['email']) ? $this->acessm->checkInfo($_POST['email']) : False) {
+			echo json_encode(array('status' => validEmail));
+		}
+		else {
+			echo json_encode(array('status' => invalidEmail));
+		}
 	}
 
 	public function registerUser()
@@ -34,18 +44,18 @@ class Register extends Controller {
 			if($this->acessm->addUser($_POST, $token)) {
 				
 				if($this->mailerm->sendVerifyMail($_POST['username'], $_POST['email'], $token)) {
-					echo json_encode(array('status' => 0));			
+					echo json_encode(array('status' => scRegistered));			
 				}
 				else {
-					echo json_encode(array('status' => 12));
+					echo json_encode(array('status' => failedEmail));
 				}
 			}
 			else {
-				echo json_encode(array('status' => 904));				
+				echo json_encode(array('status' => errorInfo));				
 			}
 		}
 		else {
-			echo json_encode(array('status' => 101));			
+			echo json_encode(array('status' => incompleteInfo));			
 		}
 	}
 
