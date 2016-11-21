@@ -16,7 +16,7 @@ class Couponm extends Model {
 			$coupons = $this->db->select(array('money', 'downmoney'), 'coupons', "shopid = :shopid ORDER BY money DESC", array(':shopid' => $shopid), "S")['rows'];
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return 0;
 		}
 		$this->db->commit();
@@ -50,7 +50,7 @@ class Couponm extends Model {
 			}
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 		$this->db->commit();

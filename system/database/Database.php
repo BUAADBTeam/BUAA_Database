@@ -69,6 +69,7 @@ class Database {
 	}
 
 	public function commit() {
+		// if($this->is_connected)
 		$this->pdo->commit();
 	}
 
@@ -114,7 +115,7 @@ class Database {
 		$this->statement = $this->pdo->prepare($sql);
 		$result = false;
 		$this -> SqlBug .= "\n". '<!--DebugSql: ' . $sql . '-->' . "\n";
-
+		// print_r($params);
 		try {
 			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
@@ -203,6 +204,8 @@ class Database {
 			}
 		}
 		$sql = "UPDATE " . $table . " SET " . implode(',', $field_arr) . " WHERE " . $where;
+		// print($sql);
+		// print_r($params);
 		return $this->query($sql, $params, $type = 1)['num_rows'];
 	}
 	

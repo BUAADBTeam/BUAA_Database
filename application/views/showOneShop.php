@@ -98,7 +98,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     f2 = function(data) {
       alert('error');
     }
-    ajax_send(BASEURL+'test/post', cart, f1, f2);
+    ajax_send(BASEURL+'cart/submit', cart, f1, f2);
   }
 </script>
 <div class="modal fade" id="mymodal-order">

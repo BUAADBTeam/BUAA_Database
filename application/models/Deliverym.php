@@ -33,7 +33,7 @@ class Testm extends Model {
 			return True;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}
@@ -68,7 +68,7 @@ class Testm extends Model {
 			return $num == 1 ? True : False;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}
@@ -84,7 +84,7 @@ class Testm extends Model {
 			return $list;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return NULL;
 		}
 	}

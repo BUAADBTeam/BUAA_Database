@@ -38,19 +38,21 @@ class Cart extends Controller {
 					if(isset($value['id']) && isset($value['num']) 
 						&& is_numeric($value['id']) && is_numeric($value['num'])) {
 						// $info[] = array($value['id'], $value['num']);
-						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num']);
+						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num'], $_POST['sid']);
 					}
 				}
 			}
-			$this->acessm->db->selecetRole(1);
+
+			$this->acessm->db->selectRole(1);
 			$info = array('userid' => $_SESSION['userid'],
 				'shopid' => $_POST['sid']);
 
-			if($this->orderm->checkStatus($info, 0)) {
-			
-				$coupons = $this->couponm->calMoney($_POST['shopid']);
-				$this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()));
-			}
+			// if($this->orderm->checkStatus($info, 0)) {
+			// print_r($_POST);
+			$coupons = $this->couponm->calMoney($_POST['sid']);
+			// print_r($coupons);
+			$this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()), $coupons);
+			// }
 		}	
 	}
 

@@ -42,6 +42,19 @@ function base_url()
 	return $config['baseurl'];
 }
 
+function getRole()
+{
+	$this->load->model('acessm');
+	if($this->acessm->userHasRole(1)) {
+		echo 1;
+	}
+	else if($this->acessm->userHasRole(2)) {
+		echo 2;
+	}
+	else if($this->acessm->userHasRole(3)) {
+		echo 3;
+	}
+}
 // function getRawPost()
 // {
 // 	foreach (preg_split('/&/', $GLOBALS['HTTP_RAW_POST_DATA']) as $value) {

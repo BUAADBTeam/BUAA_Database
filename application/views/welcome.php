@@ -275,7 +275,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     checkEmailSuccess = function(data) {
       if(data.status == <?php echo validEmail; ?>) {
         $('#registerAlert').attr('style','display:none;height:30px;padding:5px;');
-          ajax_send(BASEURL + 'register/registerUser',{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), phone:encodeURI($('#registerPhone').val()), action:encodeURI('register')},registerSuccess,registerError);
+          ajax_send(BASEURL + 'register/registerUser',{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role+1), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), phone:encodeURI($('#registerPhone').val()), action:encodeURI('register')},registerSuccess,registerError);
         }
       else if(data.status==<?php echo invalidEmail; ?>) {
         $('#registerAlert').attr('style','height:30px;padding:5px;');

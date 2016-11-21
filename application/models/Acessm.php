@@ -26,7 +26,7 @@ class Acessm extends Model
   	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
       $user = $_SESSION['user'];
 
-  	 
+  	   
         $this->db->connect();
         $this->db->beginTransaction();
         try {
@@ -56,14 +56,16 @@ class Acessm extends Model
 
   function userIsLoggedIn()
   {
+
       if (isset($_POST['action']) and $_POST['action'] == 'login') {
         if (!isset($_POST['user']) or $_POST['user'] == '' or
           !isset($_POST['pass']) or $_POST['pass'] == '') {
           $GLOBALS['loginError'] = 'Please fill in both fields';
+
           return False;
         }
         $password = md5($_POST['pass'] . 'buaadb');
-
+        // print_r($password);
         if ($this->databaseContainsUser($_POST['user'], $password)) {
           
           $this->db->connect();

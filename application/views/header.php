@@ -151,6 +151,6 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
     function PostLogin() {
         url = BASEURL + 'login/check';
         
-        ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val())},loginSuccess,loginError);
+        ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
     };
 </script>

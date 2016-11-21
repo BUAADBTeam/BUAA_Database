@@ -7,6 +7,7 @@ class Orderm extends Model {
 	function __construct()
 	{
 		parent::__construct();
+		
 	}
 
 	function getCart($userid)
@@ -30,14 +31,14 @@ class Orderm extends Model {
 	    }
 	}
 
-	function getSpecificOrder($userid, $status)
+	function getSpecificOrder($userid, $status, $mode = )
 	{
 		$this->db->connect();
-		return $this->db->select('*', 'orders', "userid = :userid AND status = :status", array(':userid' => $userid, ':status' => $status))['rows'];
+		$this->db->select('*', 'orders', "userid = :userid AND status = :status", array(':userid' => $userid, ':status' => $status))['rows'];
 	}
 
 
-	function addFood($userid, $itemid, $amount)
+	function addFood($userid, $itemid, $amount, $shopid)
 	{
 		if (! is_numeric($amount) || !($amount + 0 > 0) || !(is_numeric($itemid) && is_numeric($userid))) {
 			$this->db->close();
@@ -48,11 +49,13 @@ class Orderm extends Model {
 		$this->db->beginTransaction();
 		try {
 			// $sql = "SELECT price 
-	  //       		FROM products
+	  //       		FROM cuisine
 	  //       		WHERE id = $itemid";
 	  //       $sth = $pdo->prepare($sql);
 	  //       $sth->execute();
-			$result = $this->db->select(array('price'), 'products', "id = $itemid", "S")['row'];
+
+			$result = $this->db->select(array('price'), 'cuisine', "id = $itemid", array(), "S")['row'];
+
 			if (!empty($result))
             	$price = $result['price'];	        
             else {
@@ -68,13 +71,12 @@ class Orderm extends Model {
             // // $sth = $pdo->prepare($sql);
             // $sth->bindParam(':userid', $userid);
             // $sth->execute();
-            $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status < 2", array(':userid' => $userid), "S")->row;
+            $result = $this->db->select(array('orderid'), 'orders', "userid = :userid AND status = 0", array(':userid' => $userid), "S")['row'];
             if (count($result) > 0)
             	$orderid = $result['orderid'];
             else {
-            	$this->db->commit();
-            	$this->db->close();
-            	return False;
+            	$orderid = $this->db->insert('orders', array('userid' => ':userid', 'shopid' => ':shopid', 'status' => '0', 'total' => '0'), array(':userid' => $userid, ':shopid' => $shopid));
+
             }
              // $sql = "SELECT COUNT(*) 
             // -- 		FROM orderitems
@@ -94,7 +96,7 @@ class Orderm extends Model {
 		        	"userid = :userid  AND orderid = :orderid AND itemid = :itemid",
 		        	array(':userid' => $userid, ':orderid' => $orderid, ':itemid' => $itemid));
 		        if($num == 0) {
-		        	$this->db->rollback()
+		        	$this->db->rollback();
 		        	$this->db->close();
 		        	return False;
 		        }
@@ -102,7 +104,7 @@ class Orderm extends Model {
 	        else {
 				
 		        $this->db->insert('orderitems', 
-		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount, 'status' => '0'), 
+		        	array('userid' => ':userid', 'orderid' => ':orderid', 'itemid' => ':itemid', 'amount' => $amount), 
 		        		array(':userid' => $userid,
 		        			':orderid' => $orderid,
 		        			':itemid' => $itemid));
@@ -141,7 +143,7 @@ class Orderm extends Model {
 		$this->db->beginTransaction();
 		try {
 			$sql = "SELECT price 
-	        		FROM products
+	        		FROM cuisine
 	        		WHERE id = $itemid LOCK IN SHARE MODE";
 	        $this->db->prepare($sql);
 	        $result = $this->db->execute($mode = 'SELECT')['row'];
@@ -158,7 +160,7 @@ class Orderm extends Model {
 
             $result = $this->db->select(array('orderid'), 'orders', 
             	"userid = :userid AND status < 2",
-            	array(':userid' => $userid), "S")->row;
+            	array(':userid' => $userid), "S")['row'];
             if (!empty($result))
             	$orderid = $result['orderid'];
             else {
@@ -170,7 +172,7 @@ class Orderm extends Model {
 
 			$result = $this->db->select(array('amount'), 'orderitems',
 				"orderid = $orderid AND itemid = :itemid",
-				array(':itemid' => $itemid), "S")->row;	        
+				array(':itemid' => $itemid), "S")['row'];	        
 	        if($result[0] > $amount) {
 	        	$sql = "UPDATE orderitems
 	        			SET amount = amount - $amount
@@ -265,18 +267,19 @@ class Orderm extends Model {
 		}
 			
 
-		$num = $this->db->update('orders', array_merge(array('status' => 'status + 1'), $updArray), $sql, $param);
-		$this->db->close();
+		$num = $this->db->update('orders', array_merge(array('status' => '1'), $updArray), $sql, $param);
+		
 		return $num == 1 ? True : False;
 	}
 
-	function submitOrder($info = array())
+	function submitOrder($info = array(), $coupons = array())
 	{
 		if(!$this->checkInfo($info))
 			return False;
 		
 		$this->db->connect();
-		$this->beginTransaction();
+		$this->db->beginTransaction();
+		$add = '';
 		try {
 			// $add = isset($info['address']) ? $;
 			!isset($info['address']) or ($add = $info['address']);
@@ -284,19 +287,30 @@ class Orderm extends Model {
 			if(empty($add)) {
 				$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row']['address'];
 				if(empty($add)) {
+
 					$this->db->commit();
 					$this->db->close();
 					return False;
 				}
 			}
 			$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row']['total'];
+			// print_r($info);
 			if(!isset($money)) {
 				$this->db->rollback();
 				$this->db->close();	
 			}
-			$money = $money - ((new Couponm())->calMoney($info['shopid'], $money));
-
-			$res = $this->updStatus($info, array('address' => $add, 'total' => $money));
+			// $this->load->model('couponm');
+			$downmoney = 0;
+			if(is_array($coupons)) {
+				foreach ($coupons as $key => $value) {
+					if($value['money'] <= $money) {
+						$downmoney =  $value['downmoney'];
+					}
+				}
+			}
+			$money = $money - $downmoney;
+			
+			$res = $this->updStatus($info, array('address' => $add), array('total' => $money));
 			if(!$res) {
 				$this->db->rollback();
 				$this->db->close();	
@@ -328,7 +342,7 @@ class Orderm extends Model {
 			return $res;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}
@@ -348,7 +362,7 @@ class Orderm extends Model {
 			return $res;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}
@@ -377,7 +391,7 @@ class Orderm extends Model {
 			return $res;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}
@@ -398,7 +412,7 @@ class Orderm extends Model {
 			return $res;
 		} catch(Exception $e) {
 			$this->db->rollback();
-			$this->db->close()
+			$this->db->close();
 			return False;
 		}
 	}

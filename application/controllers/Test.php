@@ -8,12 +8,15 @@ class Test extends Controller {
 		parent::__construct();
 		$this->load->model('testm');
 		$this->load->model('mailerm');
+		$this->load->model('acessm');
 	}
 
 	public function index()
 	{
+		if($this->acessm->userHasRole(3)) {
 		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
 		print_r($host);
+		}
 	}
 	public function post()
 	{
