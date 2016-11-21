@@ -117,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   url = BASEURL+'shop/r/';//+pageNum.toString();
   $(function(){
     ajax_send(url,0,f1,f2);
-  });
+  }); 
 </script>
 <div class="modal fade" id="mymodal-register">
     <div class="modal-dialog">
