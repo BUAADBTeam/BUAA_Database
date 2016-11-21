@@ -30,9 +30,21 @@ class Cart extends Controller {
 	public function submit()
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'submitOrder') {
+			if(isset($_POST['data']) && isset($_POST['sid']) 
+				&& is_numeric($_POST['sid']) && is_array($_POST['data'])) {
+				$neededInfo = array('id', 'num');
+				$info = array();
+				foreach ($_POST['data'] as $key => $value) {
+					if(isset($value['id']) && isset($value['num']) 
+						&& is_numeric($value['id']) && is_numeric($value['num'])) {
+						// $info[] = array($value['id'], $value['num']);
+						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num']);
+					}
+				}
+			}
 			$this->acessm->db->selecetRole(1);
 			$info = array('userid' => $_SESSION['userid'],
-				'shopid' => $_POST['shopid']);
+				'shopid' => $_POST['sid']);
 
 			if($this->orderm->checkStatus($info, 0)) {
 			
