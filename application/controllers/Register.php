@@ -41,7 +41,6 @@ class Register extends Controller {
 	public function registerUser()
 	{
 		$token = '';
-		getRawPost();
 		if(isset($_POST['action']) && $_POST['action'] == 'register') {
 			// print_r($_POST);
 			if($this->acessm->addUser($_POST, $token)) {

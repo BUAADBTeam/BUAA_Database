@@ -4,7 +4,6 @@ function ajax_send(postURL,objJSON,sFunc,eFunc) {
 				url: postURL,
 				type: 'post',
 				dataType: 'JSON',
-				contentType: 'application/json; charset=utf8',
 				success: sFunc,
 				error: eFunc
 			});
@@ -15,7 +14,6 @@ function ajax_send(postURL,objJSON,sFunc,eFunc) {
 			data: objJSON,
 			type: 'post',
 			dataType: 'JSON',
-			contentType: 'application/json; charset=utf8',
 			success: sFunc,
 			error: eFunc
 		});
