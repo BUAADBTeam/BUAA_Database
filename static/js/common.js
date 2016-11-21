@@ -56,7 +56,7 @@ function wrap_cuisine(item)
 			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
 				'<h3>'+item.name+'</h3>'+
 				'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
-				'<div class="special-info grid_1 simpleCart_shelfItem">'+
+				'<div class="special-info grid_1">'+
 					'<p>'+item.info+'</p>'+
 					'<div class="cur">'+
 						'<div class="cur-left">'+
@@ -80,7 +80,7 @@ function wrap_cuisine_manage(item)
 	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
-			'<div class="special-info grid_1 simpleCart_shelfItem">'+
+			'<div class="special-info grid_1">'+
 				'<p>'+item.info+'</p>'+
 				'<div class="cur">'+
 					'<div class="cur-left">'+

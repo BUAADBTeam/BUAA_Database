@@ -13,11 +13,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script> -->
+    <script src="<?php echo base_url();?>static/js/jquery.min11.js"></script>
     <script src="<?php echo base_url();?>static/js/bootstrap.js"></script>
     <script src="<?php echo base_url();?>static/js/md5.js"></script>
     <script src="<?php echo base_url();?>static/js/jquery.min.js"></script>
-    <script src="<?php echo base_url();?>static/js/simpleCart.min.js"> </script>
+    <!-- <script src="<?php echo base_url();?>static/js/simpleCart.min.js"> </script> -->
     <script src="<?php echo base_url();?>static/js/common.js"> </script>
     <script type="text/javascript">BASEURL='<?php echo base_url();?>';</script>
     <script type="text/javascript">ROLE=<?php echo getRole();?>;</script>
@@ -65,11 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="header-right1">
                 <div class="cart box_1">
-                    <a href="checkout.html">
-                        <h3> <span class="simpleCart_total"> $0.00 </span> (<span id="simpleCart_quantity" class="simpleCart_quantity"> 0 </span> items)<img src="images/bag.png" alt=""></h3>
-                    </a>
-                    <p><a href="javascript:;" class="simpleCart_empty">empty card</a></p>
-                    <div class="clearfix"> </div>
+                    
                 </div>
             </div>
             <div class="clearfix"> </div>

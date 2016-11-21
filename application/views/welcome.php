@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-md-4 latis-left">
       <h3>Maecenas ornare enim</h3>
       <img src="static/images/4.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
         <div class="cur">
           <div class="cur-left">
@@ -28,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-md-4 latis-left">
       <h3>Dis parturient montes</h3>
       <img src="static/images/1.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
         <div class="cur">
           <div class="cur-left">
@@ -44,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-md-4 latis-left">
       <h3>Curabitur congue blandit</h3>
       <img src="static/images/3.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
         <div class="cur">
           <div class="cur-left">
@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-md-4 latis-left">
       <h3>Maecenas ornare enim</h3>
       <img src="static/images/4.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
       </div>
       <div class="cur">
@@ -84,14 +84,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="col-md-4 latis-left">
       <h3>Dis parturient montes</h3>
       <img src="static/images/1.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
       </div>
     </div>
     <div class="col-md-4 latis-left">
       <h3>Curabitur congue blandit</h3>
       <img src="static/images/3.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1 simpleCart_shelfItem">
+      <div class="special-info grid_1">
         <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
       </div>
     </div>
