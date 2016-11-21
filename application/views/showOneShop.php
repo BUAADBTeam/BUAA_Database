@@ -66,11 +66,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   //   }, error:function(result){
   //     alert(result);
   //   }});
+  var cart = {data:new Array(), sid:shopId, All:0, cnt:0, action:'submitOrder'};
   function acount() {
     body = $('#mymodal-order .modal-body');
     body.empty();
     num = $('.cuisine').size();
     all = 0;
+    cart.data = new Array();
     for (var i = 0; i < num; i++) {
       obj = $('.cuisine').eq(i);
       if (obj.attr('num') != '0') {
@@ -80,13 +82,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         item.pic = obj.attr('picsrc');
         item.price = obj.attr('price');
         item.num = obj.attr('num');
-
+        cart.data[cart.cnt++] = item;
         tmp = item.num * item.price;
         all += tmp;
         body.append(wrap_cuisine_order(item));
       }
     }
+    cart.All = all;
     body.append('<div class="row"><div class="col-lg-4 col-md-offset-2"><h3>总计</h3></div><div class="col-lg-3 col-md-offset-3"><h3>￥'+all.toFixed(2)+'</h3></div></div>');
+  }
+  function sendCart() {
+    f1 = function(data) {
+      alert('success');
+    }
+    f2 = function(data) {
+      alert('error');
+    }
+    ajax_send(BASEURL+'test/post', cart, f1, f2);
   }
 </script>
 <div class="modal fade" id="mymodal-order">
@@ -100,7 +112,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-              <button type="button" id="login_submit" onclick="" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认付款</button>
+              <button type="button" id="login_submit" onclick="sendCart()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认付款</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

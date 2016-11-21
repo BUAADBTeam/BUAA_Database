@@ -15,4 +15,8 @@ class Test extends Controller {
 		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
 		print_r($host);
 	}
+	public function post()
+	{
+		print_r($_POST);
+	}
 }
