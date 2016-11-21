@@ -17,17 +17,20 @@ class Register extends Controller {
 
 	public function checkUser()
 	{
-		 if(isset($_POST['username']) ? $this->acessm->checkInfo($_POST['username'], 'user') : False) {
+		getRawPost();
+		 if(isset($_POST['username']) ? $this->acessm->checkInfo($_POST, 'user') : False) {
 		 	echo json_encode(array('status' => validName));
 		 }
 		 else {
+
 		 	echo json_encode(array('status' => invalidName));
 		 }
 	}
 
 	public function checkEmail()
 	{
-		if(isset($_POST['email']) ? $this->acessm->checkInfo($_POST['email']) : False) {
+		getRawPost();
+		if(isset($_POST['email']) ? $this->acessm->checkInfo($_POST, 'email') : False) {
 			echo json_encode(array('status' => validEmail));
 		}
 		else {
@@ -38,6 +41,7 @@ class Register extends Controller {
 	public function registerUser()
 	{
 		$token = '';
+		getRawPost();
 		if(isset($_POST['action']) && $_POST['action'] == 'register') {
 			// print_r($_POST);
 			if($this->acessm->addUser($_POST, $token)) {
@@ -50,6 +54,7 @@ class Register extends Controller {
 				}
 			}
 			else {
+				// print_r($_POST);
 				echo json_encode(array('status' => errorInfo));				
 			}
 		}
@@ -60,6 +65,7 @@ class Register extends Controller {
 
 	public function verify()
 	{
+		print_r($_GET);
 		if($this->acessm->verify($_GET['username'], $_GET['token']))
 			echo "fuck";
 	}

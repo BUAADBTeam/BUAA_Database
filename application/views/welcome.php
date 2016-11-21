@@ -117,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   url = BASEURL+'shop/r/';//+pageNum.toString();
   $(function(){
     ajax_send(url,0,f1,f2);
-  });
+  }); 
 </script>
 <div class="modal fade" id="mymodal-register">
     <div class="modal-dialog">
@@ -130,7 +130,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <form id="login_form" class="form-horizontal" role="form" method="post" action="register">
                     <input type="hidden" name="_token" value="R5gsW4ojTAXtGfwlp4lfX9X64y9uP2n2ceyTZ76d">
           <div class="alert alert-danger" role="alert" id="registerAlert" style="display:none;height:30px;padding:5px;">
-                        <span class="glyphicon glyphicon-remove-sign"></span><span id="registerErrorMessage">&nbsp; 用户名或密码错误!</span>
+                        <span class="glyphicon glyphicon-remove-sign" id = "regiErrIcon"></span><span id="registerErrorMessage">&nbsp; 用户名或密码错误!</span>
                     </div>
                     <div class="form-group">
                         <label for="InputAccount" class="col-md-2 control-label">用户名</label>
@@ -149,7 +149,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="form-group" id="reAddress">
                         <label for="InputAddress" class="col-md-2 control-label">地址</label>
                         <div class="input-group col-md-9">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-eye-close"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
                             <input type="text" class="form-control" id="registerAddress" placeholder="请输入您的地址" name="address" value="">
                         </div>
                     </div>
@@ -157,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="form-group">
                         <label for="InputPhone" class="col-md-2 control-label">电话号码</label>
                         <div class="input-group col-md-9">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-eye-close"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-signal"></span></span>
                             <input type="text" class="form-control" id="registerPhone" placeholder="请输入您的电话号码" name="phone" value="">
                         </div>
                     </div>
@@ -165,7 +165,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="form-group">
                         <label for="InputEmail" class="col-md-2 control-label">邮箱</label>
                         <div class="input-group col-md-9">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-eye-close"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
                             <input type="text" class="form-control" id="registerEmail" placeholder="请输入您的邮箱" name="email" value="" >
                         </div>
                     </div>
@@ -218,23 +218,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       }
     }
     registerSuccess = function(data) {
-        if(status == 2 && data.status==<?php echo scRegistered; ?>){
-          $('#registerAlert').attr('style','display:none;height:30px;padding:5px;');
-          window.location.reload();
+        if(data.status==<?php echo scRegistered; ?>){
+          $('#registerAlert').attr('style','height:30px;padding:5px;');
+          $('#registerErrorMessage').text("已经将验证邮件发送到您的邮箱");
+          // window.location.reload();
+          $('#regiErrIcon').attr('class', 'glyphicon glyphicon-ok');
+          $('#registerAlert').attr('class', 'alert alert-success');
         }
-        else if(status == 0 && data.status == <?php echo validName; ?>) {
-          status += 1;
-        }
-        else if(status == 1 && data.status == <?php echo validEmail; ?>) {
-          status += 1;
-        }
+        
         else{
             $('#registerAlert').attr('style','height:30px;padding:5px;');
             if(data.status==<?php echo failedEmail; ?>){
-                $('#registerErrorMessage').text("邮件发送错误");
+                $('#registerErrorMessage').text("验证邮件发送错误");
+                status = 0;
             }
             else if(data.status==<?php echo errorInfo; ?>){
                 $('#registerErrorMessage').text("用户名或密码错误");
+                status = 0;
             }
             else if(data.status==<?php echo invalidName; ?>) {
                 $('#registerErrorMessage').text("此用户名已被注册啦"); 
@@ -255,6 +255,37 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         alert("Something amazing happened! Please try again later.");
         return ;
     };
+    checkNameSuccess = function(data) {
+      if(data.status == <?php echo validName; ?>) {
+        $('#registerAlert').attr('style','display:none;height:30px;padding:5px;');
+          ajax_send(BASEURL + 'register/checkEmail', 
+          {email:encodeURI($('#registerEmail').val())}, 
+          checkEmailSuccess, registerError);
+        }
+      else if(data.status==<?php echo invalidName; ?>) {
+          $('#registerAlert').attr('style','height:30px;padding:5px;');
+
+          $('#registerErrorMessage').text("此用户名已被注册啦"); 
+          status = 0;
+      }
+      else{
+          $('#registerErrorMessage').text("未知错误");
+      }
+    };
+    checkEmailSuccess = function(data) {
+      if(data.status == <?php echo validEmail; ?>) {
+        $('#registerAlert').attr('style','display:none;height:30px;padding:5px;');
+          ajax_send(BASEURL + 'register/registerUser',{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), phone:encodeURI($('#registerPhone').val()), action:encodeURI('register')},registerSuccess,registerError);
+        }
+      else if(data.status==<?php echo invalidEmail; ?>) {
+        $('#registerAlert').attr('style','height:30px;padding:5px;');
+          $('#registerErrorMessage').text("此邮箱已被注册或者不正确的邮箱格式"); 
+          status = 0;
+      }
+      else {
+          $('#registerErrorMessage').text("未知错误"); 
+      }
+    };
     function PostRegister() {
         url = BASEURL + 'register/registerUser';
         if(!checkInfo()) {
@@ -263,11 +294,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ajax_send(BASEURL + 'register/checkUser', 
           {username:encodeURI($('#registerUsername').val())}, 
-          registerSuccess, registerError);
-        ajax_send(BASEURL + 'register/checkEmail', 
-          {email:encodeURI($('#registerEmail').val())}, 
-          registerSuccess, registerError);
-        ajax_send(url,{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), action:encodeURI('register')},registerSuccess,registerError);
+          checkNameSuccess, registerError);
+        
+        // ajax_send(url,{username:encodeURI($('#registerUsername').val()), password:hex_md5(encodeURI($('#registerPassword').val())), role:encodeURI(role), address:encodeURI($('#registerAddress').val()), email:encodeURI($('#registerEmail').val()), phone:encodeURI($('#registerPhone').val()), action:encodeURI('register')},registerSuccess,registerError);
     };
 
     function selectRole(r) {
