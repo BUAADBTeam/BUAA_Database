@@ -17,7 +17,6 @@ class Login extends Controller {
 
 	public function check()
 	{
-		getRawPost();
 		if($this->acessm->userIsLoggedIn()) {
 			if($this->acessm->userHasRole(1)) {
 				

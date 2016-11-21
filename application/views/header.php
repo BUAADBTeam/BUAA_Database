@@ -19,7 +19,6 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
     <script src="<?php echo base_url();?>static/js/bootstrap.js"></script>
     <script src="<?php echo base_url();?>static/js/md5.js"></script>
     <script src="<?php echo base_url();?>static/js/jquery.min.js"></script>
-    <link rel="stylesheet" href="<?php echo base_url();?>static/css/flexslider.css" type="text/css" media="screen" />
     <script src="<?php echo base_url();?>static/js/simpleCart.min.js"> </script>
     <script src="<?php echo base_url();?>static/js/common.js"> </script>
     <script type="text/javascript">BASEURL='<?php echo base_url();?>';</script>
