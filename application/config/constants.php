@@ -16,3 +16,7 @@ define('validName', 7);
 //Database.php
 define('emptyWhere', 1);
 define('noColomnFound', 2);
+
+//Orderm.php
+define('userMode', 1);
+define('shopMode', 2);

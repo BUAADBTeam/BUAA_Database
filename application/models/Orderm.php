@@ -31,10 +31,37 @@ class Orderm extends Model {
 	    }
 	}
 
-	function getSpecificOrder($userid, $status, $mode = )
+	function getSpecificOrders($id, $mode = userMode)
 	{
+		if(!in_array($mode, array(userMode, shopMode))) {
+			return null;
+		}
 		$this->db->connect();
-		$this->db->select('*', 'orders', "userid = :userid AND status = :status", array(':userid' => $userid, ':status' => $status))['rows'];
+		$this->beginTransaction();
+		$result = array();
+		if($mode == userMode) {
+			try {
+				$result = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id,), "S")['rows'];
+				foreach ($result as $key => $value) {
+					$value['items'] = $this->db->select(array(*), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+				}
+			} catch(Exception $e) {
+				$this->db->rollback();
+				$this->db->close();
+			}
+		}
+		else if($mode == shopMode) {
+			try {
+				$result = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "shopid = :shopid", array(':shopid' => $id,), "S")['rows'];
+				foreach ($result as $key => $value) {
+					$value['items'] = $this->db->select(array(*), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+				}
+			} catch(Exception $e) {
+				$this->db->rollback();
+				$this->db->close();
+			}
+		}
+		return $result;
 	}
 
 
