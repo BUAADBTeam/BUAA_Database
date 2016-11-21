@@ -149,7 +149,7 @@ class Acessm extends Model
 
   private function validEmail($email)
   {
-    if(!filter_val($email, FILTER_VALIDATE_EMAIL))
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL))
       return FALSE;
     return TRUE;
   }
@@ -160,6 +160,7 @@ class Acessm extends Model
       $this->db->connect();
       if($mode == 'user') {
         if(isset($info['username']) && $this->validName($info['username'])) {
+
           $this->db->beginTransaction();
           if($this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
             $this->db->commit();
@@ -174,7 +175,7 @@ class Acessm extends Model
       else if($mode == 'email') {
         if(isset($info['email']) && $this->validEmail($info['email'])) {
           $this->db->beginTransaction();
-          if($this->db->select('COUNT(*)', 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
+          if($this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0) {
             $this->db->commit();
             $this->db->close();
             return TRUE;
@@ -210,7 +211,7 @@ class Acessm extends Model
       try {
         if(!$this->checkInfo($info))   
           return FALSE;
-        $neededInfo = array('username', 'password', 'email', 'role', 'phone');
+        $neededInfo = array('username', 'password', 'email', 'role', 'phone', 'token');
         if($info['role'] != 2) {
           $neededInfo[] = 'address';
         }
@@ -226,6 +227,8 @@ class Acessm extends Model
             $params[":$key"] = $value;
           }
         }
+        // print_r($columns);
+        // print_r($params);
         // $params[":password"] = md5($info['password']."buaadb");
         $columns['verified'] = 'FALSE';
         try {

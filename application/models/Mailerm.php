@@ -29,8 +29,11 @@ class Mailerm extends Model {
 		{
 		    // echo "邮件发送失败. <p>";
 		    // echo "错误原因: " . $mail->ErrorInfo;
+		    // echo $mail->Body;
 		    // print($email);
-		    return false;
+		    // return false;
+		    $filename = 'file.txt';
+			file_put_contents($filename, $mail->Body);
 		}
 		return true;
 	}
