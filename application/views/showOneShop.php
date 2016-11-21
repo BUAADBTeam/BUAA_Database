@@ -89,7 +89,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       }
     }
     cart.All = all;
-    body.append('<div class="row"><div class="col-lg-4 col-md-offset-2"><h3>总计</h3></div><div class="col-lg-3 col-md-offset-3"><h3>￥'+all.toFixed(2)+'</h3></div></div>');
+    body.append(wrap_total_price(all.toFixed(2)));
   }
   function sendCart() {
     f1 = function(data) {

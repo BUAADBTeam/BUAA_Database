@@ -81,6 +81,11 @@ function wrap_cuisine_manage(item)
 	return res;
 }
 
+function wrap_total_price(total)
+{
+	return '<div class="row"><div class="col-lg-4 col-md-offset-2"><h3>总计</h3></div><div class="col-lg-3 col-md-offset-3"><h3>￥'+parseFloat(total).toFixed(2)+'</h3></div></div>'
+}
+
 function wrap_cuisine_order(item)
 {
 	return '<div class="row">'+
@@ -93,4 +98,26 @@ function wrap_cuisine_order(item)
               '<div class="col-lg-2">&times;'+item.num+'</div>'+
               '<div class="col-lg-2">￥'+(item.num*item.price).toFixed(2)+'</div>'+
             '</div>';
+}
+
+function wrap_order(order)
+{
+	order.count = parseInt(order.count);
+	res = '<div class="order-top" id="order"'+order.id+' orderid="'+order.id+'">'+
+				'<li class="im-g"><img src="'+BASEURL+order.user.pic+'" class="img-responsive" alt=""></li>'+
+				'<li class="data"><h3>'+order.user.name+'</h3>'+
+				'<p>'+order.user.addr+'</p>'+
+				'<P>'+order.user.info+'</P>'+
+			'</li>'+
+			'<li class="bt-nn">'+
+				'<button type="button" class="btn btn-success btn-lg" onclick="showOrder('+order.id+')" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
+			'</li>'+
+			'<div class="clearfix"></div>'+
+			'<div id="orderDetail'+order.id+'" style="display:none">';
+	for (var i = 0; i < order.count; i++) {
+		res += wrap_cuisine_order(order.items[i]);
+	}
+	res += wrap_total_price(order.All);
+	res += '</div></div>';
+	return res;
 }
