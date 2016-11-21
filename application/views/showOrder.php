@@ -1,7 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<script type="text/javascript">shopId='<?php echo $para['id']?>'</script>
+<script type="text/javascript">
+  $('#headerOrder').attr('class', 'active');
+</script>
 <!-- banner -->
 <!-- <div class="banner">
   
@@ -13,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script type="text/javascript">
-  loadf = function(data) {
+  load_order = function(data) {
     if (data.status != 0) {
       return;
     }
@@ -22,12 +24,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       $('#orderContainer').append(wrap_order(data.order[i]));
     }
   };
+  url = BASEURL+'order/';
+  if (isUser()) {
+    url += 'user';
+  }
+  if (isShop()) {
+    url += 'shop';
+  }
+  if (isDelivery()) {
+    url += 'delivery';
+  }
+  url += 'GetActiveOrder';
   $(function(){
-  	ajax_send(BASEURL + 'shop/getActiveOrder',0,loadf,load_error);
+    ajax_send(url,0,load_order,load_error);
   });
   function showOrder(id)
   {
-  	$('#mymodal-order .modal-body').html($('#orderDetail'+id).html());
+    $('#mymodal-order .modal-body').html($('#orderDetail'+id).html());
   }
 </script>
 <div class="modal fade" id="mymodal-order">

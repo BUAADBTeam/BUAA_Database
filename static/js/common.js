@@ -20,6 +20,21 @@ function ajax_send(postURL,objJSON,sFunc,eFunc)
 		});
 }
 
+function isUser()
+{
+	return ROLE == 1;
+}
+
+function isShop()
+{
+	return ROLE == 2;
+}
+
+function isDelivery()
+{
+	return ROLE == 3;
+}
+
 function load_error(data)
 {
 	alert("加载失败，请重试");
@@ -41,7 +56,7 @@ function wrap_cuisine(item)
 			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
 				'<h3>'+item.name+'</h3>'+
 				'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
-				'<div class="special-info grid_1 simpleCart_shelfItem">'+
+				'<div class="special-info grid_1">'+
 					'<p>'+item.info+'</p>'+
 					'<div class="cur">'+
 						'<div class="cur-left">'+
@@ -65,7 +80,7 @@ function wrap_cuisine_manage(item)
 	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
-			'<div class="special-info grid_1 simpleCart_shelfItem">'+
+			'<div class="special-info grid_1">'+
 				'<p>'+item.info+'</p>'+
 				'<div class="cur">'+
 					'<div class="cur-left">'+

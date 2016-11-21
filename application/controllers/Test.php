@@ -21,4 +21,8 @@ class Test extends Controller {
 	{
 		print_r($_POST);
 	}
+	public function role()
+	{
+		echo getRole();
+	}
 }
