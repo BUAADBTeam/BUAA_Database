@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <script type="text/javascript">
   $('#headerHome').attr('class', 'active');
-  $('#headerRegister').attr('style', '');
+  if (!isUser() && !isShop() && !isDelivery())$('#headerRegister').attr('style', '');
 </script>
 <!-- latis -->  
 <div class="latis">

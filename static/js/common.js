@@ -20,6 +20,21 @@ function ajax_send(postURL,objJSON,sFunc,eFunc)
 		});
 }
 
+function isUser()
+{
+	return ROLE == 1;
+}
+
+function isShop()
+{
+	return ROLE == 2;
+}
+
+function isDelivery()
+{
+	return ROLE == 3;
+}
+
 function load_error(data)
 {
 	alert("加载失败，请重试");

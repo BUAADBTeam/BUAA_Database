@@ -1,7 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-$act = array('welcome' => False, 'login' => false, 'register' => False);
-$act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -22,6 +20,7 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
     <script src="<?php echo base_url();?>static/js/simpleCart.min.js"> </script>
     <script src="<?php echo base_url();?>static/js/common.js"> </script>
     <script type="text/javascript">BASEURL='<?php echo base_url();?>';</script>
+    <script type="text/javascript">ROLE=<?php echo getRole();?>;</script>
 
 <body>
 <body>
@@ -36,10 +35,14 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
             <div class="head-nav">
                 <span class="menu"> </span>
                 <ul>
-                    <li id="headerHome"><a href="<?php echo base_url();?>welcome">Home</a></li>
-                    <li id="headerResturants"><a href="<?php echo base_url();?>shop">Resturants</a></li>
-                    <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">Sign In</a></li>
-                    <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">Register</a></li>
+                    <li id="headerHome"><a href="<?php echo base_url();?>welcome">主页</a></li>
+                    <li id="headerResturants"><a href="<?php echo base_url();?>shop">餐厅</a></li>
+                    <li id="headerResturants" style="display:none"><a href="<?php echo base_url();?>shop"></a></li>
+                    <li id="headerShop" style="display:none"><a href="<?php echo base_url();?>shop/manage">我的餐厅</a></li>
+                    <li id="headerOrder" style="display:none"><a href="<?php echo base_url();?>order">我的订单</a></li>
+                    <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
+                    <li id="headerSignOut" style="display:none"><a href="">登出</a></li>
+                    <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">注册</a></li>
                     <div class="clearfix"> </div>
                 </ul>
                 <!-- script-for-nav -->
@@ -49,6 +52,14 @@ $act[empty($_GET) ? 'welcome' : array_keys($_GET)[0]] = True;
                         // Animation complete.
                       });
                     });
+                    if (isUser() || isShop() || isDelivery()) {
+                        $('#headerSignIn').attr('style', 'display:none');
+                        $('#headerOrder').attr('style', '');
+                        $('#headerSignOut').attr('style', '');
+                    }
+                    if (isShop()) {
+                        $('#headerShop').attr('style', '');
+                    }
                 </script>
                 <!-- script-for-nav -->
             </div>

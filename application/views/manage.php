@@ -1,7 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<script type="text/javascript">shopId='<?php echo $para['id']?>'</script>
+<script type="text/javascript">
+  shopId='<?php echo $para['id']?>';
+  $('#headerShop').attr('class', 'active');
+</script>
 <!-- banner -->
 <!-- <div class="banner">
   

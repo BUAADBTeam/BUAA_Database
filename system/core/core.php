@@ -44,15 +44,20 @@ function base_url()
 
 function getRole()
 {
-	$this->load->model('acessm');
+	return 1;
+	$it = get_instance();
+	$it->load->model('acessm');
+	if (!$it->acessm->userIsLoggedIn()) {
+		return 0;
+	}
 	if($this->acessm->userHasRole(1)) {
-		echo 1;
+		return 1;
 	}
 	else if($this->acessm->userHasRole(2)) {
-		echo 2;
+		return 2;
 	}
 	else if($this->acessm->userHasRole(3)) {
-		echo 3;
+		return 3;
 	}
 }
 // function getRawPost()
