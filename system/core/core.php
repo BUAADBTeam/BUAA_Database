@@ -42,13 +42,13 @@ function base_url()
 	return $config['baseurl'];
 }
 
-function getRawPost()
-{
-	foreach (preg_split('/&/', $GLOBALS['HTTP_RAW_POST_DATA']) as $value) {
-		$d = preg_split('/=/', $value);
-		$_POST[$d[0]] = urldecode($d[1]);
-	}
-}
+// function getRawPost()
+// {
+// 	foreach (preg_split('/&/', $GLOBALS['HTTP_RAW_POST_DATA']) as $value) {
+// 		$d = preg_split('/=/', $value);
+// 		$_POST[$d[0]] = urldecode($d[1]);
+// 	}
+// }
 require_once BASEPATH.'core/Router.php';
 $router = new Router($url);
 $router->work();

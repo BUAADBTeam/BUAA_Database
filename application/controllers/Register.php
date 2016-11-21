@@ -17,7 +17,6 @@ class Register extends Controller {
 
 	public function checkUser()
 	{
-		getRawPost();
 		 if(isset($_POST['username']) ? $this->acessm->checkInfo($_POST, 'user') : False) {
 		 	echo json_encode(array('status' => validName));
 		 }
@@ -29,7 +28,6 @@ class Register extends Controller {
 
 	public function checkEmail()
 	{
-		getRawPost();
 		if(isset($_POST['email']) ? $this->acessm->checkInfo($_POST, 'email') : False) {
 			echo json_encode(array('status' => validEmail));
 		}
@@ -41,7 +39,6 @@ class Register extends Controller {
 	public function registerUser()
 	{
 		$token = '';
-		getRawPost();
 		if(isset($_POST['action']) && $_POST['action'] == 'register') {
 			// print_r($_POST);
 			if($this->acessm->addUser($_POST, $token)) {
