@@ -25,17 +25,19 @@ function wrap_shop(item) {
 }
 
 function wrap_cuisine(item) {
-	res = '<div class="col-md-4 latis-left">' + 
+	res = '<div class="col-md-4 latis-left" id="cuisine'+item.id+'" num="0" price="'+item.price+'">' + 
 			'<h3>'+item.name+'</h3>'+
 			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
 			'<div class="special-info grid_1 simpleCart_shelfItem">'+
 				'<p>'+item.info+'</p>'+
 				'<div class="cur">'+
 					'<div class="cur-left">'+
-						'<div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>'+
+						'<button type="button" class="offbtn btn btn-success disabled" id="subbtn'+item.id+'" onclick="sub('+item.id+')">-</button>'+
+						' <kbd class="" style="font-size:18px" id="cuisineNum'+item.id+'">0</kbd> '+
+						'<button type="button" class="offbtn btn btn-success" onclick="add('+item.id+')">+</button>'+
 					'</div>'+
 					'<div class="cur-right">'+
-						'<div class="item_add"><span class="item_price"><h6>only ￥'+item.price+'</h6></span></div>'+
+						'<span class="item_price"><h6>only ￥'+item.price+'</h6></span>'+
 					'</div>'+
 					'<div class="clearfix"> </div>'+
 				'</div>'+
