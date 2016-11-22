@@ -44,7 +44,7 @@ function base_url()
 
 function getRole()
 {
-	isset($_SESSION) or session_start();
+	
 	// print_r($_SESSION);
 	if(!isset($_SESSION['role']) || !is_numeric($_SESSION['role']) || $_SESSION['role'] > 3 || $_SESSION['role'] < 0)
 		return 0;
@@ -72,6 +72,7 @@ function getRole()
 // 		$_POST[$d[0]] = urldecode($d[1]);
 // 	}
 // }
+isset($_SESSION) or session_start();
 require_once BASEPATH.'core/Router.php';
 $router = new Router($url);
 $router->work();

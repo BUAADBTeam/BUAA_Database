@@ -42,7 +42,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerShop" style="display:none"><a href="<?php echo base_url();?>shop/manage">我的餐厅</a></li>
                     <li id="headerOrder" style="display:none"><a href="<?php echo base_url();?>order">我的订单</a></li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
-                    <li id="headerSignOut" style="display:none"><a href="">登出</a></li>
+                    <li id="headerSignOut" style="display:none" onclick="PostLogout()"><a href="">登出</a></li>
                     <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">注册</a></li>
                     <div class="clearfix"> </div>
                 </ul>
@@ -165,4 +165,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
     };
+    logoutSuccess = function(data) {
+        if(data.status == 0) {
+            window.location.reload();
+        }
+        else {
+            alert('您还没有登录');
+        }
+    }
+    function PostLogout() {
+        url = BASEURL + 'logout';
+        ajax_send(url,{action:encodeURI('logout')}, logoutSuccess, op_error);  
+    }
 </script>

@@ -111,8 +111,9 @@ class Acessm extends Model
         unset($_SESSION['pass']);
         unset($_SESSION['userid']);
         unset($_SESSION['role']);
-        header('Location: ' . base_url());
-        exit();
+        return True;
+        // header('Location: ' . base_url());
+        // exit();
       }
 
       isset($_SESSION) or session_start();
