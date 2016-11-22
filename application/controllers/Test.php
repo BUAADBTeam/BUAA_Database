@@ -59,4 +59,8 @@ class Test extends Controller {
 		}
 		// echo realpath('.');
 	}
+	public function orders()
+	{
+		print_r($this->orderm->getSpecificOrders(43));
+	}
 }

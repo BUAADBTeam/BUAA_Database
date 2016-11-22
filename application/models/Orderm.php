@@ -47,9 +47,9 @@ class Orderm extends Model {
 					$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
 					$res[$i]['count'] = count($res[$i]['items']);
 					for($j = 0; $j < count($res[$i]['items']); $j += 1) {
-						$res = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
-						unset($res[0]);unset($res[1]);unset($res[2]);
-						$res[$i]['items'][$j] = array_merge($res[$i]['items'][$j], $res);
+						$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
+						unset($resu[0]);unset($resu[1]);unset($resu[2]);
+						$res[$i]['items'][$j] = array_merge($res[$i]['items'][$j], $resu);
 					}
 				}
 				$result['list'] = $res;
