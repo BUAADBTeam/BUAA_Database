@@ -454,8 +454,26 @@ class Orderm extends Model {
 		}
 	}
 
+	function deliveryAcceptOrder($info = array())
+	{
+		$this->db->connect();
+		$this->db->beginTransaction();
+		try {
+			$res = $this->updStatus(orderAllocated, $info);
+			if(!$res)
+				$this->db->rollback();
+			else
+				$this->db->commit();
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close();
+			return False;
+		}
+	}
 	
-	function CompleteOrder($info = array())
+	function completeOrder($info = array())
 	{
 	
 		$this->db->connect();
