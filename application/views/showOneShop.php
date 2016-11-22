@@ -93,12 +93,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   }
   function sendCart() {
     f1 = function(data) {
-      alert('success');
+      if (data.status == 0) {
+        window.location.href=BASEURL+"order";
+      }
+      else {
+        op_error(data);
+      }
     }
-    f2 = function(data) {
-      alert('error');
-    }
-    ajax_send(BASEURL+'cart/submit', cart, f1, f2);
+    ajax_send(BASEURL+'cart/submit', cart, f1, op_error);
   }
 </script>
 <div class="modal fade" id="mymodal-order">
@@ -112,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-              <button type="button" id="login_submit" onclick="sendCart()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认付款</button>
+              <button type="button" id="login_submit" onclick="sendCart()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认提交</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
