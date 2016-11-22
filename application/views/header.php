@@ -43,19 +43,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerOrder" style="display:none;" onmouseover="dspl()" onmouseout="$('.submenu').attr('style', 'display:none');">
                         <a href="<?php echo base_url();?>order">我的订单</a>
                         <ul class="submenu" style="display: none">
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">全部订单</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待发货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待收货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待评价</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(-1)">全部订单</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(1)">等待付款</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(4)">等待发货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(5)">等待收货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(6)">等待评价</a></li>
                         </ul>
-                        <script type="text/javascript">
-                            function dspl() {
-                                //alert($('#headerOrder'));
-                                $('.submenu').attr('style', 'position: absolute;');
-                                $('.submenu li').attr('style', 'display: block;position:relative');
-                            }
-
-                        </script>
                     </li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
                     <li id="headerSignOut" style="display:none" onclick="PostLogout()"><a href="">登出</a></li>
