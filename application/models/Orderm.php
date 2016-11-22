@@ -43,8 +43,14 @@ class Orderm extends Model {
 		if($mode == userMode) {
 			try {
 				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id), "S")['rows'];
-				foreach ($res as $key => $value) {
-					$value['items'] = $this->db->select(array('id'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+				for($i = 0; $i < count($res); $i += 1) {
+					$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
+					$res[$i]['count'] = count($res[$i]['items']);
+					for($j = 0; $j < count($res[$i]['items']); $j += 1) {
+						$res = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
+						unset($res[0]);unset($res[1]);unset($res[2]);
+						$res[$i]['items'][$j] = array_merge($res[$i]['items'][$j], $res);
+					}
 				}
 				$result['list'] = $res;
 				$res = $this->db->select(array('username', 'photo', 'address'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
