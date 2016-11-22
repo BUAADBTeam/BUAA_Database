@@ -58,10 +58,10 @@ function getRole()
 	if($it->acessm->userHasRole(userMode)) {
 		return userMode;
 	}
-	else if($this->acessm->userHasRole(shopMode)) {
+	else if($it->acessm->userHasRole(shopMode)) {
 		return shopMode;
 	}
-	else if($this->acessm->userHasRole(deliveryMode)) {
+	else if($it->acessm->userHasRole(deliveryMode)) {
 		return deliveryMode;
 	}
 	return 0;

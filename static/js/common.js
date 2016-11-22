@@ -115,9 +115,15 @@ function wrap_cuisine_order(item)
             '</div>';
 }
 
-function wrap_order(order, user)
+function wrap_order(order)
 {
 	order.count = parseInt(order.count);
+	if (isUser() || isDelivery() && order.status <= 4) {
+		order.user = order.shopInfo;
+	}
+	else {
+		order.user = order.userInfo;
+	}
 	var type = 'info';
 	var opo = '';
 	var op = '';
@@ -127,7 +133,7 @@ function wrap_order(order, user)
 	if (order.status == 1) {
 		if (isUser()) {
 			type = 'danger';
-			op = 'payCart()';
+			op = 'qrcode('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认付款';
 			available = true;
 		}
@@ -138,8 +144,8 @@ function wrap_order(order, user)
 	else if (order.status == 2) {
 		if (isShop()) {
 			type = 'danger';
-			opo = 'shopReceiveOrder()';
-			op = 'startDelivery()';
+			opo = 'shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			op = 'deliveyAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -150,7 +156,7 @@ function wrap_order(order, user)
 	else if (order.status == 3) {
 		if (isShop()) {
 			type = 'warning';
-			op = 'startDelivery()';
+			op = 'deliveyAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -167,7 +173,7 @@ function wrap_order(order, user)
 	else if (order.status == 5) {
 		if (isUser()) {
 			type = 'warning';
-			op = 'userReceiveOrder()';
+			op = 'userGetOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认收货';
 			available = true;
 		}
@@ -178,7 +184,7 @@ function wrap_order(order, user)
 	else if (order.status == 6) {
 		if (isUser()) {
 			type = 'warning';
-			op = 'assess()';
+			op = 'userComment('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '提交评价';
 			available = true;
 		}
@@ -199,9 +205,9 @@ function wrap_order(order, user)
 	}
 	if (order)
 	res = '<div class="order-top" id="order"'+order.orderid+' orderid="'+order.orderid+'">'+
-				'<li class="im-g"><img src="'+BASEURL+user.photo+'" class="img-responsive" alt=""></li>'+
-				'<li class="data"><h3>'+user.username+'</h3>'+
-				'<p>'+user.address+'</p>'+
+				'<li class="im-g"><img src="'+BASEURL+order.user.photo+'" class="img-responsive" alt=""></li>'+
+				'<li class="data"><h3>'+order.user.username+'</h3>'+
+				'<p>'+order.user.address+'</p>'+
 				'<P>'+order.info+'</P>'+
 			'</li>'+
 			'<li class="bt-nn">'+

@@ -22,10 +22,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     orders = data;
     updateOrder(0, 6);
-    $('#orderContainer').empty();
-    for (var i = 0; i < data.count; i++) {
-      $('#orderContainer').append(wrap_order(data.order.list[i], data.order.user));
-    }
   };
   url = BASEURL+'order/getOrder';
   $(function(){
@@ -45,9 +41,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
   }
   function dspl() {
-      //alert($('#headerOrder'));
-      $('.submenu').attr('style', 'position: absolute;');
-      $('.submenu li').attr('style', 'display: block;position:relative');
+    //alert($('#headerOrder'));
+    $('.submenu').attr('style', 'position: absolute;');
+    $('.submenu li').attr('style', 'display: block;position:relative');
+  }
+
+  function op_get_res(data) {
+    if (data.status == 0) {
+      window.location.reload();
+    }
+    else {
+      op_error(data);
+    }
+  }
+
+  function qrcode(oid, uid, sid) {
+    $('#mymodal-order .modal-body').html('<div align="center"><img src="http://qr.liantu.com/api.php?&w=200&text=http://baidu.com" /></div>');
+    $('#mymodal-order .modal-footer button').attr('onclick', 'userPaid('+oid+', '+uid+', '+sid+')');
+  }
+  function userPaid(oid, uid, sid) {
+    
+    ajax_send(BASEURL+'order/userPaid', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  }
+  function shopAcceptOrder(oid, uid, sid) {
+    ajax_send(BASEURL+'order/shopAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  }
+  function deliveyAcceptOrder(oid, uid, sid) {
+    ajax_send(BASEURL+'order/deliveyAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  }
+  function userGetOrder(oid, uid, sid) {
+    ajax_send(BASEURL+'order/userGetOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  }
+  function userComment(oid, uid, sid) {
+    ajax_send(BASEURL+'order/userComment', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
 </script>
 <div class="modal fade" id="mymodal-order">
