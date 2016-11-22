@@ -283,4 +283,22 @@ class Acessm extends Model
       }
   }
 
+  function insertPic($userid, $filename)
+  {
+      $this->db->connect();
+      $this->db->beginTransaction();
+      try { 
+        $num = $this->db->update('users', array('photo' => ':photo'), "userid = :userid", array(':photo' => $filename, ':userid' => $userid));
+        if($num != 1)
+          return FALSE;
+      } catch (Exception $e) {
+        $this->db->rollback();
+        $this->db->close();
+        return False;
+      }
+      $this->db->commit();
+      $this->db->close();
+      return True;
+  }
+
 }

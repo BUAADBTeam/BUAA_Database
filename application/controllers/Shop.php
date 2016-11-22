@@ -128,5 +128,9 @@ class Shop extends Controller {
 		echo json_encode($res);
 	}
 
-	
+	function changePhoto()
+	{
+    	 
+  	}
+
 }

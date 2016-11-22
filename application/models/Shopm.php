@@ -128,4 +128,22 @@ class Shopm extends Model {
 		// print_r($res);
 		return $res;
 	}
+
+	public function changePhoto($userid, $filename)
+	{
+      $this->db->connect();
+      $this->db->beginTransaction();
+      try { 
+        $num = $this->db->update('shop', array('pic' => ':pic'), "id = :id", array(':pic' => $filename, ':id' => $userid));
+        if($num != 1)
+          return FALSE;
+      } catch (Exception $e) {
+        $this->db->rollback();
+        $this->db->close();
+        return False;
+      }
+      $this->db->commit();
+      $this->db->close();
+      return True;
+  }
 }
