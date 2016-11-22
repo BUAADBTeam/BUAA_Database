@@ -79,6 +79,8 @@ class Orderm extends Model {
 				return null;
 			}
 		}
+		$this->db->commit();
+		$this->db->close();
 		return $result;
 	}
 
