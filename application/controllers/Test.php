@@ -23,12 +23,13 @@ class Test extends Controller {
         <title></title>  
     </head>  
     <body>  
-        <form action="test/upload" method="post" enctype="multipart/form-data">  
+        <form action="Register/registerPhoto" method="post" enctype="multipart/form-data">  
         选择要上传的图片：<input type="file" name="fileUp" />  
         <input type="submit" value="上传" />  
     </form>  
     </body>  
     </html>  ';
+		echo "<img src='http://qr.liantu.com/api.php?&w=200&text=http://baidu.com'>";
 	}
 	public function post()
 	{
@@ -42,7 +43,7 @@ class Test extends Controller {
 	public function upload()
 	{
 		$name;
-		if($this->uploadm->upload(realpath('.')."\static\src\\", $name)) {
+		if($this->uploadm->upload("static\src\\", $name)) {
 			echo "right".$name;
 		}
 		else {

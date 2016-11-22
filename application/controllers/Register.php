@@ -8,6 +8,7 @@ class Register extends Controller {
 		parent::__construct();
 		$this->load->model('acessm');
 		$this->load->model('mailerm');
+		$this->load->model('uploadm');
 	}
 
 	public function index()
@@ -67,8 +68,29 @@ class Register extends Controller {
 			echo "fuck";
 	}
 
-	public function test()
+	// public function test()
+	// {
+	// 	$this->mailerm->sendVerifyMail("user", "704788525@qq.com", "what");
+	// }
+	public function registerPhoto()
 	{
-		$this->mailerm->sendVerifyMail("user", "704788525@qq.com", "what");
+		$fileName = '';
+		if($this->acessm->userIsLoggedIn()) {
+			if($this->uploadm->upload("static\users\\", 
+				$fileName)) {
+				if($this->acessm->insertPic($_SESSION['userid'], $fileName)) {
+					echo "YES";
+				}
+				else {
+					echo "No";
+				}
+			}
+			else {
+				echo "no pic format";
+			}
+		}
+		else {
+			echo "didn't login";
+		}
 	}
 }

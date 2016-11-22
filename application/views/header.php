@@ -151,7 +151,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <script type="text/javascript">
     loginSuccess = function(data) {
-        if(data.status==0){
+        if(data.status==1 || data.status==2 || data.status==3){
             $('#loginAlert').attr('style','display:none;height:30px;padding:5px;');
             window.location.reload();
         }
@@ -173,7 +173,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     };
     function PostLogin() {
         url = BASEURL + 'login/check';
-        
+        if($('#username').val() == '' || $('#password').val() == '') {
+            $('#loginAlert').attr('style','height:30px;padding:5px;');
+            $('#loginErrorMessage').text("账号或密码不能为空");
+            return ;
+        }
         ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
     };
 </script>

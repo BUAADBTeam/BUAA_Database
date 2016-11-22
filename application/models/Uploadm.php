@@ -33,7 +33,7 @@ class Uploadm extends Model {
     // $uploaddir = "./files/";//设置文件保存目录 注意包含/      
     $type=array("jpg","gif","bmp","jpeg","png");//设置允许上传文件的类型     
     // $patch="http://127.0.0.1/cr_downloadphp/upload/files/";//程序所在路径
-    print_r($_FILES);
+    // print_r($_FILES);
     $a=strtolower($this->fileext($_FILES['fileUp']['name']));  
    //判断文件类型  
     if(!in_array(strtolower($this->fileext($_FILES['fileUp']['name'])),$type))  {  

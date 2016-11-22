@@ -24,7 +24,7 @@ class Mailerm extends Model {
 		$host = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? 
 			$_SERVER['HTTP_X_FORWARDED_HOST'] : 
 			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
-		$mail->Body = "http://$host/dataBase/register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
+		$mail->Body = base_url()."register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
 		if(!$mail->Send())
 		{
 		    // echo "邮件发送失败. <p>";
