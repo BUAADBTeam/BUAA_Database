@@ -40,51 +40,30 @@ class Orderm extends Model {
 		$this->db->beginTransaction();
 		$result = array();
 		$res = array();
-		if($mode == userMode) {
-			try {
-				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id), "S")['rows'];
-				for($i = 0; $i < count($res); $i += 1) {
-					$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
-					$res[$i]['count'] = count($res[$i]['items']);
-					for($j = 0; $j < count($res[$i]['items']); $j += 1) {
-						$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
-						unset($resu[0]);unset($resu[1]);unset($resu[2]);
-						$res[$i]['items'][$j] = array_merge($res[$i]['items'][$j], $resu);
-					}
-				}
-				$result['list'] = $res;
-				$res = $this->db->select(array('username', 'photo', 'address'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
-				$result['user'] = $res;
-			} catch(Exception $e) {
-				$this->db->rollback();
-				$this->db->close();
-				return null;
-			}
-		}
-		else if($mode == shopMode) {
-			try {
-				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "shopid = :shopid", array(':shopid' => $id), "S")['rows'];
-				foreach ($res as $key => $value) {
-					$value['items'] = $this->db->select(array('*'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
-				}
-				$result['list'] = $res;
-				$res = $this->db->select(array('*'), 'shop', 'id = :shopid', array(':shopid' => $id), "S")['row'];
-				$result['shop'] = $res;
-			} catch(Exception $e) {
-				$this->db->rollback();
-				$this->db->close();
-				return null;
-			}
-		}
-		else if($mode == deliveryMode) {
-			try {
+		$idName = $mode == userMode ? "user" : 
+				($mode == shopMode ? "shop" : "delivery");
 
-			} catch(Exception $e) {
-				$this->db->rollback();
-				$this->db->close();
-				return null;
+		// if($mode == userMode) {
+		try {
+			$res = $this->db->select(array('orderid', 'total', $idName."id", 'status'), 'orders', $idName."id = :".$idName."id", array(":".$idName."id" => $id), "S")['rows'];
+			for($i = 0; $i < count($res); $i += 1) {
+				$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
+				$res[$i]['count'] = count($res[$i]['items']);
+				for($j = 0; $j < count($res[$i]['items']); $j += 1) {
+					$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
+					unset($resu[0]);unset($resu[1]);unset($resu[2]);
+					$res[$i]['items'][$j] = array_merge($res[$i]['items'][$j], $resu);
+				}
 			}
+			$result['list'] = $res;
+			$res = $this->db->select(array('username', 'photo', 'address'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
+			$result['user'] = $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close();
+			return null;
 		}
+		// }
 		$this->db->commit();
 		$this->db->close();
 		return $result;
