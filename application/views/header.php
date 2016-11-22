@@ -40,7 +40,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerResturants"><a href="<?php echo base_url();?>shop">餐厅</a></li>
                     <li id="headerResturants" style="display:none"><a href="<?php echo base_url();?>shop"></a></li>
                     <li id="headerShop" style="display:none"><a href="<?php echo base_url();?>shop/manage">我的餐厅</a></li>
-                    <li id="headerOrder" style="display:none"><a href="<?php echo base_url();?>order">我的订单</a></li>
+                    <li id="headerOrder" style="display:none;" onmouseover="dspl()" onmouseout="$('.submenu').attr('style', 'display:none');">
+                        <a href="<?php echo base_url();?>order">我的订单</a>
+                        <ul class="submenu" style="display: none">
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">全部订单</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待发货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待收货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待评价</a></li>
+                        </ul>
+                        <script type="text/javascript">
+                            function dspl() {
+                                //alert($('#headerOrder'));
+                                $('.submenu').attr('style', 'position: absolute;');
+                            }
+
+                        </script>
+                    </li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
                     <li id="headerSignOut" style="display:none"><a href="">登出</a></li>
                     <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">注册</a></li>
