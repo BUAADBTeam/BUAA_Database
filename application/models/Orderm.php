@@ -33,7 +33,7 @@ class Orderm extends Model {
 
 	function getSpecificOrders($id, $mode = userMode)
 	{
-		if(!in_array($mode, array(userMode, shopMode))) {
+		if(!in_array($mode, array(userMode, shopMode, deliveryMode))) {
 			return null;
 		}
 		$this->db->connect();
@@ -44,15 +44,15 @@ class Orderm extends Model {
 			try {
 				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "userid = :userid", array(':userid' => $id), "S")['rows'];
 				foreach ($res as $key => $value) {
-					$value['items'] = $this->db->select(array('*'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
+					$value['items'] = $this->db->select(array('id'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
 				}
 				$result['list'] = $res;
-				$res = $this->db->select(array('*'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
+				$res = $this->db->select(array('username', 'photo', 'address'), 'users', 'userid = :userid', array(':userid' => $id), "S")['row'];
 				$result['user'] = $res;
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
-				return False;
+				return null;
 			}
 		}
 		else if($mode == shopMode) {
@@ -67,7 +67,16 @@ class Orderm extends Model {
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
-				return False;
+				return null;
+			}
+		}
+		else if($mode == deliveryMode) {
+			try {
+
+			} catch(Exception $e) {
+				$this->db->rollback();
+				$this->db->close()
+				return null;
 			}
 		}
 		return $result;

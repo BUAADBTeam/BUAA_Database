@@ -29,11 +29,18 @@ class Test extends Controller {
     </form>  
     </body>  
     </html>  ';
-		echo "<img src='http://qr.liantu.com/api.php?&w=200&text=http://baidu.com'>";
+		// echo "<img src='http://qr.liantu.com/api.php?&w=200&text=http://baidu.com'>";
 	}
 	public function post()
 	{
-		print_r($_POST);
+		// print_r($_POST);
+		$a = array('0' => array(), '1' => array());
+		for ($i = 0;  $i < count($a); $i += 1) {
+			// $value[1] = 'fck';
+			$a[$i][] = 'fck';
+			// print_r($value);
+		}
+		print_r($a);
 	}
 	public function role()
 	{
