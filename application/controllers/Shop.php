@@ -9,7 +9,8 @@ class Shop extends Controller {
 		$this->load->model('shopm');
 		$this->load->model('acessm');
 		define('_shop', 2);
-		$_SESSION['userid'] = 0;
+		// $_SESSION['userid'] = 0;
+		$this->load->model('uploadm');
 	}
 
 	public function index()
@@ -19,13 +20,22 @@ class Shop extends Controller {
 
 	public function add()
 	{
-		$sid = getId();
-		if ($type == 'shop') {
-			if ($this->shopm->add($sid)) {
-				return TRUE;
+		// $sid = getId();
+		// if ($type == 'shop') {
+		// 	if ($this->shopm->add($sid)) {
+		// 		return TRUE;
+		// 	}
+		// }
+		// return FALSE;
+		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(shopId)) {
+			$filename = '';
+			if($this->uploadm->upload(realpath('.')."\static\src\\", $filename)) {
+
+			}
+			else {
+				echo "文件上传失败";
 			}
 		}
-		return FALSE;
 	}
 
 	public function del($cid)
@@ -117,4 +127,6 @@ class Shop extends Controller {
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);
 	}
+
+	
 }

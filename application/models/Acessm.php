@@ -40,7 +40,9 @@ class Acessm extends Model
         $this->db->commit();
         $this->db->close();
     		if ($row[0] > 0) {
+          $_SESSION['role'] = $role;
     			return True;
+
     		}
     		else {
     			$_GLOBALS['auth_error'] = "抱歉，您的权限不足";
@@ -94,6 +96,8 @@ class Acessm extends Model
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
           unset($_SESSION['pass']);
+          unset($_SESSION['userid']);
+          unset($_SESSION['role']);
           $GLOBALS['loginError'] =
               'The specified email address or password was incorrect.';
           return False;
@@ -105,6 +109,8 @@ class Acessm extends Model
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
+        unset($_SESSION['userid']);
+        unset($_SESSION['role']);
         header('Location: ' . base_url());
         exit();
       }
@@ -195,7 +201,7 @@ class Acessm extends Model
         && isset($info['phone']) && is_numeric($info['phone'])) {
           $this->db->beginTransaction();
         // print_r($info);
-          if(($info['role'] + 0 <= 2 && $info['role'] + 0 >= 0) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0 && $this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
+          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0 && $this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
             // print_r($info);
             $this->db->commit();
             $this->db->close();
@@ -214,7 +220,7 @@ class Acessm extends Model
         if(!$this->checkInfo($info))   
           return FALSE;
         $neededInfo = array('username', 'password', 'email', 'role', 'phone', 'token');
-        if($info['role'] != 2) {
+        if($info['role'] != 3) {
           $neededInfo[] = 'address';
         }
         $this->db->connect();
