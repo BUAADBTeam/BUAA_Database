@@ -39,7 +39,7 @@ class Order extends Controller {
 			if(isset($_POST['userid']) && isset($_POST['shopid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['shopid'])) {
 				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'shopid' => $_POST['shopid']);
 				if($this->orderm->shopAcceptOrder($info) 
-					&& $this->orderm->allocDelivery($info)) {
+					) {
 					echo json_encode(array('status' => 0));
 				}
 				else {
@@ -55,7 +55,8 @@ class Order extends Controller {
 			&& $this->acessm->userHasRole(deliveryId)) {
 			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['shopid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['shopid'])) {
 				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'shopid' => $_POST['shopid']);
-				if($this->orderm->deliveryAcceptOrder($info)) {
+				if($this->orderm->deliveryAcceptOrder($info)
+					&& $this->orderm->allocDelivery($info)) {
 					echo json_encode(array('status' => 0));
 				}
 				else {
