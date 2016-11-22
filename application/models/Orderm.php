@@ -443,8 +443,10 @@ class Orderm extends Model {
 			$res = $this->updStatus(orderAccepted, $info, array('deliveryid' => $id));
 			if(!$res)
 				$this->db->rollback();
-			else
+			else {
+				$this->db->update('deliverymen', array('status' => 1), "deliveryid = $id", array());
 				$this->db->commit();
+			}
 			$this->db->close();
 			return $res;
 		} catch(Exception $e) {
