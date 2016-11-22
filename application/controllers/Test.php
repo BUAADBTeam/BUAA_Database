@@ -41,12 +41,14 @@ class Test extends Controller {
 
 	public function upload()
 	{
-		if($this->uploadm->upload(BASEPATH."/files/")) {
-			echo "right";
+		$name;
+		if($this->uploadm->upload(realpath('.')."\static\src\\", $name)) {
+			echo "right".$name;
 		}
 		else {
 			print(BASEPATH."files");
 			echo "fuck";
 		}
+		// echo realpath('.');
 	}
 }

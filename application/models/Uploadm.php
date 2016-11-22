@@ -28,7 +28,7 @@ class Uploadm extends Model {
     return $hash;  
   }   
 
-  function upload($uploaddir) 
+  function upload($uploaddir, &$uploadfile) 
   {
     // $uploaddir = "./files/";//设置文件保存目录 注意包含/      
     $type=array("jpg","gif","bmp","jpeg","png");//设置允许上传文件的类型     

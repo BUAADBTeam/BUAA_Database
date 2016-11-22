@@ -11,7 +11,7 @@ class Shopm extends Model {
 		parent::__construct();
 	}
 
-	public function add($sid)
+	public function add($sid, $filename)
 	{
 /*INSERT INTO `db`.`cuisine` (`id`, `sid`, `name`, `pic`, `price`, `info`, `st`) VALUES 
 (NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
@@ -27,11 +27,17 @@ class Shopm extends Model {
 		if (!isset($_POST['name']) || !isset($_POST['price'])) {
 			return FALSE;
 		}
+		if(!is_string($_POST['name']) || !is_numeric($_POST['price'])) {
+			return FALSE;
+		}
+		if(isset($_POST['st']) && ($_POST['st'] != 0 && $_POST['st'] != 1)) {
+			return FALSE;
+		}
 		try {
 			$this->db->connect();
 			$this->db->beginTransaction();
 			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
-			$params = array(':name' => $_POST['name'], ':pic' => '', ':price' => $_POST['price'], ':sid' => $sid, ':st' => isset($_POST['st']) ? $_POST['st'] : 1);
+			$params = array(':name' => $_POST['name'], ':pic' => $filename, ':price' => $_POST['price'], ':sid' => $sid, ':st' => isset($_POST['st']) ? $_POST['st'] : 1);
 			if ($this->db->insert($this->cuisine, $column, $params) == FALSE) {
 				$this->db->rollback();
 				$this->db->close();
