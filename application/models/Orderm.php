@@ -45,10 +45,14 @@ class Orderm extends Model {
 
 		// if($mode == userMode) {
 		try {
-			$res = $this->db->select(array('orderid', 'total', $idName."id", 'status'), 'orders', $idName."id = :".$idName."id", array(":".$idName."id" => $id), "S")['rows'];
+			$res = $this->db->select(array('orderid', 'total', 'userid', 'shopid', 'status'), 'orders', $idName."id = :".$idName."id", array(":".$idName."id" => $id), "S")['rows'];
 			for($i = 0; $i < count($res); $i += 1) {
 				$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
 				$res[$i]['count'] = count($res[$i]['items']);
+				if(userMode || deliveryMode)
+					$res[$i]['shopInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['shopid']), "S");
+				if(shopMode || deliveryMode)
+					$res[$i]['userInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['userid']), "S");
 				for($j = 0; $j < count($res[$i]['items']); $j += 1) {
 					$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
 					unset($resu[0]);unset($resu[1]);unset($resu[2]);
