@@ -75,7 +75,7 @@ class Orderm extends Model {
 
 
 
-	function addFood($userid, $itemid, $amount, $shopid)
+	function addFood($userid, $itemid, $amount, $shopid, &$orderid)
 	{
 		if (! is_numeric($amount) || !($amount + 0 > 0) || !(is_numeric($itemid) && is_numeric($userid))) {
 			$this->db->close();
@@ -197,7 +197,7 @@ class Orderm extends Model {
             $price *= $amount;
 
             $result = $this->db->select(array('orderid'), 'orders', 
-            	"userid = :userid AND status < 2",
+            	"userid = :userid AND status = 0",
             	array(':userid' => $userid), "S")['row'];
             if (!empty($result))
             	$orderid = $result['orderid'];
@@ -265,10 +265,10 @@ class Orderm extends Model {
 	private function checkInfo($info = array(), $checkaddress = False)
 	{
 		if(is_array($info)) {
-			if(isset($info['userid']) && isset($info['shopid'])) {
-				if((count($info) == 2 && !$checkaddress) || (count($info) && !isset($info['address']) && $checkaddress)) {
+			if(isset($info['userid']) && isset($info['shopid']) && isset($info['orderid'])) {
+				if((count($info) == 3 && !$checkaddress) || (count($info) == 4 && isset($info['address']) && $checkaddress)) {
 					foreach ($info as $key => $value) {
-						if(!$this->validType($value))
+						if(!$this->validType($value, 6))
 							return False;
 					}
 					return True;
@@ -286,9 +286,9 @@ class Orderm extends Model {
 	private function checkStatus($status, $sql, $param)
 	{
 		$res = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
-		print_r($sql);
-		print_r($param);
-		print_r($res);
+		// print_r($sql);
+		// print_r($param);
+		// print_r($res);
 		if(!empty($res) && $res['status'] == $status)
 			return true;
 		return false;
@@ -307,7 +307,11 @@ class Orderm extends Model {
 			$sql .= " $key = :$key AND";
 			$param[":$key"] = $val;
 		}
-		$sql .= " status < 7";
+		// print_r($sql);
+		$sql = substr($sql, 0, -3);
+		// print_r($sql);
+		// $sql .= " orderId = :orderId";
+		// $param[":orderId"] = $orderId;
 		if(!$this->checkStatus($beginStatus, $sql, $param)) 
 			return false;
 		$updArray = array();

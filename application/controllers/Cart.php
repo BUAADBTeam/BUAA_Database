@@ -34,18 +34,20 @@ class Cart extends Controller {
 				&& is_numeric($_POST['sid']) && is_array($_POST['data'])) {
 				$neededInfo = array('id', 'num');
 				$info = array();
+				$orderId = -1;
 				foreach ($_POST['data'] as $key => $value) {
 					if(isset($value['id']) && isset($value['num']) 
 						&& is_numeric($value['id']) && is_numeric($value['num'])) {
 						// $info[] = array($value['id'], $value['num']);
-						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num'], $_POST['sid']);
+						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num'], $_POST['sid'], $orderId);
 					}
 				}
 			}
-
+			if($orderId == -1)
+				echo "string";;
 			$this->acessm->db->selectRole(1);
 			$info = array('userid' => $_SESSION['userid'],
-				'shopid' => $_POST['sid']);
+				'shopid' => $_POST['sid'], 'orderid' => $orderId);
 
 			// if($this->orderm->checkStatus($info, 0)) {
 			// print_r($_POST);
@@ -54,6 +56,8 @@ class Cart extends Controller {
 			$this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()), $coupons);
 			// }
 		}	
+		else
+			echo "string";
 	}
 
 	public function paid()
