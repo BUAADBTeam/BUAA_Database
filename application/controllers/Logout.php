@@ -11,10 +11,13 @@ class Logout extends Controller {
 
 	public function index()
 	{
-		print_r($_POST);
+		// print_r($_POST);
+		// exit();
          // if ($_POST['action'] == 'logout') echo 233;
-		if(isset($_SESSION)) {
+		// print_r($_SESSION);
+		if(!empty($_SESSION)) {
 			$this->acessm->userIsLoggedIn();
+			// print_r($_SESSION);
 			echo json_encode(array('status' => 0));
 			return;
 		}

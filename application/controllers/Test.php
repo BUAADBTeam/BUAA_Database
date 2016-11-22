@@ -62,5 +62,6 @@ class Test extends Controller {
 	public function orders()
 	{
 		print_r($this->orderm->getSpecificOrders(43));
+		die();
 	}
 }
