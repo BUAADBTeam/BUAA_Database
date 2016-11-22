@@ -51,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </ul>
                     </li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
-                    <li id="headerSignOut" style="display:none" onclick="PostLogout()"><a href="">登出</a></li>
+                    <li id="headerSignOut" style="display:none" onclick="PostLogout()"><a href="#">登出</a></li>
                     <li id="headerRegister" style="display:none"><a href="" data-toggle="modal" data-target="#mymodal-register">注册</a></li>
                     <div class="clearfix"> </div>
                 </ul>
@@ -172,15 +172,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     };
     logoutSuccess = function(data) {
         if(data.status == 0) {
-            alert(logout);
+            // alert('logout');
             window.location.href=BASEURL;
+            // window.location.reload();
         }
         else {
             alert('您还没有登录');
+            window.location.href=BASEURL;
+            // window.location.reload();
         }
-    }
+    };
     function PostLogout() {
-        url = BASEURL + 'logout';
+        url = BASEURL + 'logout/index';
         ajax_send(url,{action:encodeURI('logout')}, logoutSuccess, op_error);  
     }
 </script>

@@ -26,7 +26,8 @@ class Order extends Controller {
 				$res['order'] = $this->orderm->getSpecificOrders($_SESSION['userid'], $i);
 			}
 		}
-		$res['count'] = sizeof($res['order']['list']);
+		print_r($res['order']);
+		$res['count'] = count($res['order']['list']);
 		$res['status'] = 0;
 		echo json_encode($res);
 	}
@@ -35,14 +36,14 @@ class Order extends Controller {
 	{
 		if($this->acessm->userIsLoggedIn() 
 			&& $this->acessm->userHasRole(shopId)) {
-			if(isset($_POST['userid']) && isset($_POST['orderid'])
-				&& is_numeric($_POST['userid']) && is_numeric($_POST['orderid'])) {
-				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid']);
-				if($this->orderm->shopAcceptOrder($info)) {
-
+			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['orderid'])) {
+				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'orderid' => $_POST['orderid']);
+				if($this->orderm->shopAcceptOrder($info) 
+					&& $this->orderm->allocDelivery($info)) {
+					echo json_encode(array('status' => 0));
 				}
 				else {
-
+					echo json_encode(array('status' => 1));
 				}
 			}
 		}
@@ -50,6 +51,61 @@ class Order extends Controller {
 
 	public function deliveryAcceptOrder()
 	{
-		
+		if($this->acessm->userIsLoggedIn() 
+			&& $this->acessm->userHasRole(deliveryId)) {
+			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['orderid'])) {
+				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'orderid' => $_POST['orderid']);
+				if($this->orderm->deliveryAcceptOrder($info)) {
+					echo json_encode(array('status' => 0));
+				}
+				else {
+					echo json_encode(array('status' => 1));
+				}
+			}
+		}
+		else {
+			echo json_encode(array('status' => 1));
+		}
 	}
+
+	public function userPaid()
+	{
+		if($this->acessm->userIsLoggedIn() 
+			&& $this->acessm->userHasRole(userId)) {
+			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['orderid'])) {
+				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'orderid' => $_POST['orderid']);
+				if($this->orderm->payOrder($info)) {
+					echo json_encode(array('status' => 0));
+				}
+				else {
+					echo json_encode(array('status' => 1));
+				}
+			}
+		}
+		else {
+			echo json_encode(array('status' => 1));
+		}
+	}
+
+	function userGetOrder()
+	{
+		if($this->acessm->userIsLoggedIn() 
+			&& $this->acessm->userHasRole(userId)) {
+			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['orderid'])) {
+				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'orderid' => $_POST['orderid']);
+				if($this->orderm->completeOrder($info)) {
+					echo json_encode(array('status' => 0));
+				}
+				else {
+					echo json_encode(array('status' => 1));
+				}
+			}
+		}
+		else {
+			echo json_encode(array('status' => 1));
+		}
+	}
+
+	
+
 }
