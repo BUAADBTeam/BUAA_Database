@@ -117,4 +117,6 @@ class Shop extends Controller {
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);
 	}
+
+	
 }

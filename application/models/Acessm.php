@@ -195,7 +195,7 @@ class Acessm extends Model
         && isset($info['phone']) && is_numeric($info['phone'])) {
           $this->db->beginTransaction();
         // print_r($info);
-          if(($info['role'] + 0 <= 2 && $info['role'] + 0 >= 0) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0 && $this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
+          if(($info['role'] + 0 <= 3 && $info['role'] + 0 >= 1) && $this->db->select(array('COUNT(*)'), 'users', "email = :email", array(':email' => $info['email']), "S")['row'][0] == 0 && $this->db->select(array('COUNT(*)'), 'users', "username = :username", array(':username' => $info['username']), "S")['row'][0] == 0) {
             // print_r($info);
             $this->db->commit();
             $this->db->close();
@@ -214,7 +214,7 @@ class Acessm extends Model
         if(!$this->checkInfo($info))   
           return FALSE;
         $neededInfo = array('username', 'password', 'email', 'role', 'phone', 'token');
-        if($info['role'] != 2) {
+        if($info['role'] != 3) {
           $neededInfo[] = 'address';
         }
         $this->db->connect();

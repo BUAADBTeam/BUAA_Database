@@ -20,3 +20,16 @@ define('noColomnFound', 2);
 //Orderm.php
 define('userMode', 1);
 define('shopMode', 2);
+define('orderCreated', 0);
+define('orderSubmitted', 1);
+define('orderPaid', 2);
+define('orderAcceped', 3);
+define('orderAllocated', 4);
+define('orderStartDelivery', 5);
+define('orderCompleted', 6);
+
+
+//Accessm.php
+define('userId', 1);
+define('shopId', 2);
+define('deliveryId', 3);

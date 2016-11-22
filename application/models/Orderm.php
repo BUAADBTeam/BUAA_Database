@@ -52,6 +52,7 @@ class Orderm extends Model {
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
+				return False;
 			}
 		}
 		else if($mode == shopMode) {
@@ -59,13 +60,14 @@ class Orderm extends Model {
 				$res = $this->db->select(array('orderid', 'total', 'userid', 'status'), 'orders', "shopid = :shopid", array(':shopid' => $id), "S")['rows'];
 				foreach ($res as $key => $value) {
 					$value['items'] = $this->db->select(array('*'), 'orderitems', 'orderid = :orderid', array(':orderid' => $value['orderid']), "S")['rows'];
-				}2
+				}
 				$result['list'] = $res;
 				$res = $this->db->select(array('*'), 'shop', 'id = :shopid', array(':shopid' => $id), "S")['row'];
 				$result['shop'] = $res;
 			} catch(Exception $e) {
 				$this->db->rollback();
 				$this->db->close();
+				return False;
 			}
 		}
 		return $result;
@@ -153,6 +155,7 @@ class Orderm extends Model {
             if($num == 0) {
             	$this->db->rollback();
 	        	$this->db->close();	
+	        	return False;
             }
             $this->db->commit();
 	        $this->db->close();
@@ -280,7 +283,15 @@ class Orderm extends Model {
 		}
 	}
 
-	private function updStatus($info = array(), $updInfo = array())
+	private function checkStatus($status, $sql, $param)
+	{
+		$res = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		if(!empty($res) && $res['status'] == $status)
+			return true;
+		return false;
+	}
+
+	private function updStatus($beginStatus, $info = array(), $updInfo = array())
 	{
 		// $this->db->connect();
 		if(!$this->checkInfo($info))
@@ -294,7 +305,8 @@ class Orderm extends Model {
 			$param[":$key"] = $val;
 		}
 		$sql .= " status < 7";
-
+		if(!checkStatus($status, $sql, $param)) 
+			return false;
 		$updArray = array();
 		foreach ($updInfo as $key => $value) {
 			$updArray[$key] = ":$key";
@@ -320,20 +332,23 @@ class Orderm extends Model {
 			!isset($info['address']) or ($add = $info['address']);
 			unset($info['address']);
 			if(empty($add)) {
-				$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row']['address'];
+				$add = $this->db->select(array('address'), 'users', "userid = :userid", array(':userid' => $info['userid']), "S")['row'];
 				if(empty($add)) {
 
 					$this->db->commit();
 					$this->db->close();
 					return False;
 				}
+				$add = $add['address'];
 			}
-			$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row']['total'];
+			$money = $this->db->select(array('total'), 'orders', "userid = :userid AND shopid = :shopid AND status = 0", array(':userid' => $info['userid'], ':shopid' => $info['shopid']), "S")['row'];
 			// print_r($info);
-			if(!isset($money)) {
+			if(empty($money)) {
 				$this->db->rollback();
 				$this->db->close();	
+				return False;
 			}
+			$money = $money['total'];
 			// $this->load->model('couponm');
 			$downmoney = 0;
 			if(is_array($coupons)) {
@@ -345,10 +360,11 @@ class Orderm extends Model {
 			}
 			$money = $money - $downmoney;
 			
-			$res = $this->updStatus($info, array('address' => $add), array('total' => $money));
+			$res = $this->updStatus(orderCreated, $info, array('address' => $add), array('total' => $money));
 			if(!$res) {
 				$this->db->rollback();
 				$this->db->close();	
+				return false;
 			}
 			$this->db->commit();
 			$this->db->close();
@@ -368,7 +384,7 @@ class Orderm extends Model {
 		$this->db->connect();
 		$this->db->beginTransaction();
 		try {
-			$res = $this->updStatus($info);
+			$res = $this->updStatus(orderSubmitted, $info);
 			if(!$res)
 				$this->db->rollback();
 			else
@@ -388,7 +404,7 @@ class Orderm extends Model {
 		$this->db->connect();
 		$this->db->beginTransaction();
 		try {
-			$res = $this->updStatus($info);
+			$res = $this->updStatus(orderPaid, $info);
 			if(!$res)
 				$this->db->rollback();
 			else
@@ -417,7 +433,7 @@ class Orderm extends Model {
 				return False;
 			}
 
-			$res = $this->updStatus($info, array('deliveryid' => $id));
+			$res = $this->updStatus(orderAccepted, $info, array('deliveryid' => $id));
 			if(!$res)
 				$this->db->rollback();
 			else
@@ -438,7 +454,7 @@ class Orderm extends Model {
 		$this->db->connect();
 		$this->db->beginTransaction();
 		try {
-			$res = $this->updStatus($info, array('finishtime' => time()));
+			$res = $this->updStatus(orderStartDelivery, $info, array('finishtime' => time()));
 			if(!$res)
 				$this->db->rollback();
 			else
