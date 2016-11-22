@@ -21,7 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       return;
     }
     orders = data;
-    updataOrder(0);
+    updateOrder(0, 6);
     $('#orderContainer').empty();
     for (var i = 0; i < data.count; i++) {
       $('#orderContainer').append(wrap_order(data.order.list[i], data.order.user));
@@ -34,13 +34,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   function showOrder(id)
   {
     $('#mymodal-order .modal-body').html($('#orderDetail'+id).html());
+    $('#mymodal-order .modal-footer').html($('#orderBtn'+id).html());
   }
-  function updataOrder(lev)
+  function updateOrder(l, r)
   {
     $('#orderContainer').empty();
     for (var i = 0; i < orders.count; i++) {
-      if (lev == -1 ? true : lev == 0 ? orders.order.list[i].st < 7 : orders.order.list[i].st == lev)
-        $('#orderContainer').append(wrap_order(data.order.list[i], data.order.user));
+      if (orders.order.list[i].status >= l && orders.order.list[i].status <= r)
+        $('#orderContainer').append(wrap_order(orders.order.list[i], orders.order.user));
     }
   }
   function dspl() {

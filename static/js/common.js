@@ -110,29 +110,111 @@ function wrap_cuisine_order(item)
               '<div class="col-lg-9">&nbsp;</div>'+
               '<div class="col-lg-9">&nbsp;</div>'+
               '<div class="col-lg-5"><span style="font-size: 20px">'+item.name+'</span></div>'+
-              '<div class="col-lg-2">&times;'+item.num+'</div>'+
-              '<div class="col-lg-2">￥'+(item.num*item.price).toFixed(2)+'</div>'+
+              '<div class="col-lg-2">&times;'+item.amount+'</div>'+
+              '<div class="col-lg-2">￥'+(item.amount*item.price).toFixed(2)+'</div>'+
             '</div>';
 }
 
 function wrap_order(order, user)
 {
 	order.count = parseInt(order.count);
-	res = '<div class="order-top" id="order"'+order.id+' orderid="'+order.id+'">'+
-				'<li class="im-g"><img src="'+BASEURL+user.pic+'" class="img-responsive" alt=""></li>'+
-				'<li class="data"><h3>'+user.USERNAME+'</h3>'+
+	var type = 'info';
+	var opo = '';
+	var op = '';
+	var info;
+	var available = false;
+	var btn;
+	if (order.status == 1) {
+		if (isUser()) {
+			type = 'danger';
+			op = 'payCart()';
+			info = '确认付款';
+			available = true;
+		}
+		else {
+			info = '等待付款';
+		}
+	}
+	else if (order.status == 2) {
+		if (isShop()) {
+			type = 'danger';
+			opo = 'shopReceiveOrder()';
+			op = 'startDelivery()';
+			info = '确认发货';
+			available = true;
+		}
+		else {
+			info = '等待派送';
+		}
+	}
+	else if (order.status == 3) {
+		if (isShop()) {
+			type = 'warning';
+			op = 'startDelivery()';
+			info = '确认发货';
+			available = true;
+		}
+		else {
+			info = '等待派送';
+		}
+	}
+	else if (order.status == 4) {
+		if (isDelivery()) {
+			type = 'danger';
+		}
+		info = '等待收货';
+	}
+	else if (order.status == 5) {
+		if (isUser()) {
+			type = 'warning';
+			op = 'userReceiveOrder()';
+			info = '确认收货';
+			available = true;
+		}
+		else {
+			info = '等待收货';
+		}
+	}
+	else if (order.status == 6) {
+		if (isUser()) {
+			type = 'warning';
+			op = 'assess()';
+			info = '提交评价';
+			available = true;
+		}
+		else {
+			info = '等待评价';
+		}
+	}
+	else {
+		type = 'success';
+		info = '订单已完成';
+	}
+
+	if (available) {
+		btn = '<button type="button" onclick="'+op+'" class="btn btn-'+type+' btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;'+info+'</button>';
+	}
+	else {
+	btn = '<button type="button" class="btn btn-'+type+' btn-lg btn-block lead disabled">&nbsp;'+info+'</button>';
+	}
+	if (order)
+	res = '<div class="order-top" id="order"'+order.orderid+' orderid="'+order.orderid+'">'+
+				'<li class="im-g"><img src="'+BASEURL+user.photo+'" class="img-responsive" alt=""></li>'+
+				'<li class="data"><h3>'+user.username+'</h3>'+
 				'<p>'+user.address+'</p>'+
 				'<P>'+order.info+'</P>'+
 			'</li>'+
 			'<li class="bt-nn">'+
-				'<button type="button" class="btn btn-success btn-lg" onclick="showOrder('+order.id+')" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
+				'<button type="button" class="btn btn-'+type+' btn-lg" onclick="{showOrder('+order.orderid+');'+opo+'}" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
 			'</li>'+
 			'<div class="clearfix"></div>'+
-			'<div id="orderDetail'+order.id+'" style="display:none">';
+			'<div id="orderDetail'+order.orderid+'" style="display:none">';
 	for (var i = 0; i < order.count; i++) {
 		res += wrap_cuisine_order(order.items[i]);
 	}
 	res += wrap_total_price(order.total);
+	res += '</div><div id="orderBtn'+order.orderid+'" style="display:none">';
+	res += btn;
 	res += '</div></div>';
 	return res;
 }

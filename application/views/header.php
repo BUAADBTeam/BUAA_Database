@@ -43,11 +43,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerOrder" style="display:none;" onmouseover="dspl()" onmouseout="$('.submenu').attr('style', 'display:none');">
                         <a href="<?php echo base_url();?>order">我的订单</a>
                         <ul class="submenu" style="display: none">
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(-1)">全部订单</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(1)">等待付款</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(4)">等待发货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(5)">等待收货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>#" onclick="updateOrder(6)">等待评价</a></li>
+                            <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(0,7)">全部订单</a></li>
+                            <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(1,1)">等待付款</a></li>
+                            <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(2,3)">等待发货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(4,5)">等待收货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(6,6)">等待评价</a></li>
                         </ul>
                     </li>
                     <li id="headerSignIn"><a href="" data-toggle="modal" data-target="#mymodal-signin">登陆</a></li>
@@ -172,7 +172,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     };
     logoutSuccess = function(data) {
         if(data.status == 0) {
-            window.location.reload();
+            alert(logout);
+            window.location.href=BASEURL;
         }
         else {
             alert('您还没有登录');

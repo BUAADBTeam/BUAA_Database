@@ -81,9 +81,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         item.id = obj.attr('cuisineid');
         item.pic = obj.attr('picsrc');
         item.price = obj.attr('price');
-        item.num = obj.attr('num');
+        item.amount = obj.attr('num');
         cart.data[cart.cnt++] = item;
-        tmp = item.num * item.price;
+        tmp = item.amount * item.price;
         all += tmp;
         body.append(wrap_cuisine_order(item));
       }
@@ -114,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-              <button type="button" id="login_submit" onclick="sendCart()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认提交</button>
+              <button type="button" onclick="sendCart()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;确认提交</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

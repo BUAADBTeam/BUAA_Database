@@ -34,14 +34,14 @@ class Cart extends Controller {
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'submitOrder') {
 			if(isset($_POST['data']) && isset($_POST['sid']) 
 				&& is_numeric($_POST['sid']) && is_array($_POST['data'])) {
-				$neededInfo = array('id', 'num');
+				$neededInfo = array('id', 'amount');
 				$info = array();
 				
 				foreach ($_POST['data'] as $key => $value) {
-					if(isset($value['id']) && isset($value['num']) 
-						&& is_numeric($value['id']) && is_numeric($value['num'])) {
-						// $info[] = array($value['id'], $value['num']);
-						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num'], $_POST['sid'], $orderId);
+					if(isset($value['id']) && isset($value['amount']) 
+						&& is_numeric($value['id']) && is_numeric($value['amount'])) {
+						// $info[] = array($value['id'], $value['amount']);
+						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['amount'], $_POST['sid'], $orderId);
 
 					}
 					
