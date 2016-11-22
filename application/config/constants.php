@@ -33,3 +33,4 @@ define('orderCompleted', 6);
 define('userId', 1);
 define('shopId', 2);
 define('deliveryId', 3);
+define('visitorId', 0);

@@ -44,21 +44,26 @@ function base_url()
 
 function getRole()
 {
-	return 1;
-	$it = get_instance();
-	$it->load->model('acessm');
-	if (!$it->acessm->userIsLoggedIn()) {
+	isset($_SESSION) or session_start();
+	// print_r($_SESSION);
+	if(!isset($_SESSION['role']) || !is_numeric($_SESSION['role']) || $_SESSION['role'] > 3 || $_SESSION['role'] < 0)
 		return 0;
-	}
-	if($this->acessm->userHasRole(1)) {
-		return 1;
-	}
-	else if($this->acessm->userHasRole(2)) {
-		return 2;
-	}
-	else if($this->acessm->userHasRole(3)) {
-		return 3;
-	}
+	return $_SESSION['role'];
+	// return 1;
+	// $it = get_instance();
+	// $it->load->model('acessm');
+	// if (!$it->acessm->userIsLoggedIn()) {
+	// 	return 0;
+	// }
+	// if($this->acessm->userHasRole(1)) {
+	// 	return 1;
+	// }
+	// else if($this->acessm->userHasRole(2)) {
+	// 	return 2;
+	// }
+	// else if($this->acessm->userHasRole(3)) {
+	// 	return 3;
+	// }
 }
 // function getRawPost()
 // {

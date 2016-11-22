@@ -29,8 +29,8 @@ class Shop extends Controller {
 		// return FALSE;
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(shopId)) {
 			$filename = '';
-			if($this->uploadm->upload(realpath('.').."\static\src\\", $filename)) {
-				
+			if($this->uploadm->upload(realpath('.')."\static\src\\", $filename)) {
+
 			}
 			else {
 				echo "文件上传失败";

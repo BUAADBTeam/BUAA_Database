@@ -286,6 +286,9 @@ class Orderm extends Model {
 	private function checkStatus($status, $sql, $param)
 	{
 		$res = $this->db->select(array('status'), 'orders', $sql, $param)['row'];
+		print_r($sql);
+		print_r($param);
+		print_r($res);
 		if(!empty($res) && $res['status'] == $status)
 			return true;
 		return false;
@@ -305,7 +308,7 @@ class Orderm extends Model {
 			$param[":$key"] = $val;
 		}
 		$sql .= " status < 7";
-		if(!checkStatus($status, $sql, $param)) 
+		if(!$this->checkStatus($beginStatus, $sql, $param)) 
 			return false;
 		$updArray = array();
 		foreach ($updInfo as $key => $value) {
@@ -314,7 +317,7 @@ class Orderm extends Model {
 		}
 			
 
-		$num = $this->db->update('orders', array_merge(array('status' => '1'), $updArray), $sql, $param);
+		$num = $this->db->update('orders', array_merge(array('status' => 'status + 1'), $updArray), $sql, $param);
 		
 		return $num == 1 ? True : False;
 	}

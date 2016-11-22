@@ -40,7 +40,9 @@ class Acessm extends Model
         $this->db->commit();
         $this->db->close();
     		if ($row[0] > 0) {
+          $_SESSION['role'] = $role;
     			return True;
+
     		}
     		else {
     			$_GLOBALS['auth_error'] = "抱歉，您的权限不足";
@@ -94,6 +96,8 @@ class Acessm extends Model
           unset($_SESSION['loggedIn']);
           unset($_SESSION['user']);
           unset($_SESSION['pass']);
+          unset($_SESSION['userid']);
+          unset($_SESSION['role']);
           $GLOBALS['loginError'] =
               'The specified email address or password was incorrect.';
           return False;
@@ -105,6 +109,8 @@ class Acessm extends Model
         unset($_SESSION['loggedIn']);
         unset($_SESSION['user']);
         unset($_SESSION['pass']);
+        unset($_SESSION['userid']);
+        unset($_SESSION['role']);
         header('Location: ' . base_url());
         exit();
       }
