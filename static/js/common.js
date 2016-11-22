@@ -115,14 +115,14 @@ function wrap_cuisine_order(item)
             '</div>';
 }
 
-function wrap_order(order)
+function wrap_order(order, user)
 {
 	order.count = parseInt(order.count);
 	res = '<div class="order-top" id="order"'+order.id+' orderid="'+order.id+'">'+
-				'<li class="im-g"><img src="'+BASEURL+order.user.pic+'" class="img-responsive" alt=""></li>'+
-				'<li class="data"><h3>'+order.user.name+'</h3>'+
-				'<p>'+order.user.addr+'</p>'+
-				'<P>'+order.user.info+'</P>'+
+				'<li class="im-g"><img src="'+BASEURL+user.pic+'" class="img-responsive" alt=""></li>'+
+				'<li class="data"><h3>'+user.USERNAME+'</h3>'+
+				'<p>'+user.address+'</p>'+
+				'<P>'+order.info+'</P>'+
 			'</li>'+
 			'<li class="bt-nn">'+
 				'<button type="button" class="btn btn-success btn-lg" onclick="showOrder('+order.id+')" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
@@ -132,7 +132,7 @@ function wrap_order(order)
 	for (var i = 0; i < order.count; i++) {
 		res += wrap_cuisine_order(order.items[i]);
 	}
-	res += wrap_total_price(order.All);
+	res += wrap_total_price(order.total);
 	res += '</div></div>';
 	return res;
 }

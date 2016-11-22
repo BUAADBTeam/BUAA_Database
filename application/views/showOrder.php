@@ -15,32 +15,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <script type="text/javascript">
+  var orders;
   load_order = function(data) {
     if (data.status != 0) {
       return;
     }
+    orders = data;
+    updataOrder(0);
     $('#orderContainer').empty();
     for (var i = 0; i < data.count; i++) {
-      $('#orderContainer').append(wrap_order(data.order[i]));
+      $('#orderContainer').append(wrap_order(data.order.list[i], data.order.user));
     }
   };
-  url = BASEURL+'order/';
-  if (isUser()) {
-    url += 'user';
-  }
-  if (isShop()) {
-    url += 'shop';
-  }
-  if (isDelivery()) {
-    url += 'delivery';
-  }
-  url += 'GetActiveOrder';
+  url = BASEURL+'order/getOrder';
   $(function(){
     ajax_send(url,0,load_order,load_error);
   });
   function showOrder(id)
   {
     $('#mymodal-order .modal-body').html($('#orderDetail'+id).html());
+  }
+  function updataOrder(lev)
+  {
+    $('#orderContainer').empty();
+    for (var i = 0; i < orders.count; i++) {
+      if (lev == -1 ? true : lev == 0 ? orders.order.list[i].st < 7 : orders.order.list[i].st == lev)
+        $('#orderContainer').append(wrap_order(data.order.list[i], data.order.user));
+    }
+  }
+  function dspl() {
+      //alert($('#headerOrder'));
+      $('.submenu').attr('style', 'position: absolute;');
+      $('.submenu li').attr('style', 'display: block;position:relative');
   }
 </script>
 <div class="modal fade" id="mymodal-order">

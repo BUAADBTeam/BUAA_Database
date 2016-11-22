@@ -15,27 +15,17 @@ class Order extends Controller {
 		$this->load->view('showOrder');
 	}
 
-	public function userGetActiveOrder()
+	public function getOrder()
 	{
+		if (!$this->acessm->userIsLoggedIn()) {
+			echo json_encode(array('status' => -1));
+		}
 		$res = array('order' => array());
-		$res['order'] = getSpecificOrders($_SESSION['userid'], userMode);
-		$res['count'] = sizeof($res['order']);
-		$res['status'] = 0;
-		echo json_encode($res);
-	}
-
-	public function shopGetActiveOrder()
-	{
-		$res = array('order' => array());
-		$res['order'] = getSpecificOrders($_SESSION['userid'], shopMode);
-		$res['count'] = sizeof($res['order']);
-		$res['status'] = 0;
-		echo json_encode($res);
-	}
-	public function deliveryGetActiveOrder()
-	{
-		$res = array('order' => array());
-		$res['order'] = getSpecificOrders($_SESSION['userid'], deliveryMode);
+		for ($i = 1; $i <= 3; $i++) {
+			if ($this->acessm->userHasRole($i)) {
+				$res['order'] = $this->orderm->getSpecificOrders($_SESSION['userid'], $i);
+			}
+		}
 		$res['count'] = sizeof($res['order']);
 		$res['status'] = 0;
 		echo json_encode($res);
