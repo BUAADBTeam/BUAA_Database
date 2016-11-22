@@ -29,22 +29,28 @@ class Cart extends Controller {
 
 	public function submit()
 	{
+		$res['status'] = -1;
+		$orderId = -1;
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(1) && isset($_POST['action']) && $_POST['action'] == 'submitOrder') {
 			if(isset($_POST['data']) && isset($_POST['sid']) 
 				&& is_numeric($_POST['sid']) && is_array($_POST['data'])) {
 				$neededInfo = array('id', 'num');
 				$info = array();
-				$orderId = -1;
+				
 				foreach ($_POST['data'] as $key => $value) {
 					if(isset($value['id']) && isset($value['num']) 
 						&& is_numeric($value['id']) && is_numeric($value['num'])) {
 						// $info[] = array($value['id'], $value['num']);
 						$this->orderm->addFood($_SESSION['userid'], $value['id'], $value['num'], $_POST['sid'], $orderId);
+
 					}
+					
 				}
 			}
-			if($orderId == -1)
-				echo "string";;
+			if($orderId == -1) {
+				echo json_encode($res);
+				return;
+			}
 			$this->acessm->db->selectRole(1);
 			$info = array('userid' => $_SESSION['userid'],
 				'shopid' => $_POST['sid'], 'orderid' => $orderId);
@@ -53,8 +59,11 @@ class Cart extends Controller {
 			// print_r($_POST);
 			$coupons = $this->couponm->calMoney($_POST['sid']);
 			// print_r($coupons);
-			$this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()), $coupons);
+			if ($this->orderm->submitOrder(array_merge($info, isset($_POST['address']) ? array($_POST['address']) : array()), $coupons)) {
+				$res['status'] = 0;
+			}
 			// }
+			echo json_encode($res);
 		}	
 		else
 			echo "string";

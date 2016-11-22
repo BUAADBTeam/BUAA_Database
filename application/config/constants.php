@@ -20,6 +20,7 @@ define('noColomnFound', 2);
 //Orderm.php
 define('userMode', 1);
 define('shopMode', 2);
+define('deliveryMode', 2);
 define('orderCreated', 0);
 define('orderSubmitted', 1);
 define('orderPaid', 2);

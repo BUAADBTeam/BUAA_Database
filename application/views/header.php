@@ -43,15 +43,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerOrder" style="display:none;" onmouseover="dspl()" onmouseout="$('.submenu').attr('style', 'display:none');">
                         <a href="<?php echo base_url();?>order">我的订单</a>
                         <ul class="submenu" style="display: none">
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">全部订单</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待发货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待收货</a></li>
-                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>welcome">等待评价</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">全部订单</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待发货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待收货</a></li>
+                            <li id="headerHome" style="display:block;"><a href="<?php echo base_url();?>order#">等待评价</a></li>
                         </ul>
                         <script type="text/javascript">
                             function dspl() {
                                 //alert($('#headerOrder'));
                                 $('.submenu').attr('style', 'position: absolute;');
+                                $('.submenu li').attr('style', 'display: block;position:relative');
                             }
 
                         </script>
@@ -173,11 +174,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     };
     function PostLogin() {
         url = BASEURL + 'login/check';
-        if($('#username').val() == '' || $('#password').val() == '') {
-            $('#loginAlert').attr('style','height:30px;padding:5px;');
-            $('#loginErrorMessage').text("账号或密码不能为空");
-            return ;
-        }
+        
         ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
     };
 </script>
