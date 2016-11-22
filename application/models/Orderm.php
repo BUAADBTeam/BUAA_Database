@@ -50,9 +50,9 @@ class Orderm extends Model {
 				$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
 				$res[$i]['count'] = count($res[$i]['items']);
 				if(userMode || deliveryMode)
-					$res[$i]['shopInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['shopid']), "S");
+					$res[$i]['shopInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['shopid']), "S")['row'];
 				if(shopMode || deliveryMode)
-					$res[$i]['userInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['userid']), "S");
+					$res[$i]['userInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['userid']), "S")['row'];
 				for($j = 0; $j < count($res[$i]['items']); $j += 1) {
 					$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
 					unset($resu[0]);unset($resu[1]);unset($resu[2]);
@@ -443,8 +443,10 @@ class Orderm extends Model {
 			$res = $this->updStatus(orderAccepted, $info, array('deliveryid' => $id));
 			if(!$res)
 				$this->db->rollback();
-			else
+			else {
+				$this->db->update('deliverymen', array('status' => 1), "deliveryid = $id", array());
 				$this->db->commit();
+			}
 			$this->db->close();
 			return $res;
 		} catch(Exception $e) {
