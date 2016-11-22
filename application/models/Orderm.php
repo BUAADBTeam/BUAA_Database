@@ -75,7 +75,7 @@ class Orderm extends Model {
 
 			} catch(Exception $e) {
 				$this->db->rollback();
-				$this->db->close()
+				$this->db->close();
 				return null;
 			}
 		}
