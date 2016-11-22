@@ -26,7 +26,6 @@ class Order extends Controller {
 				$res['order'] = $this->orderm->getSpecificOrders($_SESSION['userid'], $i);
 			}
 		}
-		print_r($res['order']);
 		$res['count'] = count($res['order']['list']);
 		$res['status'] = 0;
 		echo json_encode($res);

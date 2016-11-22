@@ -164,7 +164,7 @@ class Database {
 				!$this->validType($val) or $field_arr[] = "$val";
 		}
 		$sql = "SELECT " .implode(', ', $field_arr) .' FROM ' .$table ." WHERE " . ($where . $Lock);
-		// echo "$sql"."<br>";
+		// echo "$sql"."<br>\n";
 		return $this->query($sql, $params);
 	}
 
