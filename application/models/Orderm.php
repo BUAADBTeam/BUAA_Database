@@ -427,24 +427,22 @@ class Orderm extends Model {
 
 	function allocDelivery($info = array())
 	{
-		
 		if(!$this->checkInfo($info))
 			return False;
 		$this->db->connect();
 		$this->db->beginTransaction();
 		try {
-			$id = $this->db->select(array('deliveryid'), 'available_delivery', "", array(), "S")['row'];
+			$id = $this->db->select(array('deliveryid'), 'deliverymen', "status=0", array(), "S")['row'];
 			if(empty($id)) {
 				$this->db->commit();
 				$this->db->close();
 				return False;
 			}
-
-			$res = $this->updStatus(orderAccepted, $info, array('deliveryid' => $id));
+			$res = $this->updStatus(orderAccepted, $info, array('deliveryid' => $id['deliveryid']));
 			if(!$res)
 				$this->db->rollback();
 			else {
-				$this->db->update('deliverymen', array('status' => 1), "deliveryid = $id", array());
+				$this->db->update('deliverymen', array('status' => 1), "deliveryid = ".$id['deliveryid'], array());
 				$this->db->commit();
 			}
 			$this->db->close();
@@ -503,14 +501,14 @@ class Orderm extends Model {
 		try {
 			$res = $this->updStatus(orderCompleted, $info);
 			if(!$res || !is_array($credit) 
-				|| !isset($credit['shop']) || !is_numeric($credit['shop'])
-				|| !isset($credit['delivery'] || !is_numeric($credit['delivery']))
-				|| $credit['shop'] > 5 || $credit['delivery'] > 5
-				|| $credit['shop'] < 0 || $credit['delivery'] < 0)
+					|| !isset($credit['shop']) || !is_numeric($credit['shop'])
+					|| !isset($credit['delivery']) || !is_numeric($credit['delivery'])
+					|| $credit['shop'] > 5 || $credit['delivery'] > 5
+					|| $credit['shop'] < 0 || $credit['delivery'] < 0)
 				$this->db->rollback();
 			else {
-				$this->db->update('shop', array('credit' => "credit + $credit['shop']"), array());
-				$this->db->update('deliverymen', array('credit' => "credit + $credit['delivery']"), array());
+				$this->db->update('shop', array('credit' => "credit + ".$credit['shop']), "id = ".$info['shopid'], array());
+				// $this->db->update('deliverymen', array('credit' => "credit + ".$credit['delivery']), "id = ".$info['delivryid'], array());
 				$this->db->commit();
 			}
 			$this->db->close();

@@ -24,7 +24,7 @@ define('deliveryMode', 3);
 define('orderCreated', 0);
 define('orderSubmitted', 1);
 define('orderPaid', 2);
-define('orderAcceped', 3);
+define('orderAccepted', 3);
 define('orderAllocated', 4);
 define('orderStartDelivery', 5);
 define('orderCompleted', 6);

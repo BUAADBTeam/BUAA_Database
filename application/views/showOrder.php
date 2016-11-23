@@ -42,7 +42,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   }
   function op_get_res(data) {
     if (data.status == 0) {
-      alert('success');
       window.location.reload();
     }
     else {

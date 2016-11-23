@@ -37,25 +37,36 @@ class Order extends Controller {
 			&& $this->acessm->userHasRole(shopId)) {
 			if(isset($_POST['userid']) && isset($_POST['shopid']) && isset($_POST['orderid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['shopid'])) {
 				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'shopid' => $_POST['shopid']);
-				if($this->orderm->shopAcceptOrder($info) 
-					) {
-					echo json_encode(array('status' => 0));
+				if($this->orderm->shopAcceptOrder($info)) {
+					
+					 {
+						echo json_encode(array('status' => 0));
+						return;
+					}
 				}
 				else {
-					echo json_encode(array('status' => 1));
+					echo json_encode(array('status' => 2));
 				}
 			}
+			else {
+				echo json_encode(array('status' => 5));
+			}
+
 		}
+		else {
+			echo json_encode(array('status' => 4));
+		}
+		echo json_encode(array('status' => 3));
 	}
 
 	public function deliveryAcceptOrder()
 	{
 		if($this->acessm->userIsLoggedIn() 
-			&& $this->acessm->userHasRole(deliveryId)) {
+			&& $this->acessm->userHasRole(shopId)) {
 			if(isset($_POST['userid']) && isset($_POST['orderid']) && isset($_POST['shopid']) && is_numeric($_POST['orderid']) && is_numeric($_POST['userid']) && is_numeric($_POST['shopid'])) {
 				$info = array('userid' => $_POST['userid'], 'orderid' => $_POST['orderid'], 'shopid' => $_POST['shopid']);
-				if($this->orderm->deliveryAcceptOrder($info)
-					&& $this->orderm->allocDelivery($info)) {
+				if($this->orderm->allocDelivery($info)
+					&& $this->orderm->deliveryAcceptOrder($info)) {
 					echo json_encode(array('status' => 0));
 				}
 				else {
