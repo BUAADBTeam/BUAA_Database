@@ -87,7 +87,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <li class="im-g"><a href="#"><img src="static/images/8p.jpg" class="img-responsive" alt=""></a></li>
       <li class="data"><h4>比格披萨</h4>
         <p>知春路店</p>
-        <p>好吃好玩有故事</p>
+        <p>好吃 好玩 有故事</p>
       </li>
       <li class="bt-nn">
         <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">去看看</a>

@@ -10,13 +10,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
     <h1>每日精选</h1><p><br /></p>
     <div class="col-md-4 latis-left">
-      <h3>Maecenas ornare enim</h3>
+      <h3>每嘉三明治</h3>
       <img src="static/images/4.jpg" class="img-responsive" alt="">
       <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
+        <p>原滋原味的三明治 </p>
         <div class="cur">
           <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">Add to cart</a></span></div>
+            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
           </div>
           <div class="cur-right">
             <div class="item_add"><span class="item_price"><h6>only $45.00</h6></span></div>
@@ -26,13 +26,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
     </div>
     <div class="col-md-4 latis-left">
-      <h3>Dis parturient montes</h3>
+      <h3>蔬菜拌虾</h3>
       <img src="static/images/1.jpg" class="img-responsive" alt="">
       <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
+        <p>品尝大自然的味道 </p>
         <div class="cur">
           <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">Add to cart</a></span></div>
+            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
           </div>
           <div class="cur-right">
             <div class="item_add"><span class="item_price"><h6>only $55.00</h6></span></div>
@@ -42,13 +42,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
     </div>
     <div class="col-md-4 latis-left">
-      <h3>Curabitur congue blandit</h3>
+      <h3>培根早餐肉</h3>
       <img src="static/images/3.jpg" class="img-responsive" alt="">
       <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
+        <p>坐下吃份早餐吧 </p>
         <div class="cur">
           <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">Add to cart</a></span></div>
+            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
           </div>
           <div class="cur-right">
             <div class="item_add"><span class="item_price"><h6>only $65.00</h6></span></div>
@@ -66,12 +66,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <div class="container">
     <h1>店铺推荐</h1><p><br /></p>
     <div class="col-md-4 latis-left">
-      <h3>Maecenas ornare enim</h3>
-      <img src="static/images/4.jpg" class="img-responsive" alt="">
+      <div align = 'center'> <h3>品知左岸咖啡</h3> </div>
+      <div align = 'center'> <img src="static/images/9b1.jpg" class="img-responsive" alt=""> </div>
       <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
+      <div align = 'center'> <p>体味纯正意大利咖啡 </p> </div>
       </div>
-      <div class="cur">
+      <div align = 'center'> <div class="cur">
           <div class="cur-left">
             <a class="morebtn hvr-rectangle-in" href="shop/s/0">进店逛逛</a></span>
           </div>
@@ -81,18 +81,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <div class="clearfix"> </div>
         </div>
     </div>
-    <div class="col-md-4 latis-left">
-      <h3>Dis parturient montes</h3>
-      <img src="static/images/1.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
-      </div>
     </div>
     <div class="col-md-4 latis-left">
-      <h3>Curabitur congue blandit</h3>
-      <img src="static/images/3.jpg" class="img-responsive" alt="">
+      <div align = 'center'> <h3>G堡王</h3> </div>
+      <div align = 'center'> <img src="static/images/6p1.jpg" class="img-responsive" alt=""> </div>
       <div class="special-info grid_1">
-        <p>Cum sociis natodiculus mus.rhoncus egestas ac sit </p>
+      <div align = 'center'> <p>我们只做最大的汉堡 </p> </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 latis-left">
+      <div align = 'center'> <h3>比格披萨</h3> </div>
+      <div align = 'center'> <img src="static/images/8p1.jpg" class="img-responsive" alt=""> </div>
+      <div class="special-info grid_1">
+      <div align = 'center'> <p>好吃 好玩 有故事 </p> </div>
       </div>
     </div>
     <div class="clearfix"> </div>
