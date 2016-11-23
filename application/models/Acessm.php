@@ -302,4 +302,20 @@ class Acessm extends Model
       return True;
   }
 
+  function getPhoto($userid) 
+  {
+    $this->db->connect();
+    $this->bd->beginTransaction();
+    try {
+        $res = $this->db->select(array('photo'), 'users', "userid = $userid", array());
+        if(!empty($res['row']))
+          $res = $res['row']['photo'];
+    } catch (Exception $e) {
+        $this->db->rollback();
+        $this->db->close();
+    }
+    $this->db->commit();
+    $this->db->close();
+    return $res;
+  }
 }
