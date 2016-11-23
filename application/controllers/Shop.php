@@ -41,28 +41,22 @@ class Shop extends Controller {
 				$neededInfo['st'] = 0;
 				$neededInfo['pic'] = $filename;
 				if($this->shopm->add($_SESSION['userid'], $neededInfo) == FALSE) {
-					echo json_encode(array('status' => 1));
+					//echo json_encode(array('status' => 1));
 				}
 				else {
-					echo json_encode(array('status' => 0));	
+					//echo json_encode(array('status' => 0));	
 				}
 			}
 			else {
-				echo json_encode(array('status' => 1));
+				//echo json_encode(array('status' => 2));
 			}
 		}
+		$this->load->view('manage', array('id'=> $_SESSION['userid']));
 	}
 
 	public function del($cid)
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
-			$sid = $_SESSION['userid'];
-			if ($this->shopm->del($sid, $cid)) {
-				echo json_encode(array('status' => 0));
-				return;
-			}
-		}
-		else {
 			$sid = $_SESSION['userid'];
 			if ($this->shopm->del($sid, $cid)) {
 				echo json_encode(array('status' => 0));
@@ -82,13 +76,6 @@ class Shop extends Controller {
 				return;
 			}
 		}
-		else {
-			$sid = $_SESSION['userid'];
-			if ($this->shopm->put($sid, $cid)) {
-				echo json_encode(array('status' => 0));
-				return;
-			}
-		}
 		echo json_encode(array('status' => 1));
 		return;
 	}
@@ -100,13 +87,6 @@ class Shop extends Controller {
 			if ($this->shopm->off($sid, $cid)) {
 				echo json_encode(array('status' => 0));
 				return;
-			}
-		}
-		else {
-			$sid = $_SESSION['userid'];
-			if ($this->shopm->off($sid, $cid)) {
-				echo json_encode(array('status' => 0));
-				return TRUE;
 			}
 		}
 		echo json_encode(array('status' => 1));
@@ -128,10 +108,10 @@ class Shop extends Controller {
 	public function manage()
 	{
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(_shop)) {
-			$this->load->view("manage", array('id'=> 0)); //yic-get_shop_id;
+			$this->load->view("manage", array('id'=> $_SESSION['userid'])); //yic-get_shop_id;
 		}
 		else {
-			$this->load->view("manage", array('id'=> 0));
+			echo 'No Access right';
 		}
 	}
 
@@ -142,10 +122,5 @@ class Shop extends Controller {
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);
 	}
-
-	function changePhoto()
-	{
-    	 
-  	}
 
 }

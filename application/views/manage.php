@@ -24,8 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <h4 class="modal-title lead">新增菜品</h4>
       </div>
       <div class="modal-body">
-        <form id="login_form" class="form-horizontal" role="form" method="post" action="register">
-          <input type="hidden" name="_token" value="R5gsW4ojTAXtGfwlp4lfX9X64y9uP2n2ceyTZ76d">
+        <form id="login_form" class="form-horizontal" role="form" method="post" action="<?php echo base_url()?>shop/add" enctype="multipart/form-data">
           <div class="alert alert-danger" role="alert" id="addcsAlert" style="display:none;height:30px;padding:5px;">
             <span class="glyphicon glyphicon-remove-sign" id = "regiErrIcon"></span><span id="registerErrorMessage">&nbsp; 信息不合规范</span>
           </div>
@@ -74,14 +73,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <div class="form-group" id="reAddress">
             <label for="InputCst" class="col-md-2 control-label">马上销售</label>
             <div class="input-group col-md-9">
-              <input type="text" class="form-control" id="cst" name="st">
+              <input type="radio" name="st" value="0" checked>是
+              <input type="radio" name="st" value="1">否
             </div>
           </div>
           <input type="submit" id="AddCBtn" value="文件上传" style="display: none;"/>
-          <div class="modal-footer">
-            <button type="button" id="login_submit" onclick="$('#AddCBtn').click()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;&nbsp;添加 &nbsp; </button>
-          </div>
         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="login_submit" onclick="$('#AddCBtn').click()  " class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;&nbsp;添加 &nbsp; </button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
