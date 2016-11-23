@@ -31,7 +31,7 @@ class Acessm extends Model
         $this->db->beginTransaction();
         try {
         $row = $this->db->select(array('COUNT(*)'), "users",
-          "username = :user AND role = :role", array(':user' => $user, ':role' => $role), "S")['row'];
+          "username = :user AND role = :role AND verified = 1", array(':user' => $user, ':role' => $role), "S")['row'];
         } catch(Exception $e) {
           $this->db->rollback();
           $this->db->close();

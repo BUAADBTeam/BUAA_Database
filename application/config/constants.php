@@ -28,6 +28,7 @@ define('orderAcceped', 3);
 define('orderAllocated', 4);
 define('orderStartDelivery', 5);
 define('orderCompleted', 6);
+// define(name, value)
 
 
 //Accessm.php

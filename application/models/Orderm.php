@@ -495,4 +495,30 @@ class Orderm extends Model {
 			return False;
 		}
 	}
+
+	function userComment($info = array(), $credit = array())
+	{
+		$this->db->connect();
+		$this->db->beginTransaction();
+		try {
+			$res = $this->updStatus(orderCompleted, $info);
+			if(!$res || !is_array($credit) 
+				|| !isset($credit['shop']) || !is_numeric($credit['shop'])
+				|| !isset($credit['delivery'] || !is_numeric($credit['delivery']))
+				|| $credit['shop'] > 5 || $credit['delivery'] > 5
+				|| $credit['shop'] < 0 || $credit['delivery'] < 0)
+				$this->db->rollback();
+			else {
+				$this->db->update('shop', array('credit' => "credit + $credit['shop']"), array());
+				$this->db->update('deliverymen', array('credit' => "credit + $credit['delivery']"), array());
+				$this->db->commit();
+			}
+			$this->db->close();
+			return $res;
+		} catch(Exception $e) {
+			$this->db->rollback();
+			$this->db->close();
+			return False;
+		}
+	}
 }
