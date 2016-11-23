@@ -305,7 +305,7 @@ class Acessm extends Model
   function getPhoto($userid) 
   {
     $this->db->connect();
-    $this->bd->beginTransaction();
+    $this->db->beginTransaction();
     try {
         $res = $this->db->select(array('photo'), 'users', "userid = $userid", array());
         if(!empty($res['row']))

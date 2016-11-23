@@ -148,7 +148,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="thumbnail">
                     <img src="" alt="Image Previewer" id="previewer">
                 </div>
-                <form id="login_form" action="register/registerPhoto" method="post" enctype="multipart/form-data">
+                <form id="login_form" action="<?php echo base_url()?>register/registerPhoto" method="post" enctype="multipart/form-data">
                     <input type="file" name="fileUp" id="filechooser" style="display: none;">
                     <input type="submit" id="fileUploadBtn" value="文件上传" style="display: none;"/>
                 </form>
@@ -222,7 +222,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     defaultIcon = BASEURL+'static/images/dfIcon.jpg';
     function getP(data) {
         if (data.status == 0) {
-            $('#user_avatar').attr('src', data.src);
+            $('#user_avatar').attr('src', BASEURL + data.src);
         }
         else {
             $('#user_avatar').attr('src', defaultIcon);

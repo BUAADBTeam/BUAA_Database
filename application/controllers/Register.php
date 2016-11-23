@@ -78,17 +78,20 @@ class Register extends Controller {
 		if($this->acessm->userIsLoggedIn()) {
 			if($this->uploadm->upload("static\users\\", 
 				$fileName)) {
-				if($this->acessm->insertPic($_SESSION['userid'], $fileName)) {
-					echo "Fail";
+				if(!$this->acessm->insertPic($_SESSION['userid'], $fileName)) {
+					echo json_encode(array('status' => -1));
+					return;
 				}
 			}
 			else {
-				echo "no pic format";
+				echo json_encode(array('status' => -1));
+				return;
 			}
 		}
 		else {
-			echo "didn't login";
+			echo json_encode(array('status' => -1));
+			return;
 		}
-		$this->load->view('welcome');
+		echo json_encode(array('status' => 0));
 	}
 }
