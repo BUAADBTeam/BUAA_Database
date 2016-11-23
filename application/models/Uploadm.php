@@ -30,6 +30,8 @@ class Uploadm extends Model {
 
   function upload($uploaddir, &$uploadfile) 
   {
+    if(empty($_FILES))
+      return false;
     // $uploaddir = "./files/";//设置文件保存目录 注意包含/      
     $type=array("jpg","gif","bmp","jpeg","png");//设置允许上传文件的类型     
     // $patch="http://127.0.0.1/cr_downloadphp/upload/files/";//程序所在路径
