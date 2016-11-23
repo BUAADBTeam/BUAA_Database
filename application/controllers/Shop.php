@@ -30,7 +30,7 @@ class Shop extends Controller {
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(shopId)) {
 			$filename = '';
 			if($this->uploadm->upload("static\src\\", $filename)) {
-				$neededInfo = array('name' => '', 'price' => '', 'info' => '');
+				$neededInfo = array('name' => '', 'price' => '', 'info' => '', 'st' => '');
 				foreach ($neededInfo as $key => $value) {
 					// if(!isset($_POST[$key])) {
 					// 	echo json_encode(array('status' => '1'));
