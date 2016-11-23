@@ -48,6 +48,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
   function op_get_res(data) {
     if (data.status == 0) {
+      alert('success');
       window.location.reload();
     }
     else {
@@ -66,8 +67,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   function shopAcceptOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/shopAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
-  function deliveyAcceptOrder(oid, uid, sid) {
-    ajax_send(BASEURL+'order/deliveyAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  function deliveryAcceptOrder(oid, uid, sid) {
+    ajax_send(BASEURL+'order/deliveryAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
   function userGetOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/userGetOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);

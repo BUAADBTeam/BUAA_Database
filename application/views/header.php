@@ -74,9 +74,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <!-- script-for-nav -->
             </div>
             <div class="header-right1">
-                <div class="cart box_1">
-                    
-                </div>
+                <a href="" data-toggle="modal" data-target="#mymodal-avatar">
+                    <img src="static/images/1p.jpg" class="img-circle" style="width:60px; height: 60px" href=""/>
+                </a>
             </div>
             <div class="clearfix"> </div>
         </div>
@@ -87,23 +87,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">登陆</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="mymodal-signin">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -138,6 +121,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <button type="button" id="login_submit" onclick="PostLogin()" class="btn btn-primary btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;&nbsp;登录！&nbsp; </button>
                     </div>
                 </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="mymodal-avatar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title lead">上传图片</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div class="thumbnail">
+                    <img src="static/images/1p.jpg" alt="Image Previewer" id="previewer">
+                </div>
+                <form id="login_form" action="register/registerPhoto" method="post" enctype="multipart/form-data">
+                    <input type="file" name="fileUp" id="filechooser" style="display: none;">
+                    <input type="submit" id="fileUploadBtn" value="文件上传" style="display: none;"/>
+                </form>
+                <script type="text/javascript">
+                    var filechooser = document.getElementById('filechooser');
+                    var previewer = document.getElementById('previewer');
+                    filechooser.onchange = function() {
+                        var files = this.files;
+                        var file = files[0];
+                        // 接受 jpeg, jpg, png 类型的图片
+                        if (!/\/(?:jpeg|jpg|png|bmp|gif)/i.test(file.type)) return;
+                        var reader = new FileReader();
+                        reader.onload = function() {
+                            var result = this.result;
+                            previewer.src = result;
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                </script>
+                <button class="btn btn-primary" onclick="{$('#filechooser').click()}">选择图片</button>
+                <button class="btn btn-primary" onclick="{$('#fileUploadBtn').click()}">上传图片</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

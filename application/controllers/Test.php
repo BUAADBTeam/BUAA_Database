@@ -33,7 +33,7 @@ class Test extends Controller {
 	}
 	public function post()
 	{
-		// print_r($_POST);
+		print_r($_FILES);
 		$a = array('0' => array(), '1' => array());
 		for ($i = 0;  $i < count($a); $i += 1) {
 			// $value[1] = 'fck';

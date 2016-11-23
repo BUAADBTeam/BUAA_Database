@@ -145,7 +145,7 @@ function wrap_order(order)
 		if (isShop()) {
 			type = 'danger';
 			opo = 'shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
-			op = 'deliveyAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -156,7 +156,7 @@ function wrap_order(order)
 	else if (order.status == 3) {
 		if (isShop()) {
 			type = 'warning';
-			op = 'deliveyAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -201,14 +201,15 @@ function wrap_order(order)
 		btn = '<button type="button" onclick="'+op+'" class="btn btn-'+type+' btn-lg btn-block lead"><span class="glyphicon glyphicon-circle-arrow-up"></span>&nbsp;'+info+'</button>';
 	}
 	else {
-	btn = '<button type="button" class="btn btn-'+type+' btn-lg btn-block lead disabled">&nbsp;'+info+'</button>';
+		btn = '<button type="button" class="btn btn-'+type+' btn-lg btn-block lead disabled">&nbsp;'+info+'</button>';
 	}
 	if (order)
 	res = '<div class="order-top" id="order"'+order.orderid+' orderid="'+order.orderid+'">'+
 				'<li class="im-g"><img src="'+BASEURL+order.user.photo+'" class="img-responsive" alt=""></li>'+
 				'<li class="data"><h3>'+order.user.username+'</h3>'+
-				'<p>'+order.user.address+'</p>'+
-				'<P>'+order.info+'</P>'+
+				'<p>地址: '+order.user.address+'</p>'+
+				// '<P>'+order.info+'</P>'+
+				'<P>备注: '+'无备注'+'</P>'+
 			'</li>'+
 			'<li class="bt-nn">'+
 				'<button type="button" class="btn btn-'+type+' btn-lg" onclick="{showOrder('+order.orderid+');'+opo+'}" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
