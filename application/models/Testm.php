@@ -16,7 +16,7 @@ class Testm extends Model {
 	function action()
 	{
 		echo 'db_result:';
-		print_r($this->db->query('select COUNT(*) from category'));
+		print_r($this->db->query("insert into users(role, address, verified, token, email) values (1, 'heihei', 'True', 'asda', 'asdas')"));
 	}
 
 }

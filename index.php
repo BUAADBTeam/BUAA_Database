@@ -1,4 +1,6 @@
 <?php
+ini_set("display_errors", "On");
+error_reporting(E_ALL | E_STRICT);
 
 $system_path = 'system';
 $application_folder = 'application';
@@ -49,7 +51,7 @@ else {
 }
 
 require APPPATH.'config/config.php';
-
-$url = array_keys($_GET)[0];
+require APPPATH.'config/constants.php';
+$url = empty($_GET) ? '' : array_keys($_GET)[0];
 
 require_once BASEPATH.'core/core.php';
