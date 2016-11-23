@@ -19,12 +19,12 @@ class Welcome extends Controller {
 
 	public function getP()
 	{
-		if (!$this->accessm->userIsLoggedIn()) {
+		if (!$this->acessm->userIsLoggedIn()) {
 			echo json_encode(array('status' => -1));
 			return;
 		}
 		$id = $_SESSION['userid'];
-		$res['src'] = $this->accessm->getPhoto($id);
+		$res['src'] = $this->acessm->getPhoto($id);
 		$res['status'] = 0;
 		echo json_encode($res);
 	}

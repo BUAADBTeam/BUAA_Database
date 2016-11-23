@@ -79,10 +79,7 @@ class Register extends Controller {
 			if($this->uploadm->upload("static\users\\", 
 				$fileName)) {
 				if($this->acessm->insertPic($_SESSION['userid'], $fileName)) {
-					echo "YES";
-				}
-				else {
-					echo "No";
+					echo "Fail";
 				}
 			}
 			else {
@@ -92,5 +89,6 @@ class Register extends Controller {
 		else {
 			echo "didn't login";
 		}
+		$this->load->view('welcome');
 	}
 }

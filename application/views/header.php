@@ -233,7 +233,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
     if (isUser() || isShop() || isDelivery()) {
         $(function(){
-            ajax_send(BASEURL+'welcome/getPhoto',0,getP,getPError);
+            ajax_send(BASEURL+'welcome/getP',0,getP,getPError);
         });
     }
     else {

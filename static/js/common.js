@@ -156,7 +156,7 @@ function wrap_order(order)
 	else if (order.status == 3) {
 		if (isShop()) {
 			type = 'warning';
-			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			op = 'allocOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -166,9 +166,17 @@ function wrap_order(order)
 	}
 	else if (order.status == 4) {
 		if (isDelivery()) {
+			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			type = 'danger';
+			info = '确认送达';
+			available = true;
 		}
-		info = '等待收货';
+		else if (isUser()) {
+			info = '您的外卖已在路上';
+		}
+		else {
+			info = '等待收货';
+		}
 	}
 	else if (order.status == 5) {
 		if (isUser()) {

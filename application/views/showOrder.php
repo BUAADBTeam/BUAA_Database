@@ -60,6 +60,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   function shopAcceptOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/shopAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
+  function allocOrder(oid, uid, sid) {
+    ajax_send(BASEURL+'order/allocOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+  }
   function deliveryAcceptOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/deliveryAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
