@@ -11,7 +11,7 @@ class Shopm extends Model {
 		parent::__construct();
 	}
 
-	public function add($sid, $filename)
+	public function add($sid, $info)
 	{
 /*INSERT INTO `db`.`cuisine` (`id`, `sid`, `name`, `pic`, `price`, `info`, `st`) VALUES 
 (NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
@@ -24,22 +24,31 @@ class Shopm extends Model {
 (NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
 (NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '1'),
 (NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0');*/
-		if (!isset($_POST['name']) || !isset($_POST['price'])) {
+		if (!isset($info['name']) || !isset($info['price'])) {
 			return FALSE;
 		}
-		if(!is_string($_POST['name']) || !is_numeric($_POST['price'])) {
+		if(!is_string($info['name']) || !is_numeric($info['price']) || $info['price'] < 0) {
 			return FALSE;
 		}
-		if(isset($_POST['st']) && ($_POST['st'] != 0 && $_POST['st'] != 1)) {
+		if(isset($info['st']) && ($info['st'] !== 0 && $info['st'] !== 1)) {
 			return FALSE;
 		}
+		if(isset($info['info']) && (!is_string($info['info'])))
+			return False;
 		try {
 			$this->db->connect();
 			$this->db->beginTransaction();
 			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
-			$params = array(':name' => $_POST['name'], ':pic' => $filename, ':price' => $_POST['price'], ':sid' => $sid, ':st' => isset($_POST['st']) ? $_POST['st'] : 1);
-			if ($this->db->insert($this->cuisine, $column, $params) == FALSE) {
-				$this->db->rollback();
+			$params = array(':name' => $info['name'], ':pic' => $info['pic'], ':price' => $info['price'], ':sid' => $sid, ':st' => isset($info['st']) ? $info['st'] : 1);
+			// if ($this->db->insert($this->cuisine, $column, $params) == FALSE) {
+			// 	$this->db->rollback();
+			// 	$this->db->close();
+			// 	return FALSE;
+			// }
+			try {
+				$this->db->insert($this->cuisine, $column, $params);
+			} catch (Exception $e) {
+				$this->db->rollback;
 				$this->db->close();
 				return FALSE;
 			}

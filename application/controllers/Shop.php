@@ -29,11 +29,26 @@ class Shop extends Controller {
 		// return FALSE;
 		if($this->acessm->userIsLoggedIn() && $this->acessm->userHasRole(shopId)) {
 			$filename = '';
-			if($this->uploadm->upload(realpath('.')."\static\src\\", $filename)) {
-
+			if($this->uploadm->upload("static\src\\", $filename)) {
+				$neededInfo = array('name' => '', 'price' => '', 'info' => '');
+				foreach ($neededInfo as $key => $value) {
+					// if(!isset($_POST[$key])) {
+					// 	echo json_encode(array('status' => '1'));
+					// 	return FALSE;
+					// }
+					$neededInfo[$key] = $_POST[$key];
+				}
+				$neededInfo['st'] = 0;
+				$neededInfo['pic'] = $filename;
+				if($this->shopm->add($_SESSION['userid'], $neededInfo) == FALSE) {
+					echo json_encode(array('status' => 1));
+				}
+				else {
+					echo json_encode(array('status' => 0));	
+				}
 			}
 			else {
-				echo "文件上传失败";
+				echo json_encode(array('status' => 1));
 			}
 		}
 	}
