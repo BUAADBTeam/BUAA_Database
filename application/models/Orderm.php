@@ -484,8 +484,9 @@ class Orderm extends Model {
 			$res = $this->updStatus(orderStartDelivery, $info, array('finishtime' => time()));
 			if(!$res)
 				$this->db->rollback();
-			else
+			else {
 				$this->db->commit();
+			}
 			$this->db->close();
 			return $res;
 		} catch(Exception $e) {
