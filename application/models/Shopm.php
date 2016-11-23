@@ -24,16 +24,16 @@ class Shopm extends Model {
 (NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
 (NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '1'),
 (NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0');*/
-		if (empty($info['name']) || empty($info['price'])) {
+		if (!isset($info['name']) || !isset($info['price'])) {
 			return FALSE;
 		}
 		if(!is_string($info['name']) || !is_numeric($info['price']) || $info['price'] < 0) {
 			return FALSE;
 		}
-		if(!empty($info['st']) && ($info['st'] !== 0 && $info['st'] !== 1)) {
+		if(isset($info['st']) && ($info['st'] !== 0 && $info['st'] !== 1)) {
 			return FALSE;
 		}
-		if(!empty($info['info']) && (!is_string($info['info'])))
+		if(isset($info['info']) && (!is_string($info['info'])))
 			return False;
 		try {
 			$this->db->connect();

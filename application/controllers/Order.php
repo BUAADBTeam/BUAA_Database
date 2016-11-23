@@ -106,6 +106,30 @@ class Order extends Controller {
 		}
 	}
 
+	function userComment()
+	{
+		if($this->acessm->userIsLoggedIn() 
+			&& $this->acessm->userHasRole(1)) {
+			$neededInfo = array('userid' => '', 'orderid' => '', 'shopid' => '');
+			foreach ($neededInfo as $key => $value) {
+				if(isset($_POST["$key"]))
+					$neededInfo[$key] = $_POST[$key];
+			}
+			if(isset($_POST['credit'])) {
+				if($this->orderm->userComment($neededInfo, $_POST['credit'])) {
+					echo json_encode(array('status' => 0));
+				}
+				else {
+					echo json_encode(array('status' => 1));	
+				}
+			}
+			else {
+				echo json_encode(array('status' => 1));
+			}
+
+		}
+	}
+
 
 
 }

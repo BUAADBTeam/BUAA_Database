@@ -36,7 +36,8 @@ class Shop extends Controller {
 					// 	echo json_encode(array('status' => '1'));
 					// 	return FALSE;
 					// }
-					$neededInfo[$key] = $_POST[$key];
+					if(isset($_POST[$key]))
+						$neededInfo[$key] = $_POST[$key];
 				}
 				$neededInfo['st'] = 0;
 				$neededInfo['pic'] = $filename;
