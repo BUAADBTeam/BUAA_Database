@@ -39,8 +39,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li id="headerHome"><a href="<?php echo base_url();?>welcome">主页</a></li>
                     <li id="headerResturants"><a href="<?php echo base_url();?>shop">餐厅</a></li>
                     <li id="headerResturants" style="display:none"><a href="<?php echo base_url();?>shop"></a></li>
-                    <li id="headerShop" style="display:none"><a href="<?php echo base_url();?>shop/manage">我的餐厅</a></li>
-                    <li id="headerOrder" style="display:none;" onmouseover="dspl()" onmouseout="$('.submenu').attr('style', 'display:none');">
+                    <li id="headerShop" style="display:none" onmouseover="dspl('#headerShop')" onmouseout="$('#headerShop .submenu').attr('style', 'display:none');">
+                        <a href="<?php echo base_url();?>shop/manage">我的餐厅</a>
+                        <ul class="submenu" style="display: none">
+                            <li id="headerHome" style="display:block;"><a href="" data-toggle="modal" data-target="#mymodal-addcusine">新增菜品</a></li>
+                        </ul>
+                    </li>
+                    <li id="headerOrder" style="display:none;" onmouseover="dspl('#headerOrder')" onmouseout="$('#headerOrder .submenu').attr('style', 'display:none');">
                         <a href="<?php echo base_url();?>order">我的订单</a>
                         <ul class="submenu" style="display: none">
                             <li id="headerHome" style="display:block;"><a href="#" onclick="updateOrder(0,7)">全部订单</a></li>
@@ -70,12 +75,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     if (isShop()) {
                         $('#headerShop').attr('style', '');
                     }
+                    function dspl(root) {
+                        if ($(root).attr('class') != 'active') {
+                            return;
+                        }
+                        $(root + ' .submenu').attr('style', 'position: absolute;');
+                        $(root + ' .submenu li').attr('style', 'display: block;position:relative');
+                    }
                 </script>
                 <!-- script-for-nav -->
             </div>
             <div class="header-right1">
                 <a href="" data-toggle="modal" data-target="#mymodal-avatar">
-                    <img src="static/images/1p.jpg" class="img-circle" style="width:60px; height: 60px" href=""/>
+                    <img src="" class="img-circle" style="width:60px; height: 60px" href="" id="user_avatar"/>
                 </a>
             </div>
             <div class="clearfix"> </div>
@@ -134,7 +146,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-body" align="center">
                 <div class="thumbnail">
-                    <img src="static/images/1p.jpg" alt="Image Previewer" id="previewer">
+                    <img src="" alt="Image Previewer" id="previewer">
                 </div>
                 <form id="login_form" action="register/registerPhoto" method="post" enctype="multipart/form-data">
                     <input type="file" name="fileUp" id="filechooser" style="display: none;">
@@ -206,4 +218,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         url = BASEURL + 'logout/index';
         ajax_send(url,{action:encodeURI('logout')}, logoutSuccess, op_error);  
     }
+
+    defaultIcon = BASEURL+'static/images/dfIcon.jpg';
+    function getP(data) {
+        if (data.status == 0) {
+            $('#user_avatar').attr('src', data.src);
+        }
+        else {
+            $('#user_avatar').attr('src', defaultIcon);
+        }
+    }
+    function getPError(data) {
+        $('#user_avatar').attr('src', defaultIcon);
+    }
+    if (isUser() || isShop() || isDelivery()) {
+        $(function(){
+            ajax_send(BASEURL+'welcome/getPhoto',0,getP,getPError);
+        });
+    }
+    else {
+        $('.header-right1').attr('style', 'display:none');
+    }
+
 </script>

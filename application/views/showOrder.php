@@ -40,12 +40,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $('#orderContainer').append(wrap_order(orders.order.list[i], orders.order.user));
     }
   }
-  function dspl() {
-    //alert($('#headerOrder'));
-    $('.submenu').attr('style', 'position: absolute;');
-    $('.submenu li').attr('style', 'display: block;position:relative');
-  }
-
   function op_get_res(data) {
     if (data.status == 0) {
       alert('success');
