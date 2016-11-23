@@ -67,8 +67,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   function userGetOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/userGetOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
+  var shopCred = 5, delvCred = 5;
   function userComment(oid, uid, sid) {
-    ajax_send(BASEURL+'order/userComment', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+    ajax_send(BASEURL+'order/userComment', {orderid:oid, userid:uid, shopid:sid, credit:{shop:shopCred, delivery:delvCred}}, op_get_res, op_error);
+  }
+  function setShopComment(x) {
+    shopCred=x;
+    for (i = 1; i <= x; i++) {
+      $('.starShop'+i).attr('class', 'starShop'+i+' glyphicon glyphicon-star');
+    }
+    for (i = x + 1; i <= 5; i++) {
+      $('.starShop'+i).attr('class', 'starShop'+i+' glyphicon glyphicon-star-empty');
+    }
+  }
+  function setDevlComment(x) {
+    delvCred
+    for (i = 1; i <= x; i++) {
+      $('.starDevl'+i).attr('class', 'starDevl'+i+' glyphicon glyphicon-star');
+    }
+    for (i = x + 1; i <= 5; i++) {
+      $('.starDevl'+i).attr('class', 'starDevl'+i+' glyphicon glyphicon-star-empty');
+    }
+    // $('#starDevls'+x).html('<span id="starDevl'+x+'" class="glyphicon glyphicon-star-empty" style="color:red"></span>');
+    // $('#starDevls'+x).html('');
   }
 </script>
 <div class="modal fade" id="mymodal-order">

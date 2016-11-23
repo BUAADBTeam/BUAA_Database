@@ -220,6 +220,18 @@ function wrap_order(order)
 		res += wrap_cuisine_order(order.items[i]);
 	}
 	res += wrap_total_price(order.total);
+	if (order.status == 6 && isUser() || 1) {
+		res += '<div class="row"><span style="font-size:30px"><div class="col-lg-3">商家</div>';
+		for (i = 0; i < 5; i++) {
+			res += '<div class="col-lg-1"><a href="" onmouseover="setShopComment('+(i+1)+')" onclick="return false;"><span class="starShop'+(i+1)+' glyphicon glyphicon-star" style="color:red"></span></a></div>';
+		}
+		res += '</span></div>';
+		res += '<div class="row"><span style="font-size:30px"><div class="col-lg-3">快递员</div>';
+		for (i = 0; i < 5; i++) {
+			res += '<div class="col-lg-1"><a href="" onmouseover="setDevlComment('+(i+1)+')" onclick="return false;"><span class="starDevl'+(i+1)+' glyphicon glyphicon-star" style="color:red"></span></a></div>';
+		}
+		res += '</span></div>';
+	}
 	res += '</div><div id="orderBtn'+order.orderid+'" style="display:none">';
 	res += btn;
 	res += '</div></div>';
