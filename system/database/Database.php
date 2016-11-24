@@ -146,10 +146,10 @@ class Database {
 
 	public function select($data, $table, $where , $params = array(), $Lock = NULL) {
 		if(empty($where) || !is_string($where)) {
-				throw new Exception(emptyWhere);
+				throw new Exception('emptyWhere');
 		}
 		if (!is_array($data) || count($data) == 0) {
-				throw new Exception(noColomnFound);
+				throw new Exception('noColomnFound');
 		}
 		if($Lock === "S") {
 			$Lock = " LOCK IN SHARE MODE";

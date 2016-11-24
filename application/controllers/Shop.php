@@ -124,4 +124,12 @@ class Shop extends Controller {
 		echo json_encode($res);
 	}
 
+	public function getShop()
+	{
+		$res['data'] = $this->shopm->getShopList();
+		$res['status'] = 0;
+		$res['count'] = sizeof($res['data']);
+		echo json_encode($res);
+	}
+
 }

@@ -6,23 +6,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </script>
 <!-- about -->
 <div class="orders">
-  <div class="container">
+  <div class="container", id="shopContainer">
     <div class="order-top">
-      <li class="im-g"><a href="#"><img src="static/images/1p.jpg" class="img-responsive" alt=""></a></li>
-      <li class="data"><h4>金百万便当店</h4>
-        <p>牡丹园店</p>
-        <P> 新用户下单立减15.0元</P>
+      <li class="im-g"><a href="#"><img src="static/users/CR-zZvMadEnFC.jpg" class="img-responsive" alt=""></a></li>
+      <li class="data"><h4>&nbsp;金百万便当店</h4>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牡丹园店</p>
+        <P> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新用户下单立减15.0元</P>
       </li>
       <li class="bt-nn">
-        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">去看看</a>
+        <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0" align="center">去看看</a>
       </li>
       <div class="clearfix"></div>
     </div>
     <div class="order-top">
       <li class="im-g"><a href="#"><img src="static/images/2p.jpg" class="img-responsive" alt=""></a></li>
       <li class="data"><h4>意拉维纳意式餐厅</h4>
-        <p>知春路店</p>
-        <p>我们不只有披萨和意面</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;知春路店</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;我们不只有披萨和意面</p>
       </li>
       <li class="bt-nn">
         <a class="morebtn hvr-rectangle-in" href="<?php echo base_url();?>shop/s/0">去看看</a>
@@ -97,3 +97,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </div>
 </div>
 <!-- about -->  
+
+<script type="text/javascript">
+    $('#shopContainer').empty();
+  loadShop = function(data) {
+    if (data.status != 0) {
+      return;
+    }
+    $('#shopContainer').empty();
+    for (var i = 0; i < data.count; i++) {
+      $('#shopContainer').append(wrap_shop_list(data.data[i]));
+    }
+  };
+  ajax_send(BASEURL + 'shop/getShop', 0, loadShop, load_error);
+</script>

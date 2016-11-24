@@ -45,8 +45,21 @@ function op_error(data)
 	alert("操作失败，请重试");
 }
 
-function wrap_shop(item)
+function wrap_shop_list(item)
 {
+	return '<div class="order-top">'+
+				'<li class="im-g"><a href="'+BASEURL+'shop/s/'+item.id+'"><img src="'+BASEURL+item.photo+'" class="img-responsive" alt=""></a></li>'+
+				'<li class="data"><h4>&nbsp;'+item.name+'</h4>'+
+					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.address+'</p>'+
+					'<P> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.intro+'</P>'+
+				'</li>'+
+				'<li class="bt-nn">'+
+					'<a class="morebtn hvr-rectangle-in" href="'+BASEURL+'shop/s/'+item.id+'" align="center"><span align="center">进店逛逛</span></a>'+
+				'</li>'+
+				'<div class="clearfix"></div>'+
+			'</div>';
+	
+
 	return '<div class="col-xs-6 col-md-3"><div class="shop"><div class="thumbnail"><a href="'+BASEURL+'/shop/s/'+item.id+'"><img src="'+BASEURL+'/static/src/'+item.id+'.jpg" alt="Loading..."></a><p class="lead"><span class="label label-default">商家</span>'+item.name+'<br/><span class="label label-default">地址</span>'+item.addr+'</p></div></div></div>';
 }
 
@@ -104,15 +117,15 @@ function wrap_total_price(total)
 function wrap_cuisine_order(item)
 {
 	return '<div class="row">'+
-              '<div class="col-lg-3 thumbnail">'+
-              '<img src="'+BASEURL+item.pic+'" alt="...">'+
-              '</div>'+
-              '<div class="col-lg-9">&nbsp;</div>'+
-              '<div class="col-lg-9">&nbsp;</div>'+
-              '<div class="col-lg-5"><span style="font-size: 20px">'+item.name+'</span></div>'+
-              '<div class="col-lg-2">&times;'+item.amount+'</div>'+
-              '<div class="col-lg-2">￥'+(item.amount*item.price).toFixed(2)+'</div>'+
-            '</div>';
+				'<div class="col-lg-3 thumbnail">'+
+				'<img src="'+BASEURL+item.pic+'" alt="...">'+
+				'</div>'+
+				'<div class="col-lg-9">&nbsp;</div>'+
+				'<div class="col-lg-9">&nbsp;</div>'+
+				'<div class="col-lg-5"><span style="font-size: 20px">'+item.name+'</span></div>'+
+				'<div class="col-lg-2">&times;'+item.amount+'</div>'+
+				'<div class="col-lg-2">￥'+(item.amount*item.price).toFixed(2)+'</div>'+
+			'</div>';
 }
 
 function wrap_order(order)
@@ -144,7 +157,7 @@ function wrap_order(order)
 	else if (order.status == 2) {
 		if (isShop()) {
 			type = 'danger';
-			opo = 'shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			opo = '$(this).attr(\'class\', \'btn btn-warning btn-lg\');shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
@@ -211,13 +224,12 @@ function wrap_order(order)
 	else {
 		btn = '<button type="button" class="btn btn-'+type+' btn-lg btn-block lead disabled">&nbsp;'+info+'</button>';
 	}
-	if (order)
 	res = '<div class="order-top" id="order"'+order.orderid+' orderid="'+order.orderid+'">'+
 				'<li class="im-g"><img src="'+BASEURL+order.user.photo+'" class="img-responsive" alt=""></li>'+
-				'<li class="data"><h3>'+order.user.username+'</h3>'+
-				'<p>地址: '+order.user.address+'</p>'+
+				'<li class="data"><h3>&nbsp;&nbsp;'+order.user.username+'</h3><br />'+
+				'<p>&nbsp;&nbsp;&nbsp;地址: '+order.user.address+'</p>'+
 				// '<P>'+order.info+'</P>'+
-				'<P>备注: '+'无备注'+'</P>'+
+				'<P>&nbsp;&nbsp;&nbsp;备注: '+'无备注'+'</P>'+
 			'</li>'+
 			'<li class="bt-nn">'+
 				'<button type="button" class="btn btn-'+type+' btn-lg" onclick="{showOrder('+order.orderid+');'+opo+'}" data-toggle="modal" data-target="#mymodal-order">详情</button>'+
