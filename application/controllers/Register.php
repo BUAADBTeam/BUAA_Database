@@ -78,7 +78,7 @@ class Register extends Controller {
 		if($this->acessm->userIsLoggedIn()) {
 			if($this->uploadm->upload("static\users\\", 
 				$fileName)) {
-				if($this->acessm->insertPic($_SESSION['userid'], $fileName)) {
+				if(!$this->acessm->insertPic($_SESSION['userid'], $fileName)) {
 					echo "Fail";
 				}
 			}
