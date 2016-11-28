@@ -222,7 +222,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     };
     loginError = function(data) {
-        alert("Something amazing happened! Please try again later.");
+        alert("登陆失败，请重试");
     };
     function PostLogin() {
         urlInHeader = BASEURL + 'login/check';

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Shopm extends Model {
 	
 	var $cuisine = 'cuisine';
-	var $shop = 'shop';
+	var $shop = 'exshop';
 
 	public function __construct()
 	{
@@ -113,11 +113,16 @@ class Shopm extends Model {
 
 	public function getRecommandList()
 	{
-		// $this->shopm->getRecommandList();
-		$res = array();
-		for ($i = 0; $i < 16; $i++) {
-			$res[] = array('id' => rand(1, 4), 'name' => '美食街', 'pic' => '', 'addr' => '233');
-		}
+		$res = array('cuisine' => array(), 'shop' => array());
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res['cuisine'] = $this->db->select(array('name', 'pic', 'info', 'sid', 'price'), $this->cuisine, '1 limit 0, 3', array(), 'S')['rows'];
+		$res['shop'] = $this->db->select(array('name', 'photo', 'intro', 'addr', 'id'), $this->shop, '1', array(), 'S limit 0, 3')['rows'];
+		$this->db->commit();
+		$this->db->close();
+		// for ($i = 0; $i < 16; $i++) {
+		// 	$res[] = array('id' => rand(1, 4), 'name' => '美食街', 'pic' => '', 'addr' => '233');
+		// }
 		// print_r($res);
 		return $res;
 	}
