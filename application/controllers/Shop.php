@@ -118,7 +118,16 @@ class Shop extends Controller {
 
 	public function r($page = 0)
 	{
-		$res['data'] = $this->shopm->getRecommandList();
+		$res = $this->shopm->getRecommandList();
+		$res['status'] = 0;
+		$res['cuisineCount'] = sizeof($res['cuisine']);
+		$res['shopCount'] = sizeof($res['shop']);
+		echo json_encode($res);
+	}
+
+	public function getShop()
+	{
+		$res['data'] = $this->shopm->getShopList();
 		$res['status'] = 0;
 		$res['count'] = sizeof($res['data']);
 		echo json_encode($res);

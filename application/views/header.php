@@ -108,7 +108,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
             <div class="modal-body">
                 <form id="login_form" class="form-horizontal" role="form" method="post">
-                    <input type="hidden" name="_token" value="R5gsW4ojTAXtGfwlp4lfX9X64y9uP2n2ceyTZ76d">
                     <div class="alert alert-danger" role="alert" id="loginAlert" style="display:none;height:30px;padding:5px;">
                         <span class="glyphicon glyphicon-remove-sign"></span><span id="loginErrorMessage">&nbsp; </span>
                     </div>
@@ -148,10 +147,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="thumbnail">
                     <img src="" alt="Image Previewer" id="previewer">
                 </div>
-                <form id="login_form" action="register/registerPhoto" method="post" enctype="multipart/form-data">
+                <form id="upP_form" action="<?php echo base_url()?>register/registerPhoto" method="post" enctype="multipart/form-data">
+                    <div class="alert alert-danger" role="alert" id="upPAlert" style="display:none;height:30px;padding:5px;">
+                        <span class="glyphicon glyphicon-remove-sign"></span><span id="upPErrorMessage">&nbsp;上传失败，请重试 </span>
+                    </div>
                     <input type="file" name="fileUp" id="filechooser" style="display: none;">
                     <input type="submit" id="fileUploadBtn" value="文件上传" style="display: none;"/>
                 </form>
+                <button class="btn btn-primary" onclick="{$('#filechooser').click()}">选择图片</button>
+                <button class="btn btn-primary" onclick="updatePhoto()">上传图片</button>
                 <script type="text/javascript">
                     var filechooser = document.getElementById('filechooser');
                     var previewer = document.getElementById('previewer');
@@ -167,9 +171,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         };
                         reader.readAsDataURL(file);
                     };
+                    function upP(data) {
+                        if (data.status == 0) {
+                            window.location.reload();
+                        }
+                        else {
+                            upPError(data);
+                        }
+                    }
+                    function upPError(data) {
+                        $('#upPAlert').attr('style','height:30px;padding:5px;');
+                    }
+                    function updatePhoto() {
+                        $.ajax({
+                            url: BASEURL+'register/registerPhoto',
+                            type: 'POST',
+                            cache: false,
+                            data: new FormData($('#upP_form')[0]),
+                            processData: false,
+                            contentType: false,
+                            dataType: 'JSON',
+                            success: upP,
+                            error: upPError
+                        })
+                        // ajax_send(BASEURL+'register/registerPhoto',0,upP,upPError);
+                    }
                 </script>
-                <button class="btn btn-primary" onclick="{$('#filechooser').click()}">选择图片</button>
-                <button class="btn btn-primary" onclick="{$('#fileUploadBtn').click()}">上传图片</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -195,12 +222,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     };
     loginError = function(data) {
-        alert("Something amazing happened! Please try again later.");
+        alert("登陆失败，请重试");
     };
     function PostLogin() {
-        url = BASEURL + 'login/check';
+        urlInHeader = BASEURL + 'login/check';
         
-        ajax_send(url,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
+        ajax_send(urlInHeader,{user:encodeURI($('#username').val()), pass:encodeURI($('#password').val()), action:encodeURI('login')},loginSuccess,loginError);
     };
     logoutSuccess = function(data) {
         if(data.status == 0) {
@@ -215,14 +242,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
     };
     function PostLogout() {
-        url = BASEURL + 'logout/index';
-        ajax_send(url,{action:encodeURI('logout')}, logoutSuccess, op_error);  
+        urlInHeader = BASEURL + 'logout/index';
+        ajax_send(urlInHeader,{action:encodeURI('logout')}, logoutSuccess, op_error);  
     }
 
     defaultIcon = BASEURL+'static/images/dfIcon.jpg';
     function getP(data) {
         if (data.status == 0) {
-            $('#user_avatar').attr('src', data.src);
+            $('#user_avatar').attr('src', BASEURL + data.src);
         }
         else {
             $('#user_avatar').attr('src', defaultIcon);

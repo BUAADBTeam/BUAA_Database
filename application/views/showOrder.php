@@ -58,10 +58,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     ajax_send(BASEURL+'order/userPaid', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
   }
   function shopAcceptOrder(oid, uid, sid) {
-    ajax_send(BASEURL+'order/shopAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+    ajax_send(BASEURL+'order/shopAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, function(data){if (data.status != 0) op_error(data);}, op_error);
   }
   function allocOrder(oid, uid, sid) {
-    ajax_send(BASEURL+'order/allocOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);
+    ajax_send(BASEURL+'order/allocOrder', {orderid:oid, userid:uid, shopid:sid}, 
+      function op_get_res(data) {
+        if (data.status == 0) {
+          window.location.reload();
+        }
+        else {
+          alert("暂无空闲快递员，请稍后重试");
+        }
+      }, 
+      op_error);
   }
   function deliveryAcceptOrder(oid, uid, sid) {
     ajax_send(BASEURL+'order/deliveryAcceptOrder', {orderid:oid, userid:uid, shopid:sid}, op_get_res, op_error);

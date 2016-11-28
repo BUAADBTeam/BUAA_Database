@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Shopm extends Model {
 	
 	var $cuisine = 'cuisine';
-	var $shop = 'shop';
+	var $shop = 'exshop';
 
 	public function __construct()
 	{
@@ -13,17 +13,6 @@ class Shopm extends Model {
 
 	public function add($sid, $info)
 	{
-/*INSERT INTO `db`.`cuisine` (`id`, `sid`, `name`, `pic`, `price`, `info`, `st`) VALUES 
-(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
-(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
-(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
-(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
-(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
-(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
-(NULL, '0', 'Maecenas ornare enim', 'static/images/1.jpg', '45.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'), 
-(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0'),
-(NULL, '0', 'Dis parturient montes', 'static/images/3.jpg', '55.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '1'),
-(NULL, '0', 'Curabitur congue blandit', 'static/images/4.jpg', '65.00', 'Cum sociis natodiculus mus.rhoncus egestas ac sit', '0');*/
 		if (!isset($info['name']) || !isset($info['price'])) {
 			return FALSE;
 		}
@@ -40,11 +29,6 @@ class Shopm extends Model {
 			$this->db->beginTransaction();
 			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
 			$params = array(':name' => $info['name'], ':pic' => $info['pic'], ':price' => $info['price'], ':sid' => $sid, ':st' => isset($info['st']) ? $info['st'] : 1);
-			// if ($this->db->insert($this->cuisine, $column, $params) == FALSE) {
-			// 	$this->db->rollback();
-			// 	$this->db->close();
-			// 	return FALSE;
-			// }
 			try {
 				$this->db->insert($this->cuisine, $column, $params);
 			} catch (Exception $e) {
@@ -129,30 +113,44 @@ class Shopm extends Model {
 
 	public function getRecommandList()
 	{
-		// $this->shopm->getRecommandList();
-		$res = array();
-		for ($i = 0; $i < 16; $i++) {
-			$res[] = array('id' => rand(1, 4), 'name' => '美食街', 'pic' => '', 'addr' => '233');
-		}
+		$res = array('cuisine' => array(), 'shop' => array());
+		$this->db->connect();
+		$this->db->beginTransaction();
+		$res['cuisine'] = $this->db->select(array('name', 'pic', 'info', 'sid', 'price'), $this->cuisine, '1 limit 0, 3', array(), 'S')['rows'];
+		$res['shop'] = $this->db->select(array('name', 'photo', 'intro', 'addr', 'id'), $this->shop, '1', array(), 'S limit 0, 3')['rows'];
+		$this->db->commit();
+		$this->db->close();
+		// for ($i = 0; $i < 16; $i++) {
+		// 	$res[] = array('id' => rand(1, 4), 'name' => '美食街', 'pic' => '', 'addr' => '233');
+		// }
 		// print_r($res);
 		return $res;
 	}
 
 	public function changePhoto($userid, $filename)
 	{
-      $this->db->connect();
-      $this->db->beginTransaction();
-      try { 
-        $num = $this->db->update('shop', array('pic' => ':pic'), "id = :id", array(':pic' => $filename, ':id' => $userid));
-        if($num != 1)
-          return FALSE;
-      } catch (Exception $e) {
-        $this->db->rollback();
-        $this->db->close();
-        return False;
-      }
-      $this->db->commit();
-      $this->db->close();
-      return True;
-  }
+		$this->db->connect();
+		$this->db->beginTransaction();
+		try { 
+			$num = $this->db->update('shop', array('pic' => ':pic'), "id = :id", array(':pic' => $filename, ':id' => $userid));
+			if($num != 1)
+				return FALSE;
+		} catch (Exception $e) {
+			$this->db->rollback();
+			$this->db->close();
+			return False;
+		}
+		$this->db->commit();
+		$this->db->close();
+		return True;
+  	}
+  	public function getShopList()
+  	{
+  		$this->db->connect();
+		$this->db->beginTransaction();
+		$res = $this->db->select(array('*'), $this->shop, '1', array(), 'S')['rows'];
+		$this->db->commit();
+		$this->db->close();
+		return $res;
+  	}
 }

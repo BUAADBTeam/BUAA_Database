@@ -7,97 +7,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </script>
 <!-- latis -->  
 <div class="latis">
-  <div class="container">
+  <div class="container" id="cuisineContainer">
     <h1>每日精选</h1><p><br /></p>
-    <div class="col-md-4 latis-left">
-      <h3>每嘉三明治</h3>
-      <img src="static/images/4.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1">
-        <p>原滋原味的三明治 </p>
-        <div class="cur">
-          <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
-          </div>
-          <div class="cur-right">
-            <div class="item_add"><span class="item_price"><h6>only $45.00</h6></span></div>
-          </div>
-            <div class="clearfix"> </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 latis-left">
-      <h3>蔬菜拌虾</h3>
-      <img src="static/images/1.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1">
-        <p>品尝大自然的味道 </p>
-        <div class="cur">
-          <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
-          </div>
-          <div class="cur-right">
-            <div class="item_add"><span class="item_price"><h6>only $55.00</h6></span></div>
-          </div>
-            <div class="clearfix"> </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 latis-left">
-      <h3>培根早餐肉</h3>
-      <img src="static/images/3.jpg" class="img-responsive" alt="">
-      <div class="special-info grid_1">
-        <p>坐下吃份早餐吧 </p>
-        <div class="cur">
-          <div class="cur-left">
-            <div class="item_add"><span class="item_price"><a class="morebtn hvr-rectangle-in" href="#">加入购物车</a></span></div>
-          </div>
-          <div class="cur-right">
-            <div class="item_add"><span class="item_price"><h6>only $65.00</h6></span></div>
-          </div>
-            <div class="clearfix"> </div>
-        </div>
-      </div>
-    </div>
-    <div class="clearfix"> </div>
   </div>
 </div>
 <!-- latis -->
 <!-- latis -->  
 <div class="latis">
-  <div class="container">
+  <div class="container" id="shopContainer">
     <h1>店铺推荐</h1><p><br /></p>
-    <div class="col-md-4 latis-left">
-      <div align = 'center'> <h3>品知左岸咖啡</h3> </div>
-      <div align = 'center'> <img src="static/images/9b1.jpg" class="img-responsive" alt=""> </div>
-      <div class="special-info grid_1">
-      <div align = 'center'> <p>体味纯正意大利咖啡 </p> </div>
-      </div>
-      <div align = 'center'> <div class="cur">
-          <div class="cur-left">
-            <a class="morebtn hvr-rectangle-in" href="shop/s/0">进店逛逛</a></span>
-          </div>
-          <div class="cur-right">
-            <div class="item_add"><span class="item_price"><h6>******</h6></span></div>
-          </div>
-          <div class="clearfix"> </div>
-        </div>
-    </div>
-    </div>
-    <div class="col-md-4 latis-left">
-      <div align = 'center'> <h3>G堡王</h3> </div>
-      <div align = 'center'> <img src="static/images/6p1.jpg" class="img-responsive" alt=""> </div>
-      <div class="special-info grid_1">
-      <div align = 'center'> <p>我们只做最大的汉堡 </p> </div>
-      </div>
-    </div>
-
-    <div class="col-md-4 latis-left">
-      <div align = 'center'> <h3>比格披萨</h3> </div>
-      <div align = 'center'> <img src="static/images/8p1.jpg" class="img-responsive" alt=""> </div>
-      <div class="special-info grid_1">
-      <div align = 'center'> <p>好吃 好玩 有故事 </p> </div>
-      </div>
-    </div>
-    <div class="clearfix"> </div>
   </div>
 </div>
 <!-- latis -->  
@@ -106,19 +24,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     if (data.status != 0) {
       return;
     }
-    for (var i = 0; i < data.count; i += 4) {
-      $('#shops').append("<div class=\"row\" id=row"+i+"></div>");
-      for (var j = 0; j < 4 && i + j < data.count; j++) {
-        $('#row'+i).append(wrap_shop(data.data[i + j]));
+    for (var i = 0; i < data.cuisineCount; i += 3) {
+      for (var j = 0; j < 3 && i + j < data.cuisineCount; j++) {
+        $('#cuisineContainer').append(wrap_cuisine_welcome(data.cuisine[i + j]));
       }
+      $('#cuisineContainer').append('<div class="clearfix"> </div>');
+    }
+    for (var i = 0; i < data.shopCount; i += 3) {
+      for (var j = 0; j < 3 && i + j < data.shopCount; j++) {
+        $('#shopContainer').append(wrap_shop_welcome(data.shop[i + j]));
+      }
+      $('#shopContainer').append('<div class="clearfix"> </div>');
     }
   };
-  f2 = function(data) {
-    alert("Something amazing happened! Please try again later.");
-  }
   url = BASEURL+'shop/r/';//+pageNum.toString();
   $(function(){
-    ajax_send(url,0,f1,f2);
+    ajax_send(url,0,f1,load_error);
   }); 
 </script>
 <div class="modal fade" id="mymodal-register">
@@ -254,7 +175,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         // alert(data.status);
     };
     registerError = function(data) {
-        alert("Something amazing happened! Please try again later.");
+        alert("注册失败，请重试");
         return ;
     };
     checkNameSuccess = function(data) {
@@ -315,11 +236,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $('#reAddress').attr('style', ''); 
       }
     }
-
-    function fuck() {
-      alert('fuck');
-    }
-
 
     // alert(hex_md5('asd'));
 </script>

@@ -36,12 +36,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       }
     }
   };
-  f2 = function(data) {
-    alert("Something amazing happened! Please try again later.");
-  };
   url = BASEURL+'shop/c/' + shopId;
   $(function(){
-    ajax_send(url,0,f1,f2);
+    ajax_send(url,0,f1,load_error);
   });
   function sub(id) {
     x = parseInt($('#cuisine'+id).attr('num'));
