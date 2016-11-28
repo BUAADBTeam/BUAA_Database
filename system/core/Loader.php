@@ -24,11 +24,12 @@ class Loader {
 			$name = $model;
 		}
 
+		$it = get_instance();
 		if (isset($this->_models) && in_array($name, $this->_models, TRUE)) {
+			$it->$name = $this->_model[$name];
 			return $this;
 		}
 
-		$it = get_instance();
 		if (isset($this->$name)) {
 			throw new RuntimeException('The model name you are loading is the name of a resource that is already being used: '.$name);
 		}
@@ -51,9 +52,9 @@ class Loader {
 		{
 			throw new RuntimeException("Class ".$model." already exists and doesn't extend Model");
 		}
-		$this->_models[] = $name;
 		$it->$name = new $model();
 		$it->$name->load = $this;
+		$this->_models[$name] = $it->$name;
 		return $this;
 	}
 
