@@ -79,6 +79,7 @@ class Register extends Controller {
 			if($this->uploadm->upload("static\users\\", 
 				$fileName)) {
 				if(!$this->acessm->insertPic($_SESSION['userid'], $fileName)) {
+
 					echo json_encode(array('status' => -1));
 					return;
 				}
