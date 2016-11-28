@@ -54,7 +54,7 @@ function wrap_shop_list(item)
 					'<P> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.intro+'</P>'+
 				'</li>'+
 				'<li class="bt-nn">'+
-					'<a class="morebtn hvr-rectangle-in" href="'+BASEURL+'shop/s/'+item.id+'" align="center"><span align="center">进店逛逛</span></a>'+
+					'<a class="morebtn hvr-rectangle-in" href="'+BASEURL+'shop/s/'+item.id+'" style="padding-right:30px">进入</a>'+
 				'</li>'+
 				'<div class="clearfix"></div>'+
 			'</div>';
