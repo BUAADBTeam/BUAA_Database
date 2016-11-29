@@ -50,7 +50,7 @@ function wrap_shop_list(item)
 	return '<div class="order-top">'+
 				'<li class="im-g"><a href="'+BASEURL+'shop/s/'+item.id+'"><img src="'+BASEURL+item.photo+'" class="img-responsive" alt=""></a></li>'+
 				'<li class="data"><h4>&nbsp;'+item.name+'</h4>'+
-					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.address+'</p>'+
+					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.addr+'</p>'+
 					'<P> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.intro+'</P>'+
 				'</li>'+
 				'<li class="bt-nn">'+
