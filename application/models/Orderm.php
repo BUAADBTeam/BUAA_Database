@@ -49,9 +49,9 @@ class Orderm extends Model {
 			for($i = 0; $i < count($res); $i += 1) {
 				$res[$i]['items'] = $this->db->select(array('itemid', 'amount'), 'orderitems', 'orderid = :orderid', array(':orderid' => $res[$i]['orderid']), "S")['rows'];
 				$res[$i]['count'] = count($res[$i]['items']);
-				if(userMode || deliveryMode)
+				if($mode == userMode || $mode == deliveryMode)
 					$res[$i]['shopInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['shopid']), "S")['row'];
-				if(shopMode || deliveryMode)
+				if($mode == shopMode || $mode == deliveryMode)
 					$res[$i]['userInfo'] = $this->db->select(array('username', 'photo', 'address'), 'users', "userid = :userid", array(':userid' => $res[$i]['userid']), "S")['row'];
 				for($j = 0; $j < count($res[$i]['items']); $j += 1) {
 					$resu = $this->db->select(array('price', 'name', 'pic'), 'cuisine', 'id = :id', array(':id' => $res[$i]['items'][$j]['itemid']), "S")['row'];
