@@ -48,7 +48,7 @@ function op_error(data)
 function wrap_shop_list(item)
 {
 	return '<div class="order-top">'+
-				'<li class="im-g"><a href="'+BASEURL+'shop/s/'+item.id+'"><img src="'+BASEURL+item.photo+'" class="img-responsive" alt=""></a></li>'+
+				'<li class="im-g"><a href="'+BASEURL+'shop/s/'+item.id+'"><img src="'+BASEURL+item.photo+'" class="img-responsive" alt="" style="width:136px;height:105px"></a></li>'+
 				'<li class="data"><h4>&nbsp;'+item.name+'</h4>'+
 					'<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.addr+'</p>'+
 					'<P> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.intro+'</P>'+
@@ -64,7 +64,7 @@ function wrap_shop_welcome(item)
 {
 	return '<div class="col-md-4 latis-left">'+
 				'<div align = "center"> <h3>'+item.name+'</h3> </div>'+
-				'<div align = "center"> <img src="'+BASEURL+item.photo+'" class="img-responsive" alt=""> </div>'+
+				'<div align = "center"> <img src="'+BASEURL+item.photo+'" class="img-responsive" alt="" style="width:365px;height:270px"> </div>'+
 				'<div class="special-info grid_1">'+
 				  '<div align = "center"> <p>'+item.addr+'</p> </div>'+
 				'</div>'+
@@ -85,7 +85,7 @@ function wrap_cuisine(item)
 	res = '<div class="col-md-4 latis-left">'+
 			'<div class="cuisine" id="cuisine'+item.id+'" cuisineid="'+item.id+'" name="'+item.name+'" picsrc="'+item.pic+'" num="0" price="'+item.price+'"></div>'+
 				'<h3>'+item.name+'</h3>'+
-				'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
+				'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="" style="width:350px;height:220px">'+
 				'<div class="special-info grid_1">'+
 					'<p>'+item.info+'</p>'+
 					'<div class="cur">'+
@@ -108,7 +108,7 @@ function wrap_cuisine_welcome(item)
 {
 	return '<div class="col-md-4 latis-left">'+
       '<h3>'+item.name+'</h3>'+
-      '<img src="'+BASEURL + item.pic+'" class="img-responsive" alt="">'+
+      '<img src="'+BASEURL + item.pic+'" class="img-responsive" alt="" style="width:350px;height:220px">'+
       '<div class="special-info grid_1">'+
         '<p>'+item.info+'</p>'+
         '<div class="cur">'+
@@ -127,7 +127,7 @@ function wrap_cuisine_manage(item)
 {
 	res = '<div class="col-md-4 latis-left" id="cuisine' + item.id + '">' + 
 			'<h3>'+item.name+'</h3>'+
-			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="">'+
+			'<img src="'+BASEURL+item.pic+'" class="img-responsive" alt="" style="width:350px;height:220px">'+
 			'<div class="special-info grid_1">'+
 				'<p>'+item.info+'</p>'+
 				'<div class="cur">'+
@@ -153,7 +153,7 @@ function wrap_cuisine_order(item)
 {
 	return '<div class="row">'+
 				'<div class="col-lg-3 thumbnail">'+
-				'<img src="'+BASEURL+item.pic+'" alt="...">'+
+				'<img src="'+BASEURL+item.pic+'" alt="..." style="width:140px;height:90px">'+
 				'</div>'+
 				'<div class="col-lg-9">&nbsp;</div>'+
 				'<div class="col-lg-9">&nbsp;</div>'+
@@ -192,8 +192,8 @@ function wrap_order(order)
 	else if (order.status == 2) {
 		if (isShop()) {
 			type = 'danger';
-			opo = '$(this).attr(\'class\', \'btn btn-warning btn-lg\');shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
-			op = 'deliveryAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
+			opo = '$(this).attr(\'class\', \'btn btn-warning btn-lg\');shopAcceptOrder('+order.orderid+', '+order.userid+', '+order.shopid+');$(this).attr(\'onclick\', \'\')';
+			op = 'allocOrder('+order.orderid+', '+order.userid+', '+order.shopid+')';
 			info = '确认发货';
 			available = true;
 		}
@@ -260,7 +260,7 @@ function wrap_order(order)
 		btn = '<button type="button" class="btn btn-'+type+' btn-lg btn-block lead disabled">&nbsp;'+info+'</button>';
 	}
 	res = '<div class="order-top" id="order"'+order.orderid+' orderid="'+order.orderid+'">'+
-				'<li class="im-g"><img src="'+BASEURL+order.user.photo+'" class="img-responsive" alt=""></li>'+
+				'<li class="im-g"><img src="'+BASEURL+order.user.photo+'" class="img-responsive" alt="" style="width:136px;height:120px"></li>'+
 				'<li class="data"><h3>&nbsp;&nbsp;'+order.user.username+'</h3><br />'+
 				'<p>&nbsp;&nbsp;&nbsp;地址: '+order.user.address+'</p>'+
 				// '<P>'+order.info+'</P>'+

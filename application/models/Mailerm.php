@@ -25,16 +25,9 @@ class Mailerm extends Model {
 			$_SERVER['HTTP_X_FORWARDED_HOST'] : 
 			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
 		$mail->Body = base_url()."register/verify&username=$name&token=$token"; //邮件内容，上面设置HTML，则可以是HTML
-		if(!$mail->Send())
-		{
-		    // echo "邮件发送失败. <p>";
-		    // echo "错误原因: " . $mail->ErrorInfo;
-		    // echo $mail->Body;
-		    // print($email);
-		    // return false;
-		    $filename = 'file.txt';
-			file_put_contents($filename, $mail->Body);
-		}
+		$mail->Send();
+		$filename = 'file.txt';
+		file_put_contents($filename, $mail->Body);
 		return true;
 	}
 	

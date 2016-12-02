@@ -27,8 +27,8 @@ class Shopm extends Model {
 		try {
 			$this->db->connect();
 			$this->db->beginTransaction();
-			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st');
-			$params = array(':name' => $info['name'], ':pic' => $info['pic'], ':price' => $info['price'], ':sid' => $sid, ':st' => isset($info['st']) ? $info['st'] : 1);
+			$column = array('name' => ':name', 'pic' => ':pic', 'price' => ':price', 'sid' => ':sid', 'st' => ':st', 'info' => ':info');
+			$params = array(':name' => $info['name'], ':pic' => $info['pic'], ':price' => $info['price'], ':sid' => $sid, ':st' => isset($info['st']) ? $info['st'] : 1, ':info' => $info['info']);
 			try {
 				$this->db->insert($this->cuisine, $column, $params);
 			} catch (Exception $e) {

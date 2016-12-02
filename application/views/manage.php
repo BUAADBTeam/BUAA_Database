@@ -24,9 +24,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <h4 class="modal-title lead">新增菜品</h4>
       </div>
       <div class="modal-body">
-        <form id="login_form" class="form-horizontal" role="form" method="post" action="<?php echo base_url()?>shop/add" enctype="multipart/form-data">
+        <form id="addCuisine_form" class="form-horizontal" role="form" method="post" action="<?php echo base_url()?>shop/add" enctype="multipart/form-data">
           <div class="alert alert-danger" role="alert" id="addcsAlert" style="display:none;height:30px;padding:5px;">
-            <span class="glyphicon glyphicon-remove-sign" id = "regiErrIcon"></span><span id="registerErrorMessage">&nbsp; 信息不合规范</span>
+            <span class="glyphicon glyphicon-remove-sign" id="regiErrIcon"></span><span id="registerErrorMessage">&nbsp; 信息不合规范</span>
           </div>
 
           <div class="form-group">

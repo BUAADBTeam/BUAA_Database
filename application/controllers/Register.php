@@ -63,9 +63,8 @@ class Register extends Controller {
 
 	public function verify()
 	{
-		print_r($_GET);
 		if($this->acessm->verify($_GET['username'], $_GET['token']))
-			echo "fuck";
+			$this->load->view('welcome');
 	}
 
 	// public function test()

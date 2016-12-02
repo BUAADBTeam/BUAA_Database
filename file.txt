@@ -1,1 +1,1 @@
-http://localhost/dataBase/register/verify&username=what&token=df9c24390010945326f945155360856d
+http://localhost/db/register/verify&username=tet&token=a6ed29aebed8f052e09a16690ddc11aa
